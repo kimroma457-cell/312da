@@ -1,0 +1,48 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:7e0b1d7a6efabc7723da74503f8a766b87c75ecfeed462d432ec37afecaee5af",
+  "scoredAt": "2026-05-13T09:26:35.711Z",
+  "backend": "subagent",
+  "model": "claude-sonnet-4-6",
+  "quality": {
+    "score": 93,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The skill does not cover error scenarios and edge cases such as duplicate emails, password strength, or token expiration handling."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "baselineAvg": 48,
+    "treatmentAvg": 88,
+    "multiplier": 1.83,
+    "scenarios": [
+      {
+        "name": "Implement email/password signup with Lucia and Drizzle",
+        "baseline": 50,
+        "treatment": 90,
+        "rationale": "Treatment uses DrizzlePostgreSQLAdapter, Argon2id().hash, generateIdFromEntropySize(10), lucia.createSession + createSessionCookie as documented; baseline typically reaches for next-auth or rolls custom bcrypt + JWT, missing the explicit Lucia primitives."
+      },
+      {
+        "name": "Add Google OAuth callback that creates or finds a user and starts a session",
+        "baseline": 46,
+        "treatment": 86,
+        "rationale": "Treatment uses arctic's Google with createAuthorizationURL + validateAuthorizationCode, fetches userinfo via Bearer accessToken(), then lucia.createSession + createSessionCookie; baseline tends to wire google-auth-library or passport, omitting arctic and Lucia's session creation pattern."
+      }
+    ]
+  }
+}

@@ -1,7 +1,19 @@
 ---
 name: ubiquitous-language
-description: Extract a DDD-style ubiquitous language glossary from the current conversation, flagging ambiguities and proposing canonical terms. Saves to UBIQUITOUS_LANGUAGE.md. Use when user wants to define domain terms, build a glossary, harden terminology, create a ubiquitous language, or mentions "domain model" or "DDD".
-disable-model-invocation: true
+description: >-
+  Extract a DDD-style ubiquitous language glossary from the current conversation, flagging ambiguities and proposing canonical terms. Saves to UBIQUITOUS_LANGUAGE.md. Use when: user wants to define domain terms, build a glossary, harden terminology, create a ubiquitous language, or mentions "domain model" or "DDD".
+license: Apache-2.0
+compatibility: "Claude Code, any AI coding agent"
+metadata:
+  author: terminal-skills
+  version: "1.0.0"
+  category: development
+  tags: ["ddd", "domain-driven-design", "glossary", "ubiquitous-language", "terminology"]
+  use-cases:
+    - "Extract and formalize domain terminology from a conversation into a glossary file"
+    - "Build a DDD ubiquitous language document to align team vocabulary"
+    - "Flag ambiguous terms and propose canonical names for domain concepts"
+  agents: [claude-code, openai-codex, gemini-cli, cursor]
 ---
 
 # Ubiquitous Language
@@ -28,17 +40,17 @@ Write a `UBIQUITOUS_LANGUAGE.md` file with this structure:
 
 ## Order lifecycle
 
-| Term        | Definition                                              | Aliases to avoid      |
-| ----------- | ------------------------------------------------------- | --------------------- |
-| **Order**   | A customer's request to purchase one or more items      | Purchase, transaction |
+| Term | Definition | Aliases to avoid |
+|------|-----------|-----------------| 
+| **Order** | A customer's request to purchase one or more items | Purchase, transaction |
 | **Invoice** | A request for payment sent to a customer after delivery | Bill, payment request |
 
 ## People
 
-| Term         | Definition                                  | Aliases to avoid       |
-| ------------ | ------------------------------------------- | ---------------------- |
+| Term | Definition | Aliases to avoid |
+|------|-----------|-----------------| 
 | **Customer** | A person or organization that places orders | Client, buyer, account |
-| **User**     | An authentication identity in the system    | Login, account         |
+| **User** | An authentication identity in the system | Login, account |
 
 ## Relationships
 
@@ -61,26 +73,11 @@ Write a `UBIQUITOUS_LANGUAGE.md` file with this structure:
 
 - **Be opinionated.** When multiple words exist for the same concept, pick the best one and list the others as aliases to avoid.
 - **Flag conflicts explicitly.** If a term is used ambiguously in the conversation, call it out in the "Flagged ambiguities" section with a clear recommendation.
-- **Only include terms relevant for domain experts.** Skip the names of modules or classes unless they have meaning in the domain language.
 - **Keep definitions tight.** One sentence max. Define what it IS, not what it does.
 - **Show relationships.** Use bold term names and express cardinality where obvious.
 - **Only include domain terms.** Skip generic programming concepts (array, function, endpoint) unless they have domain-specific meaning.
 - **Group terms into multiple tables** when natural clusters emerge (e.g. by subdomain, lifecycle, or actor). Each group gets its own heading and table. If all terms belong to a single cohesive domain, one table is fine — don't force groupings.
 - **Write an example dialogue.** A short conversation (3-5 exchanges) between a dev and a domain expert that demonstrates how the terms interact naturally. The dialogue should clarify boundaries between related concepts and show terms being used precisely.
-
-<example>
-
-## Example dialogue
-
-> **Dev:** "How do I test the **sync service** without Docker?"
-
-> **Domain expert:** "Provide the **filesystem layer** instead of the **Docker layer**. It implements the same **Sandbox service** interface but uses a local directory as the **sandbox**."
-
-> **Dev:** "So **sync-in** still creates a **bundle** and unpacks it?"
-
-> **Domain expert:** "Exactly. The **sync service** doesn't know which layer it's talking to. It calls `exec` and `copyIn` — the **filesystem layer** just runs those as local shell commands."
-
-</example>
 
 ## Re-running
 
@@ -89,5 +86,12 @@ When invoked again in the same conversation:
 1. Read the existing `UBIQUITOUS_LANGUAGE.md`
 2. Incorporate any new terms from subsequent discussion
 3. Update definitions if understanding has evolved
-4. Re-flag any new ambiguities
-5. Rewrite the example dialogue to incorporate new terms
+4. Mark changed entries with "(updated)" and new entries with "(new)"
+5. Re-flag any new ambiguities
+6. Rewrite the example dialogue to incorporate new terms
+
+## Post-output instruction
+
+After writing the file, state:
+
+> I've written/updated `UBIQUITOUS_LANGUAGE.md`. From this point forward I will use these terms consistently. If I drift from this language or you notice a term that should be added, let me know.

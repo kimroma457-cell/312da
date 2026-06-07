@@ -1,0 +1,48 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:a0a7e6c88466708fa7557e186ec386857704c0533f11f1d1b653ca01fff9afcf",
+  "scoredAt": "2026-05-13T15:09:11.157Z",
+  "backend": "ollama",
+  "model": "gpt-oss:20b",
+  "quality": {
+    "score": 93,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The skill does not cover error scenarios or edge cases such as network failures, Docker not installed, or port conflicts."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "multiplier": 2.5,
+    "baselineAvg": 40,
+    "treatmentAvg": 100,
+    "scenarios": [
+      {
+        "name": "deploy-nodejs-api-with-captain-definition",
+        "baseline": 30,
+        "treatment": 100,
+        "rationale": "Response A fully satisfies every rubric requirement, while Response B omits key elements such as the captain-definition file, docker run install command, and serversetup step."
+      },
+      {
+        "name": "automate-app-creation-with-caprover-api",
+        "baseline": 50,
+        "treatment": 100,
+        "rationale": "Response A fully satisfies the rubric with a caproverApi function and all required operations, while Response B omits the required caproverApi function and uses a different approach."
+      }
+    ]
+  }
+}

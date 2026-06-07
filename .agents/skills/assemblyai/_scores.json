@@ -1,0 +1,42 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:c541c808fc7ae3c6b199b5257894149bc844d05f46326f90b40c513cbbb42448",
+  "scoredAt": "2026-05-13T14:14:24.180Z",
+  "backend": "ollama",
+  "model": "gpt-oss:20b",
+  "quality": {
+    "score": 100,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "PASS",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": []
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "multiplier": 4,
+    "baselineAvg": 0,
+    "treatmentAvg": 40,
+    "scenarios": [
+      {
+        "name": "transcribe-podcast-with-chapters",
+        "baseline": 0,
+        "treatment": 50,
+        "rationale": "Response B provides detailed code and outputs but does not use transcribe_rich as required, whereas Response A offers no solution."
+      },
+      {
+        "name": "lemur-action-items",
+        "baseline": 0,
+        "treatment": 30,
+        "rationale": "Response A never calls transcribe_rich or lemur_qa, while Response B calls speaker_labels and a LeMUR QA but still omits the required transcribe_rich call."
+      }
+    ]
+  }
+}

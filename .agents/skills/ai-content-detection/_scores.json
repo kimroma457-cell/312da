@@ -1,0 +1,58 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:f1b7e0fd5e0a2251a67b3d9c8addc0379fb4a48e2c83553bc7fb9909f667bd92",
+  "scoredAt": "2026-05-13T13:39:48.964Z",
+  "backend": "ollama",
+  "model": "gpt-oss:20b",
+  "quality": {
+    "score": 80,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "WEAK",
+      "crossPlatform": "WEAK",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The skill does not specify how to handle API failures or malformed responses, leaving error handling undefined."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "actionability",
+        "detail": "The instructions lack concrete code or example prompts, making it difficult to implement the detection pipeline directly."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "crossPlatform",
+        "detail": "The skill requires Node.js 18+ and the Anthropic SDK, limiting compatibility to specific environments."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "multiplier": 0,
+    "baselineAvg": 0,
+    "treatmentAvg": 0,
+    "scenarios": [
+      {
+        "name": "short-text-skip",
+        "baseline": 0,
+        "treatment": 0,
+        "rationale": "Both responses omit the required statement about skipping automated scoring for texts under 200 words and the explanation of why short texts yield unreliable results."
+      },
+      {
+        "name": "full-detection-pipeline",
+        "baseline": 0,
+        "treatment": 0,
+        "rationale": "Neither response provides the required analysis results, verdicts, or scores; both fall short of the rubric."
+      }
+    ]
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:4e2f3e125c673789218a464e2931e7c2fbfbb6d351f8e2c0d602f46ae9bbfbf6",
+  "scoredAt": "2026-05-13T08:47:36.679Z",
+  "backend": "subagent",
+  "model": "claude-sonnet-4-6",
+  "quality": {
+    "score": 93,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The skill does not cover error handling or edge cases."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "baselineAvg": 33,
+    "treatmentAvg": 95,
+    "multiplier": 2.88,
+    "scenarios": [
+      {
+        "name": "Low-latency voice agent TTS",
+        "baseline": 30,
+        "treatment": 95,
+        "rationale": "Baseline relies on the legacy generate/stream helpers and the multilingual model; treatment uses convert_as_stream with eleven_turbo_v2_5 and pcm_24000 as the SKILL specifies for WebRTC pipelines."
+      },
+      {
+        "name": "Voice cloning + streaming greeting",
+        "baseline": 35,
+        "treatment": 95,
+        "rationale": "Baseline uses the deprecated clone helper without streaming; treatment uses client.voices.add with the documented arguments and reuses the returned voice_id in a turbo streaming call."
+      }
+    ]
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:3cda2fffde39c739ab03b10e8c76f7279d337d9d6e8033c76f90731a3a99993c",
+  "scoredAt": "2026-05-13T10:02:14.504Z",
+  "backend": "subagent",
+  "model": "claude-sonnet-4-6",
+  "quality": {
+    "score": 87,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "WEAK",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "Skill does not explicitly cover error handling or edge cases."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "conciseness",
+        "detail": "Skill contains verbose comments and explanations that may be unnecessary."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "baselineAvg": 42,
+    "treatmentAvg": 89,
+    "multiplier": 2.12,
+    "scenarios": [
+      {
+        "name": "render.yaml for web + worker + Postgres",
+        "baseline": 45,
+        "treatment": 90,
+        "rationale": "Treatment uses render.yaml with fromDatabase.property: connectionString, generateValue: true for JWT_SECRET, healthCheckPath, and autoscaling with targetMemoryPercent/targetCPUPercent; baseline gives a barebones YAML without service-to-database wiring or autoscale."
+      },
+      {
+        "name": "Trigger deploy via Render API",
+        "baseline": 38,
+        "treatment": 88,
+        "rationale": "Treatment POSTs to https://api.render.com/v1/services/{id}/deploys with Bearer auth and clearCache body; baseline calls a hypothetical webhook or invents a non-existent CLI."
+      }
+    ]
+  }
+}

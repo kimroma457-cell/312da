@@ -1,0 +1,54 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:217e13f7334a2a614abdd64d852daeb2968e4ebb49d4c40ebd676e4c77b25a27",
+  "scoredAt": "2026-05-13T09:05:25.115Z",
+  "backend": "subagent",
+  "model": "claude-sonnet-4-6",
+  "quality": {
+    "score": 93,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The skill does not cover error handling or edge cases, only happy path commands."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SUSPICIOUS",
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "setup",
+        "detail": "The setup uses curl to download and pipe to bash without checksum verification, which is a potential security risk."
+      }
+    ]
+  },
+  "impact": {
+    "baselineAvg": 55,
+    "treatmentAvg": 86,
+    "multiplier": 1.56,
+    "scenarios": [
+      {
+        "name": "List running production VMs with external IPs in a script-friendly format",
+        "baseline": 55,
+        "treatment": 88,
+        "rationale": "Treatment uses the exact documented filter syntax (status=RUNNING AND labels.env=production) and the documented --format=\"table(...natIP)\" projection; baseline lists instances but does not combine the label filter with the nested-field table projection."
+      },
+      {
+        "name": "Deploy a Python Cloud Function (gen2) that connects to a private database with env vars",
+        "baseline": 55,
+        "treatment": 85,
+        "rationale": "Treatment uses the documented --gen2 flag, --set-env-vars=KEY=VAL,KEY=VAL syntax, and pairs deploy with gcloud functions logs read for verification; baseline tends to omit --gen2 or uses an incorrect env-var format."
+      }
+    ]
+  }
+}

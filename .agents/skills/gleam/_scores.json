@@ -1,0 +1,54 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:dba41149959f63da15fdec80b752458a300e50e73e25f71c1f61ff0c93f140d0",
+  "scoredAt": "2026-05-13T09:08:37.306Z",
+  "backend": "subagent",
+  "model": "claude-sonnet-4-6",
+  "quality": {
+    "score": 93,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "PASS",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "WEAK",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "crossPlatform",
+        "detail": "Installation instructions only cover macOS and Linux, lacking Windows support."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SUSPICIOUS",
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "curl",
+        "detail": "Uses curl to download and execute a script from gleam.run without checksum verification."
+      }
+    ]
+  },
+  "impact": {
+    "baselineAvg": 83,
+    "treatmentAvg": 94,
+    "multiplier": 1.13,
+    "scenarios": [
+      {
+        "name": "Custom type with compile-time-checked status transitions",
+        "baseline": 80,
+        "treatment": 92,
+        "rationale": "Both define pub type Status, use case pattern matching, and return Result; treatment adds richer state machine with guards and exhaustiveness reasoning."
+      },
+      {
+        "name": "OTP actor managing a task list",
+        "baseline": 85,
+        "treatment": 95,
+        "rationale": "Both define Message with reply Subject, handler with actor.continue, and actor.start; treatment adds Next(Message, State) typing, Result replies, and supervisor context."
+      }
+    ]
+  }
+}

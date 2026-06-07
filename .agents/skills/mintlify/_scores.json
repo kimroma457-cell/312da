@@ -1,0 +1,48 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:14d02072e7dc3d1db34798ecb4a607bba4cd4e1863e6f34fdd334b28a8d4ffec",
+  "scoredAt": "2026-05-13T09:35:26.031Z",
+  "backend": "subagent",
+  "model": "claude-sonnet-4-6",
+  "quality": {
+    "score": 93,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The skill file does not cover error handling or edge cases for the Mintlify CLI and configuration steps."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "baselineAvg": 38,
+    "treatmentAvg": 86,
+    "multiplier": 2.26,
+    "scenarios": [
+      {
+        "name": "Bootstrap Mintlify docs with quickstart and API reference",
+        "baseline": 35,
+        "treatment": 85,
+        "rationale": "Treatment uses mint.json navigation groups, MDX components (Steps, CodeGroup, Note, Card), and api page frontmatter; baseline references generic Markdown/Docusaurus patterns missing Mintlify-specific config."
+      },
+      {
+        "name": "Generate API reference page for POST /v1/users with playground",
+        "baseline": 40,
+        "treatment": 88,
+        "rationale": "Treatment writes frontmatter with `api: \"POST ...\"`, uses `<ParamField>` and `<ResponseExample>` blocks that auto-create the playground; baseline returns plain Markdown tables without Mintlify components."
+      }
+    ]
+  }
+}

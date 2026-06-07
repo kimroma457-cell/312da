@@ -1,0 +1,58 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:ccccb22c21ce23f1cab0bc0af08150eb7eb97d41db6822e4d8f4036f65637bec",
+  "scoredAt": "2026-05-13T14:10:32.905Z",
+  "backend": "ollama",
+  "model": "gpt-oss:20b",
+  "quality": {
+    "score": 80,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "WEAK",
+      "crossPlatform": "WEAK",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The instructions do not cover error handling for API failures or missing data scenarios."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "actionability",
+        "detail": "The skill lacks concrete code snippets or step-by-step procedures for implementation."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "crossPlatform",
+        "detail": "The skill relies on Claude's vision API, limiting compatibility to that vendor."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "multiplier": 4,
+    "baselineAvg": 5,
+    "treatmentAvg": 40,
+    "scenarios": [
+      {
+        "name": "extract-floor-plan-rooms",
+        "baseline": 10,
+        "treatment": 30,
+        "rationale": "Response A offers a workable script that could generate the required JSON if extended, whereas Response B simply refuses to provide any data."
+      },
+      {
+        "name": "extract-ibc-compliance-data",
+        "baseline": 0,
+        "treatment": 50,
+        "rationale": "Response A partially meets the rubric by providing some fields, while Response B fails to produce the required JSON structure."
+      }
+    ]
+  }
+}

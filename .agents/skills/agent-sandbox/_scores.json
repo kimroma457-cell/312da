@@ -1,0 +1,54 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:93e599803bba2306a06277d52a0632f080d1efc2c7c5c2e8a1a88e5d9b2358a5",
+  "scoredAt": "2026-05-13T12:15:37.666Z",
+  "backend": "ollama",
+  "model": "gpt-oss:20b",
+  "quality": {
+    "score": 93,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "PASS",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "WEAK",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "crossPlatform",
+        "detail": "The skill requires Docker and Node.js, limiting cross-platform compatibility."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "multiplier": 4.09,
+    "baselineAvg": 22,
+    "treatmentAvg": 90,
+    "scenarios": [
+      {
+        "name": "sandbox-code-modification",
+        "baseline": 10,
+        "treatment": 100,
+        "rationale": "Response B fully satisfies the rubric, while Response A lacks the required AgentSandbox instantiation and related actions."
+      },
+      {
+        "name": "docker-isolated-execution",
+        "baseline": 50,
+        "treatment": 95,
+        "rationale": "Response B fully meets the rubric by using DockerSandbox with the required options, starting, executing, and killing the container, while Response A omits DockerSandbox usage, readOnly, and explicit container cleanup details."
+      },
+      {
+        "name": "kill-switch-audit",
+        "baseline": 5,
+        "treatment": 75,
+        "rationale": "Response B meets most rubric points, while Response A does not use AgentSandbox or required actions."
+      }
+    ]
+  }
+}

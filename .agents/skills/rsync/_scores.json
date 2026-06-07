@@ -1,0 +1,42 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:3b60dba4a7b335a8afb0886863de807af78855daab36b9d3a22528395b35007b",
+  "scoredAt": "2026-05-13T10:04:13.833Z",
+  "backend": "subagent",
+  "model": "claude-sonnet-4-6",
+  "quality": {
+    "score": 100,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "PASS",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": []
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "baselineAvg": 53,
+    "treatmentAvg": 94,
+    "multiplier": 1.77,
+    "scenarios": [
+      {
+        "name": "Space-efficient daily snapshot backups",
+        "baseline": 35,
+        "treatment": 92,
+        "rationale": "Baseline created a dated backup directory but did not use --link-dest hard-linking, so snapshots were not space-efficient; treatment used --link-dest=/backups/latest, dated destination, and updated the latest symlink with ln -snf."
+      },
+      {
+        "name": "Deploy build to prod with safe exclusions and pruning",
+        "baseline": 70,
+        "treatment": 95,
+        "rationale": "Baseline mentioned --delete and one exclude but omitted a dry-run pass; treatment combined --delete, both --exclude patterns for node_modules and .env, and a -n dry-run step before the destructive sync."
+      }
+    ]
+  }
+}

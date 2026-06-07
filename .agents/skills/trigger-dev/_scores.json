@@ -1,0 +1,53 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:3e373b2c6a301b1ff75536885fb6e91e95a6bcc5f36dc9506ece47e89d6f0d81",
+  "scoredAt": "2026-05-13T10:27:40.069Z",
+  "backend": "subagent",
+  "model": "claude-sonnet-4-6",
+  "quality": {
+    "score": 77,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "FAIL",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The skill file does not cover all possible error scenarios and edge cases, such as network failures or data validation errors beyond the provided examples."
+      },
+      {
+        "severity": "HIGH",
+        "category": "crossPlatform",
+        "detail": "The skill is tightly coupled to Trigger.dev, making it vendor-locked and not applicable to other AI agents or background job platforms."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "baselineAvg": 38,
+    "treatmentAvg": 86,
+    "multiplier": 2.26,
+    "scenarios": [
+      {
+        "name": "Migrate BullMQ video processing job to Trigger.dev with durable retries",
+        "baseline": 35,
+        "treatment": 88,
+        "rationale": "Treatment used task() with explicit retry config (maxAttempts, factor, minTimeoutInMs), tasks.trigger, and logger.info from the SDK; baseline reached for BullMQ-like worker code or generic queue without the v3 SDK primitives."
+      },
+      {
+        "name": "Schedule a weekday 9 AM Slack report with timezone awareness",
+        "baseline": 40,
+        "treatment": 84,
+        "rationale": "Treatment used tasks.schedule with cron and timezone option per the SDK; baseline reached for node-cron or a generic cron expression without the Trigger.dev scheduler API."
+      }
+    ]
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:b583bda5d3dd90be648e14c20a440ccd8c6229c8fd3df1dc87938edd19979798",
+  "scoredAt": "2026-05-13T08:51:04.097Z",
+  "backend": "subagent",
+  "model": "claude-sonnet-4-6",
+  "quality": {
+    "score": 93,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The skill does not cover error handling or edge cases such as missing API key or network failures."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "baselineAvg": 28,
+    "treatmentAvg": 97,
+    "multiplier": 3.46,
+    "scenarios": [
+      {
+        "name": "Generate image with Flux Schnell via TypeScript client",
+        "baseline": 30,
+        "treatment": 97,
+        "rationale": "Treatment uses @fal-ai/client with fal.config, fal.subscribe('fal-ai/flux/schnell', ...), correct image_size enum, and onQueueUpdate progress logs; baseline hits the wrong model id with raw fetch and omits the subscribe/config pattern entirely."
+      },
+      {
+        "name": "Batch async image generation via queue API",
+        "baseline": 25,
+        "treatment": 96,
+        "rationale": "Treatment uses fal.queue.submit + fal.queue.result with requestId in Promise.all, the documented async pipeline; baseline parallelizes raw fetch calls and never touches the queue API."
+      }
+    ]
+  }
+}

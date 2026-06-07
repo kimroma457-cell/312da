@@ -1,0 +1,50 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:194e54b619c0303eeb04e632d650957cea875e2dae736010ecd965c76ba829e1",
+  "scoredAt": "2026-05-13T09:06:37.009Z",
+  "backend": "ollama",
+  "model": "gpt-oss:20b",
+  "quality": {
+    "score": 93,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The skill file does not cover error scenarios or edge cases."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "baselineAvg": 48,
+    "treatmentAvg": 95,
+    "multiplier": 1.98,
+    "backend": "subagent",
+    "model": "claude-sonnet-4-6",
+    "scenarios": [
+      {
+        "name": "Browser direct uploads via signed URL",
+        "baseline": 50,
+        "treatment": 95,
+        "rationale": "Baseline produced a generic signed URL and gsutil cors set without v4 or uniform-bucket-level-access; treatment used v4 PUT signed URL, applied cors-config.json via gcloud storage buckets update, and created the bucket with --uniform-bucket-level-access."
+      },
+      {
+        "name": "Tiered lifecycle for logs prefix",
+        "baseline": 45,
+        "treatment": 95,
+        "rationale": "Baseline gave a single-rule delete-at-365 without prefix scoping or class transitions; treatment provided the full NEARLINE/COLDLINE/Delete chain with matchesPrefix logs/ applied via gcloud storage buckets update --lifecycle-file."
+      }
+    ]
+  }
+}

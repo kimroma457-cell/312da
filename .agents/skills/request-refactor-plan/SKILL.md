@@ -1,6 +1,19 @@
 ---
 name: request-refactor-plan
-description: Create a detailed refactor plan with tiny commits via user interview, then file it as a GitHub issue. Use when user wants to plan a refactor, create a refactoring RFC, or break a refactor into safe incremental steps.
+description: >-
+  Create a detailed refactor plan with tiny commits via user interview, then file it as a GitHub issue. Use when: user wants to plan a refactor, create a refactoring RFC, or break a refactor into safe incremental steps.
+license: Apache-2.0
+compatibility: "Claude Code, any AI coding agent"
+metadata:
+  author: terminal-skills
+  version: "1.0.0"
+  category: development
+  tags: ["refactoring", "github-issues", "planning", "incremental-commits", "rfc"]
+  use-cases:
+    - "Plan a codebase refactor by breaking it into tiny safe commits"
+    - "Create a GitHub issue RFC for a refactoring initiative with decision document"
+    - "Interview the user about a refactor and produce a structured implementation plan"
+  agents: [claude-code, openai-codex, gemini-cli, cursor]
 ---
 
 This skill will be invoked when the user wants to create a refactor request. You should go through the steps below. You may skip steps if you don't consider them necessary.

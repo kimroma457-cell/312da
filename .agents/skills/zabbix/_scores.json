@@ -1,0 +1,69 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:c522660c0f52c03f3188e9a57769eff05f7434303a7f45b325ac89b55d1d51f7",
+  "scoredAt": "2026-05-13T10:40:25.910Z",
+  "backend": "subagent",
+  "model": "claude-sonnet-4-6",
+  "quality": {
+    "score": 73,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "WEAK",
+      "crossPlatform": "WEAK",
+      "examples": "WEAK"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The instructions do not cover error handling or edge cases, focusing only on the happy path."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "actionability",
+        "detail": "Placeholders like TEMPLATE_ID and DISCOVERY_RULE_ID are used without guidance on how to replace them, reducing immediate usability."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "crossPlatform",
+        "detail": "The instructions assume Ubuntu and Docker environments, limiting applicability to other platforms."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "examples",
+        "detail": "The skill lacks a dedicated examples section with realistic demonstrations, making it harder to validate the steps."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SUSPICIOUS",
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "checksum",
+        "detail": "The wget command downloads the Zabbix release package without verifying its checksum."
+      }
+    ]
+  },
+  "impact": {
+    "baselineAvg": 25,
+    "treatmentAvg": 89,
+    "multiplier": 3.56,
+    "scenarios": [
+      {
+        "name": "Provision Zabbix server in Docker and register an Ubuntu agent with HostMetadata auto-discovery",
+        "baseline": 30,
+        "treatment": 88,
+        "rationale": "Baseline knows generic Zabbix but uses older versions and misses auto-registration semantics; treatment uses the documented 6.4 docker images, agent2 install path, and HostMetadata=linux:web:production:ubuntu matching the action filter."
+      },
+      {
+        "name": "Create a CPU usage trigger with recovery hysteresis and a scope=performance tag via API",
+        "baseline": 20,
+        "treatment": 90,
+        "rationale": "Baseline invents REST endpoints and misses recovery_expression; treatment uses api_jsonrpc.php JSON-RPC trigger.create with separate expression/recovery_expression fields and the documented tags array shape."
+      }
+    ]
+  }
+}

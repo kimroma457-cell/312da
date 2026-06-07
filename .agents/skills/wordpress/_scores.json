@@ -1,0 +1,54 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:4cff5cbdd0958584dc4f59c1f78f01b8e35cc85d9061520a0b5acada6973e19f",
+  "scoredAt": "2026-05-13T10:38:10.533Z",
+  "backend": "subagent",
+  "model": "claude-sonnet-4-6",
+  "quality": {
+    "score": 93,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The skill file lacks error handling and edge case coverage, focusing only on happy paths."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SUSPICIOUS",
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "publicEndpoint",
+        "detail": "The custom WooCommerce REST endpoint is publicly accessible and returns product data without authentication."
+      }
+    ]
+  },
+  "impact": {
+    "baselineAvg": 38,
+    "treatmentAvg": 88,
+    "multiplier": 2.32,
+    "scenarios": [
+      {
+        "name": "Migrate URLs after a domain change",
+        "baseline": 35,
+        "treatment": 88,
+        "rationale": "Baseline runs raw SQL UPDATE on wp_posts/options risking serialized data corruption; treatment uses wp db export for backup then wp search-replace with --dry-run before the live run, the documented WP-CLI safe pattern."
+      },
+      {
+        "name": "Headless Next.js posts list with pagination",
+        "baseline": 40,
+        "treatment": 88,
+        "rationale": "Baseline fetches /wp/v2/posts with no _embed and counts results client-side; treatment uses the documented ?_embed query, next.revalidate=60, and the X-WP-Total header for total pages plus slug query for single-post lookup."
+      }
+    ]
+  }
+}

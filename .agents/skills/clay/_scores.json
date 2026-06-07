@@ -1,0 +1,53 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:94d6bcf37339b01f5ec01144c2b3948f94e10a1b6e5b73a07db7952e0afbc49c",
+  "scoredAt": "2026-05-13T15:29:19.037Z",
+  "backend": "ollama",
+  "model": "gpt-oss:20b",
+  "quality": {
+    "score": 87,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "WEAK",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The skill does not cover error handling or edge cases for API failures or missing data."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "crossPlatform",
+        "detail": "The skill assumes a Node.js environment and uses fetch, limiting cross-platform compatibility."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "multiplier": 2.2,
+    "baselineAvg": 25,
+    "treatmentAvg": 55,
+    "scenarios": [
+      {
+        "name": "add-lead-with-enrichment",
+        "baseline": 30,
+        "treatment": 50,
+        "rationale": "Response A meets the required POST request and body but omits enrichment details and response JSON, while Response B uses incorrect endpoints and lacks the required statements."
+      },
+      {
+        "name": "setup-icp-webhook",
+        "baseline": 20,
+        "treatment": 60,
+        "rationale": "Response B covers most rubric items but misses the ClayWebhook interface reference and filter_matched trigger, whereas Response A lacks the required checks, interface reference, and JSON response."
+      }
+    ]
+  }
+}

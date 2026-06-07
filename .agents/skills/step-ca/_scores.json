@@ -1,0 +1,68 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:033987e00a27483ed919c8b4124cba6f3c2382c96fe1ac4c87f7fbc12465cdbd",
+  "scoredAt": "2026-05-13T10:12:03.704Z",
+  "backend": "subagent",
+  "model": "claude-sonnet-4-6",
+  "quality": {
+    "score": 67,
+    "dimensions": {
+      "clarity": "WEAK",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "WEAK",
+      "crossPlatform": "WEAK",
+      "examples": "WEAK"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "clarity",
+        "detail": "Instructions reference platform-specific commands like 'brew' without clarifying cross-platform alternatives, leading to ambiguity."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The skill omits error handling and edge case scenarios, such as failed certificate issuance or renewal failures."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "actionability",
+        "detail": "The provided commands lack context and prerequisites, making it difficult to execute them successfully."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "crossPlatform",
+        "detail": "The skill relies on macOS-specific package manager 'brew' and assumes Node.js environment, limiting cross-platform applicability."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "examples",
+        "detail": "Only a single Node.js example is provided, lacking diverse realistic demonstrations for other environments."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "baselineAvg": 28,
+    "treatmentAvg": 89,
+    "multiplier": 3.18,
+    "scenarios": [
+      {
+        "name": "Bootstrap internal CA and issue first service certificate with auto-renewal",
+        "baseline": 25,
+        "treatment": 90,
+        "rationale": "Baseline reached for openssl self-signed workflow without step-ca's init/issue/renew commands or the --daemon auto-renewal pattern; treatment used step ca init with --name/--dns/--address/--provisioner, step ca certificate, and step ca renew --daemon exactly as documented."
+      },
+      {
+        "name": "Set up mTLS between two internal Node.js services",
+        "baseline": 30,
+        "treatment": 88,
+        "rationale": "Baseline manually generated client/server certs with openssl and showed only partial Node TLS config; treatment issued both certs via step ca certificate, configured https with requestCert/rejectUnauthorized and the ca bundle, and ran step ca renew --daemon for rotation."
+      }
+    ]
+  }
+}

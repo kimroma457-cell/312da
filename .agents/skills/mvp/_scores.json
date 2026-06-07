@@ -1,0 +1,48 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:ba70d828e56a0bf09975520090292f054db00685a3708c76398a48da53b5f2b4",
+  "scoredAt": "2026-05-13T09:38:13.934Z",
+  "backend": "subagent",
+  "model": "claude-sonnet-4-6",
+  "quality": {
+    "score": 93,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The skill does not cover error scenarios or edge cases, focusing only on the happy path."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "baselineAvg": 38,
+    "treatmentAvg": 84,
+    "multiplier": 2.21,
+    "scenarios": [
+      {
+        "name": "Reduce a multi-feature SaaS idea into a weekend-shippable MVP",
+        "baseline": 40,
+        "treatment": 85,
+        "rationale": "Treatment applies the Three Stages (Manual/Processized/Productized), the Four Build Questions (weekend, life-better, willing-to-pay, fast-feedback), and recommends existing tools (Carrd/Gumroad/Stripe) per the skill; baseline gives generic 'cut scope, talk to users' advice without the structured framework."
+      },
+      {
+        "name": "Decide what to deliberately NOT build for a v1 freelancer tool",
+        "baseline": 35,
+        "treatment": 83,
+        "rationale": "Treatment names a single thing, sets a paid price from day one, defers features until N+ paying customers, and explicitly lists what NOT to build (accounts, polish, mobile) following the skill's checklist; baseline produces a generic feature-cut list without the 'charge from day one' and 'forms and lists' framing."
+      }
+    ]
+  }
+}

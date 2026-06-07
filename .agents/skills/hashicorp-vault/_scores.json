@@ -1,0 +1,53 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:59101f81263ba22eb11169cedb0a5eda3099497546bc5d350a9e3fa26c6854da",
+  "scoredAt": "2026-05-13T09:11:45.158Z",
+  "backend": "subagent",
+  "model": "claude-sonnet-4-6",
+  "quality": {
+    "score": 87,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "WEAK",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "Instructions lack explicit error handling and edge case coverage."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "actionability",
+        "detail": "Guidelines and examples do not provide runnable code or concrete command sequences."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "baselineAvg": 18,
+    "treatmentAvg": 91,
+    "multiplier": 5.06,
+    "scenarios": [
+      {
+        "name": "Dynamic PostgreSQL credentials for a microservice",
+        "baseline": 20,
+        "treatment": 90,
+        "rationale": "Baseline reaches for static KV storage and hardcoded tokens, contradicting the dynamic-credentials guidance; treatment uses Database engine, AppRole, Vault Agent sidecar, and short TTL as the skill prescribes."
+      },
+      {
+        "name": "Encryption-as-a-service for sensitive user fields",
+        "baseline": 15,
+        "treatment": 92,
+        "rationale": "Baseline implements app-managed AES with keys in env vars, which the skill explicitly advises against; treatment uses transit/encrypt/<key> and transit/decrypt/<key> with rotation policy keeping old ciphertext decryptable."
+      }
+    ]
+  }
+}

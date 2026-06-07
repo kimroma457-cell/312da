@@ -1,0 +1,48 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:be8b0c1d718b51fc608d12b677c79e496453904a511790b75f9a97c53b133a5f",
+  "scoredAt": "2026-05-13T14:28:19.663Z",
+  "backend": "ollama",
+  "model": "gpt-oss:20b",
+  "quality": {
+    "score": 93,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The skill does not cover error handling or edge cases, focusing only on happy paths."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "multiplier": 10,
+    "baselineAvg": 0,
+    "treatmentAvg": 100,
+    "scenarios": [
+      {
+        "name": "create-fifo-topic-with-dedup-and-publish",
+        "baseline": 0,
+        "treatment": 100,
+        "rationale": "Response B fully satisfies the rubric with complete commands, while Response A is incomplete and does not provide the required commands."
+      },
+      {
+        "name": "configure-subscription-filter-policy",
+        "baseline": 0,
+        "treatment": 100,
+        "rationale": "Response A directly provides the required SNS set-subscription-attributes command, while Response B describes an EventBridge setup and omits the requested command."
+      }
+    ]
+  }
+}

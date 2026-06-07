@@ -1,0 +1,48 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:c01ae423ead64872985ece706ad0e08cc6f2cb8b4c8557d3e3351bea4c25754c",
+  "scoredAt": "2026-05-13T09:35:52.779Z",
+  "backend": "subagent",
+  "model": "claude-sonnet-4-6",
+  "quality": {
+    "score": 93,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "Instructions lack error handling and edge case coverage."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "baselineAvg": 55,
+    "treatmentAvg": 89,
+    "multiplier": 1.62,
+    "scenarios": [
+      {
+        "name": "Configure Material theme with light/dark toggle and tabs",
+        "baseline": 55,
+        "treatment": 90,
+        "rationale": "Treatment used theme.palette with default+slate schemes, brightness-7/4 toggle icons, and features like navigation.tabs/navigation.instant from the skill's mkdocs.yml; baseline gave a generic palette without the slate scheme toggle pattern."
+      },
+      {
+        "name": "Add multi-language code tabs and deploy to GitHub Pages",
+        "baseline": 55,
+        "treatment": 88,
+        "rationale": "Treatment used === \"Python\" tab syntax with pymdownx.tabbed (alternate_style: true) and mkdocs gh-deploy as documented; baseline used generic code blocks and a manual gh-pages workflow."
+      }
+    ]
+  }
+}

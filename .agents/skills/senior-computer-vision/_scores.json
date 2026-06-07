@@ -1,0 +1,53 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:94e595fe245da71f7fbe3850571cd43a6a9de5e9e0020ca31e33d3d100650ef0",
+  "scoredAt": "2026-05-13T10:06:50.487Z",
+  "backend": "subagent",
+  "model": "claude-sonnet-4-6",
+  "quality": {
+    "score": 87,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "WEAK",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The skill does not handle error scenarios such as missing files or GPU unavailability."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "crossPlatform",
+        "detail": "The skill assumes a Python environment and may not work with non-Python agents."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "baselineAvg": 45,
+    "treatmentAvg": 97,
+    "multiplier": 2.16,
+    "scenarios": [
+      {
+        "name": "Count and annotate cars with YOLO11",
+        "baseline": 55,
+        "treatment": 97,
+        "rationale": "Treatment uses ultralytics YOLO11, iterates result.boxes with box.cls/box.conf filtering by model.names, and calls results[0].save() exactly as the skill teaches; baseline reaches for older yolov5 patterns."
+      },
+      {
+        "name": "TensorRT FP16 export for production",
+        "baseline": 35,
+        "treatment": 96,
+        "rationale": "Treatment uses the one-liner model.export(format='engine', half=True) and reloads via YOLO('.engine'); baseline takes the slower ONNX+trtexec path that misses the ultralytics-native export documented in the skill."
+      }
+    ]
+  }
+}

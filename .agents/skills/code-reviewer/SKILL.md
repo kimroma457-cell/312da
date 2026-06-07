@@ -1,135 +1,254 @@
 ---
 name: code-reviewer
-description: |
-  Thorough code review with focus on security, performance, and best practices.
-  Use when: reviewing code, performing security audits, checking for code quality, reviewing pull requests,
-  or when user mentions code review, PR review, security vulnerabilities, performance issues.
-license: MIT
+description: >-
+  Perform thorough code reviews with actionable, prioritized feedback. Use when
+  a user asks to review code, check code quality, find bugs, review a pull
+  request, audit code for issues, or get feedback on implementation. Covers
+  correctness, security, performance, readability, and best practices across
+  languages.
+license: Apache-2.0
+compatibility: "Works with any programming language"
 metadata:
-  author: awesome-llm-apps
-  version: "2.0.0"
+  author: terminal-skills
+  version: "1.0.0"
+  category: development
+  tags: ["code-review", "quality", "bugs", "security", "best-practices"]
 ---
 
 # Code Reviewer
 
-You are an expert code reviewer who identifies security vulnerabilities, performance issues, and code quality problems.
+## Overview
 
-## When to Apply
+Perform structured code reviews that identify bugs, security issues, performance problems, and maintainability concerns. Provides prioritized, actionable feedback with specific fix suggestions.
 
-Use this skill when:
-- Reviewing pull requests
-- Performing security audits
-- Checking code quality
-- Identifying performance bottlenecks
-- Ensuring best practices
-- Pre-deployment code review
+## Instructions
 
-## How to Use This Skill
+When a user asks you to review code, a file, a diff, or a pull request, follow this process:
 
-This skill contains **detailed rules** in the `rules/` directory, organized by category and priority.
+### Step 1: Understand the context
 
-### Quick Start
+Before reviewing, determine:
+- What does this code do? (feature, bugfix, refactor)
+- What language and framework is it using?
+- Are there tests included?
+- Is this a full file or a diff/patch?
 
-1. **Review [AGENTS.md](AGENTS.md)** for a complete compilation of all rules with examples
-2. **Reference specific rules** from `rules/` directory for deep dives
-3. **Follow priority order**: Security → Performance → Correctness → Maintainability
+Read surrounding files if needed to understand the broader codebase context.
 
-### Available Rules
+### Step 2: Review using this checklist
 
-**Security (CRITICAL)**
-- [SQL Injection Prevention](rules/security-sql-injection.md)
-- [XSS Prevention](rules/security-xss-prevention.md)
+Evaluate the code against each category in order of severity:
 
-**Performance (HIGH)**
-- [Avoid N+1 Query Problem](rules/performance-n-plus-one.md)
+**Correctness (Critical)**
+- Logic errors, off-by-one mistakes, wrong conditions
+- Unhandled null/undefined/empty cases
+- Race conditions or concurrency issues
+- Incorrect error handling (swallowed exceptions, wrong error types)
+- Missing input validation
 
-**Correctness (HIGH)**
-- [Proper Error Handling](rules/correctness-error-handling.md)
+**Security (Critical)**
+- SQL injection, XSS, command injection
+- Hardcoded secrets, API keys, passwords
+- Improper authentication/authorization checks
+- Unsafe deserialization, path traversal
+- Missing rate limiting on public endpoints
 
-**Maintainability (MEDIUM)**
-- [Use Meaningful Variable Names](rules/maintainability-naming.md)
-- [Add Type Hints](rules/maintainability-type-hints.md)
+**Performance (High)**
+- N+1 queries in database loops
+- Unnecessary re-renders in UI components
+- Missing indexes for frequent queries
+- Unbounded memory growth (loading entire datasets)
+- Blocking operations on the main thread
 
-## Review Process
+**Reliability (High)**
+- Missing error handling for external calls (network, file I/O)
+- No retry logic for transient failures
+- Missing timeouts on HTTP requests
+- Resource leaks (unclosed connections, file handles)
 
-### 1. **Security First** (CRITICAL)
-Look for vulnerabilities that could lead to data breaches or unauthorized access:
-- SQL injection
-- XSS (Cross-Site Scripting)
-- Authentication/authorization bypasses
-- Hardcoded secrets
-- Insecure dependencies
+**Readability (Medium)**
+- Unclear variable or function names
+- Functions doing too many things (> 30 lines is a smell)
+- Deeply nested conditionals (> 3 levels)
+- Missing or misleading comments
+- Inconsistent naming conventions
 
-### 2. **Performance** (HIGH)
-Identify code that will cause slow performance at scale:
-- N+1 database queries
-- Missing indexes
-- Inefficient algorithms
-- Memory leaks
-- Unnecessary API calls
+**Testing (Medium)**
+- Missing tests for new logic
+- Tests that do not assert meaningful behavior
+- Missing edge case coverage
+- Brittle tests coupled to implementation details
 
-### 3. **Correctness** (HIGH)
-Find bugs and edge cases:
-- Error handling gaps
-- Race conditions
-- Off-by-one errors
-- Null/undefined handling
-- Input validation
+### Step 3: Format the review
 
-### 4. **Maintainability** (MEDIUM)
-Improve code quality for long-term health:
-- Clear naming
-- Type safety
-- DRY principle
-- Single responsibility
-- Documentation
+Organize findings by severity. For each issue:
 
-### 5. **Testing**
-Verify adequate coverage:
-- Unit tests for new code
-- Edge case testing
-- Error path testing
-- Integration tests where needed
+```
+### [SEVERITY] Category: Brief title
 
-## Review Output Format
+**File:** `path/to/file.ext` line XX-YY
 
-Structure your reviews as:
+**Issue:** What is wrong and why it matters.
 
-```markdown
-This function retrieves user data but has critical security and reliability issues.
+**Suggestion:**
+\`\`\`language
+// Suggested fix
+\`\`\`
+```
 
-## Critical Issues 🔴
+Severity levels: CRITICAL, HIGH, MEDIUM, LOW
 
-1. **SQL Injection Vulnerability** (Line 2)
-   - **Problem:** User input directly interpolated into SQL query
-   - **Impact:** Attackers can execute arbitrary SQL commands
-   - **Fix:** Use parameterized queries
-   ```python
-   query = "SELECT * FROM users WHERE id = ?"
-   result = db.execute(query, (user_id,))
-   ```
+### Step 4: Provide a summary
 
-## High Priority 🟠
+End with:
+- Overall assessment (approve, request changes, or needs discussion)
+- Count of issues by severity
+- Top 3 things to fix before merging
 
-1. **No Error Handling** (Line 3-4)
-   - **Problem:** Assumes result always has data
-   - **Impact:** IndexError if user doesn't exist
-   - **Fix:** Check result before accessing
-   ```python
-   if not result:
-       return None
-   return result[0]
-   ```
+## Examples
 
-2. **Missing Type Hints** (Line 1)
-   - **Problem:** No type annotations
-   - **Impact:** Reduces code clarity and IDE support
-   - **Fix:** Add type hints
-   ```python
-   def get_user(user_id: int) -> Optional[Dict[str, Any]]:
-   ```
+### Example 1: Review a Node.js API endpoint
 
-## Recommendations
-- Add logging for debugging
-- Consider using an ORM to prevent SQL injection
-- Add input validation for user_id
+**User request:** "Review this Express route handler"
+
+**Code submitted:**
+```javascript
+app.post('/users', async (req, res) => {
+  const { name, email, role } = req.body;
+  const user = await db.query(
+    `INSERT INTO users (name, email, role) VALUES ('${name}', '${email}', '${role}')`
+  );
+  res.json(user);
+});
+```
+
+**Review output:**
+
+```
+### CRITICAL Security: SQL Injection vulnerability
+
+**File:** routes/users.js line 2-5
+
+**Issue:** User input is interpolated directly into the SQL query string.
+An attacker can inject arbitrary SQL via the name, email, or role fields.
+
+**Suggestion:**
+    const user = await db.query(
+      'INSERT INTO users (name, email, role) VALUES ($1, $2, $3)',
+      [name, email, role]
+    );
+
+### CRITICAL Security: No input validation
+
+**File:** routes/users.js line 2
+
+**Issue:** Request body fields are used without validation. Missing or
+malformed data will cause database errors or store invalid records.
+
+**Suggestion:**
+    if (!name || !email || !email.includes('@')) {
+      return res.status(400).json({ error: 'Name and valid email required' });
+    }
+    const allowedRoles = ['user', 'admin', 'editor'];
+    if (!allowedRoles.includes(role)) {
+      return res.status(400).json({ error: 'Invalid role' });
+    }
+
+### HIGH Reliability: No error handling
+
+**File:** routes/users.js line 3-5
+
+**Issue:** If the database query fails, the error propagates as an
+unhandled promise rejection, crashing the process or returning a 500
+with a stack trace.
+
+**Suggestion:**
+    try {
+      const user = await db.query(...);
+      res.status(201).json(user);
+    } catch (err) {
+      console.error('Failed to create user:', err);
+      res.status(500).json({ error: 'Failed to create user' });
+    }
+
+Summary: REQUEST CHANGES
+- Critical: 2, High: 1, Medium: 0
+- Fix SQL injection and add input validation before merging
+```
+
+### Example 2: Review a React component
+
+**User request:** "Review this component for any issues"
+
+**Code submitted:**
+```jsx
+function UserList({ users }) {
+  const [search, setSearch] = useState('');
+
+  const filtered = users.filter(u =>
+    u.name.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <div>
+      <input onChange={e => setSearch(e.target.value)} />
+      {filtered.map(user => (
+        <div>{user.name} - {user.email}</div>
+      ))}
+    </div>
+  );
+}
+```
+
+**Review output:**
+
+```
+### MEDIUM Performance: Filtering runs on every render
+
+**Issue:** The filter operation recalculates on every render, even when
+unrelated state changes. For large lists this causes jank.
+
+**Suggestion:**
+    const filtered = useMemo(() =>
+      users.filter(u =>
+        u.name.toLowerCase().includes(search.toLowerCase())
+      ), [users, search]);
+
+### MEDIUM Readability: Missing key prop on list items
+
+**Issue:** React requires a unique key prop on list items for efficient
+reconciliation. Missing keys cause incorrect re-renders and warnings.
+
+**Suggestion:**
+    {filtered.map(user => (
+      <div key={user.id}>{user.name} - {user.email}</div>
+    ))}
+
+### LOW Readability: Missing input label and placeholder
+
+**Issue:** The search input has no label or placeholder, making it
+unclear what the input is for and inaccessible to screen readers.
+
+**Suggestion:**
+    <label htmlFor="user-search">Search users</label>
+    <input
+      id="user-search"
+      placeholder="Search by name..."
+      onChange={e => setSearch(e.target.value)}
+    />
+
+Summary: APPROVE with suggestions
+- Critical: 0, High: 0, Medium: 2, Low: 1
+- Add key prop and useMemo before merging
+```
+
+## Guidelines
+
+- Focus on issues that matter. Do not nitpick formatting if there is a linter configured.
+- Always explain WHY something is a problem, not just what to change.
+- Provide concrete fix suggestions, not just "this could be improved."
+- Acknowledge what the code does well. Reviews should not be exclusively negative.
+- When reviewing diffs, focus on changed lines but check context for integration issues.
+- For large PRs (500+ lines), start with an architectural overview before line-by-line review.
+- If you are unsure about a finding, say so. Do not present uncertain issues as definitive.
+- Prioritize: fix all CRITICALs, fix HIGH before merge, MEDIUM/LOW can be follow-up tasks.

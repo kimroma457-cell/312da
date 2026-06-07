@@ -1,0 +1,48 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:246c000ad4a3d14f9b080437ea1a71cadf44bec52987686bb8c2cb67b20fa9f8",
+  "scoredAt": "2026-05-13T14:22:11.276Z",
+  "backend": "ollama",
+  "model": "gpt-oss:20b",
+  "quality": {
+    "score": 93,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The skill does not cover error handling or edge cases for distribution creation and other operations."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "multiplier": 1.73,
+    "baselineAvg": 45,
+    "treatmentAvg": 78,
+    "scenarios": [
+      {
+        "name": "create-distribution-with-s3-alb-and-lambda-edge",
+        "baseline": 20,
+        "treatment": 55,
+        "rationale": "Response A includes the OAC command, Lambda@Edge snippets, and a partial distribution config, whereas Response B lacks the required create-distribution command, OAC command, and proper cache behavior definitions."
+      },
+      {
+        "name": "add-custom-error-responses-and-realtime-logs",
+        "baseline": 70,
+        "treatment": 100,
+        "rationale": "Response A includes both the required update-distribution and create-realtime-log-config commands, while Response B omits the explicit create-realtime-log-config command."
+      }
+    ]
+  }
+}

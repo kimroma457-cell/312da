@@ -1,0 +1,48 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:5544e8c47c32bb643b469d3fe604155283971050cc623e4fd056793cda0beb33",
+  "scoredAt": "2026-05-13T15:19:11.276Z",
+  "backend": "ollama",
+  "model": "gpt-oss:20b",
+  "quality": {
+    "score": 93,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "Instructions do not cover error scenarios or edge cases."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "multiplier": 1.88,
+    "baselineAvg": 40,
+    "treatmentAvg": 75,
+    "scenarios": [
+      {
+        "name": "setup-microservices-monitoring",
+        "baseline": 30,
+        "treatment": 90,
+        "rationale": "Response A covers all rubric items while Response B omits the deploy, test, and preview steps and uses a different config format."
+      },
+      {
+        "name": "api-checks-troubleshoot",
+        "baseline": 50,
+        "treatment": 60,
+        "rationale": "Response A better covers running Checkly tests and deployment steps, while both miss editing config, re-testing, preview deploy, and test record references."
+      }
+    ]
+  }
+}

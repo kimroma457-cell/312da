@@ -1,0 +1,64 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:7a91ece3f02bd98fc4f81893e3296fce5d2f6b20aed3cc3dd00cfb6cc2996b43",
+  "scoredAt": "2026-05-13T09:51:48.705Z",
+  "backend": "subagent",
+  "model": "claude-sonnet-4-6",
+  "quality": {
+    "score": 80,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "WEAK",
+      "examples": "WEAK"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "Missing error handling and edge case coverage in the instructions."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "crossPlatform",
+        "detail": "Assumes a Unix-like shell environment, limiting compatibility with non-Unix agents."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "examples",
+        "detail": "No dedicated examples section; code blocks are embedded within instructions, lacking separate realistic demonstrations."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SUSPICIOUS",
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "curl",
+        "detail": "Uses curl to download and execute a script from an external source without checksum verification."
+      }
+    ]
+  },
+  "impact": {
+    "baselineAvg": 23,
+    "treatmentAvg": 93,
+    "multiplier": 4.04,
+    "scenarios": [
+      {
+        "name": "Set up FastAPI project with dev tools and custom script",
+        "baseline": 20,
+        "treatment": 92,
+        "rationale": "Baseline fell back to pip + venv + requirements.txt with no dev grouping; treatment used poetry new, poetry add --group dev, and [tool.poetry.scripts] for the serve entry as documented."
+      },
+      {
+        "name": "Deploy Poetry project to Docker without Poetry in the image",
+        "baseline": 25,
+        "treatment": 93,
+        "rationale": "Baseline installed Poetry inside the production container; treatment used poetry export -f requirements.txt -o requirements.txt --without-hashes and a slim image with pip install, matching the guideline."
+      }
+    ]
+  }
+}

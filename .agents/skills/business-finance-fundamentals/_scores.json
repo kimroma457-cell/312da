@@ -1,0 +1,58 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:39e428cd83d742009ff76af41e21b29b608cab1c3b288759b915b6dd653f1aea",
+  "scoredAt": "2026-05-13T15:00:52.859Z",
+  "backend": "ollama",
+  "model": "gpt-oss:20b",
+  "quality": {
+    "score": 80,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "WEAK",
+      "actionability": "WEAK",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The skill does not address error handling or missing data scenarios."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "conciseness",
+        "detail": "The skill contains verbose explanations that could be trimmed for brevity."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "actionability",
+        "detail": "The skill lacks runnable code or concrete procedures for implementation."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "multiplier": 1.98,
+    "baselineAvg": 48,
+    "treatmentAvg": 95,
+    "scenarios": [
+      {
+        "name": "saaS-health-check",
+        "baseline": 55,
+        "treatment": 90,
+        "rationale": "Response B meets all rubric items—calculates LTV, LTV/CAC, flags churn, ranks levers, and warns about cash flow—while Response A omits churn priority, lever ranking, and cash‑flow caution."
+      },
+      {
+        "name": "price-increase-impact-model",
+        "baseline": 40,
+        "treatment": 100,
+        "rationale": "Response A fully meets the rubric, while Response B omits the required scenarios and key details."
+      }
+    ]
+  }
+}

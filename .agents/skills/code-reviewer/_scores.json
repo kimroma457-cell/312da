@@ -1,0 +1,42 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:d0c7915377f5eff83663723aaf1c9c404baf99391feb4147aa17960de528498c",
+  "scoredAt": "2026-05-13T15:42:15.722Z",
+  "backend": "ollama",
+  "model": "gpt-oss:20b",
+  "quality": {
+    "score": 100,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "PASS",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": []
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "multiplier": 0,
+    "baselineAvg": 0,
+    "treatmentAvg": 0,
+    "scenarios": [
+      {
+        "name": "review-flask-endpoint",
+        "baseline": 0,
+        "treatment": 0,
+        "rationale": "Both responses fail to provide any review or analysis."
+      },
+      {
+        "name": "review-diff",
+        "baseline": 0,
+        "treatment": 0,
+        "rationale": "Both responses fail to meet rubric requirements."
+      }
+    ]
+  }
+}

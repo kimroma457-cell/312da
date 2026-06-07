@@ -1,0 +1,56 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:42f7829990a17ab03581b609174aaaf84f39b2297ce15f18913b215646bb3118",
+  "scoredAt": "2026-05-13T09:43:12.083Z",
+  "backend": "ollama",
+  "model": "gpt-oss:20b",
+  "quality": {
+    "score": 93,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "PASS",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "WEAK",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "crossPlatform",
+        "detail": "Assumes a Unix-like environment for curl and shell commands, limiting cross-platform compatibility."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SUSPICIOUS",
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "curl",
+        "detail": "Uses curl to download and execute a script from an external source without checksum verification."
+      }
+    ]
+  },
+  "impact": {
+    "baselineAvg": 38,
+    "treatmentAvg": 86,
+    "multiplier": 2.26,
+    "backend": "subagent",
+    "model": "claude-sonnet-4-6",
+    "scenarios": [
+      {
+        "name": "Field research offline RAG",
+        "baseline": 40,
+        "treatment": 88,
+        "rationale": "Treatment uses ollama with nomic-embed-text plus llama3.1:8b via the documented /api/embeddings and /api/generate endpoints, stores embeddings in SQLite with struct.pack BLOBs, and runs cosine_similarity search before answering with the strict 'use ONLY context' prompt; baseline reaches for FAISS or chromadb and OpenAI APIs, which do not match the skill's documented offline stack."
+      },
+      {
+        "name": "Air-gapped developer docs assistant",
+        "baseline": 35,
+        "treatment": 84,
+        "rationale": "Treatment ingests local doc trees with os.walk, populates the documents/embeddings/fts5 schema, calls embed_all_documents, and exposes ask_offline returning answer plus source chunks as documented; baseline outlines a generic langchain RAG that contradicts the offline-only constraint."
+      }
+    ]
+  }
+}

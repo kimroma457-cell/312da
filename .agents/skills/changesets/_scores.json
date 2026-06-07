@@ -1,0 +1,48 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:74387bb8e3c51d29a5b54951b4b48a2976c78354a5d42d2dd8d7ddd87405902f",
+  "scoredAt": "2026-05-13T15:16:51.301Z",
+  "backend": "ollama",
+  "model": "gpt-oss:20b",
+  "quality": {
+    "score": 93,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The instructions lack error handling and edge case coverage."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "multiplier": 3.03,
+    "baselineAvg": 33,
+    "treatmentAvg": 100,
+    "scenarios": [
+      {
+        "name": "add-multiple-packages-changeset",
+        "baseline": 60,
+        "treatment": 100,
+        "rationale": "Response B fully satisfies the rubric, while Response A omits the required npx changeset step."
+      },
+      {
+        "name": "coordinate-linked-packages-major-bump",
+        "baseline": 5,
+        "treatment": 100,
+        "rationale": "Response B fully satisfies the rubric, while Response A does not mention changesets or linked packages at all."
+      }
+    ]
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:3a63d3ca037cb11bd9d70e7dad6cfd03afeaaec078980d2221e7c392e444fbbe",
+  "scoredAt": "2026-05-13T14:48:08.138Z",
+  "backend": "subagent",
+  "model": "claude-sonnet-4-6",
+  "quality": {
+    "score": 93,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The skill does not cover error handling or edge cases, focusing only on happy path."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "multiplier": 1.77,
+    "baselineAvg": 53,
+    "treatmentAvg": 94,
+    "scenarios": [
+      {
+        "name": "cycles-gpu-product-shot",
+        "baseline": 55,
+        "treatment": 95,
+        "rationale": "Treatment sets the OpenImageDenoise denoiser, calls `prefs.get_devices()` after setting `compute_device_type`, enables `film_transparent` with RGBA, and uses a `TRACK_TO` constraint aimed at the Product object; baseline configures Cycles GPU at a high level but typically omits the explicit denoiser name and the get_devices step."
+      },
+      {
+        "name": "turntable-animation-png-sequence",
+        "baseline": 50,
+        "treatment": 93,
+        "rationale": "Treatment renders a numbered PNG sequence (not direct video) using `frame_start`/`frame_end` and `bpy.ops.render.render(animation=True)` plus the `blender --background --frame-start --frame-end --render-anim` CLI invocation; baseline tends to render straight to MP4, risking lost frames on crash."
+      }
+    ]
+  }
+}

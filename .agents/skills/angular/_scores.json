@@ -1,0 +1,48 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:c5a4283bfc17505aaa5655a4fcb05d222f498fea2c53c9d1112de836e7ffe25a",
+  "scoredAt": "2026-05-13T13:58:19.778Z",
+  "backend": "ollama",
+  "model": "gpt-oss:20b",
+  "quality": {
+    "score": 93,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The skill file focuses on happy path scenarios and does not cover error handling or edge cases."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "multiplier": 10,
+    "baselineAvg": 0,
+    "treatmentAvg": 100,
+    "scenarios": [
+      {
+        "name": "lazy-loaded-standalone-article-list",
+        "baseline": 0,
+        "treatment": 100,
+        "rationale": "Response A satisfies all rubric items, while Response B is a Svelte component and does not meet the Angular-specific requirements."
+      },
+      {
+        "name": "functional-auth-guard",
+        "baseline": 0,
+        "treatment": 100,
+        "rationale": "Response B fully satisfies the rubric, while Response A is an Express middleware unrelated to Angular guards."
+      }
+    ]
+  }
+}

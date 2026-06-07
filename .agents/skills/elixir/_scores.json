@@ -1,0 +1,53 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:c0fc1e6980de3d0e3173c3e4578904868fa153347d8a98ce50a8fcef133ed93d",
+  "scoredAt": "2026-05-13T08:47:42.567Z",
+  "backend": "subagent",
+  "model": "claude-sonnet-4-6",
+  "quality": {
+    "score": 87,
+    "dimensions": {
+      "clarity": "WEAK",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "clarity",
+        "detail": "Instructions are not specific and unambiguous, lacking clear guidance."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "Skill file does not cover error scenarios or edge cases."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "baselineAvg": 58,
+    "treatmentAvg": 95,
+    "multiplier": 1.64,
+    "scenarios": [
+      {
+        "name": "GenServer rate limiter",
+        "baseline": 55,
+        "treatment": 95,
+        "rationale": "Baseline uses Agent and lacks scheduled cleanup; treatment matches the documented GenServer + Process.send_after + supervisor pattern exactly."
+      },
+      {
+        "name": "LiveView real-time dashboard",
+        "baseline": 60,
+        "treatment": 95,
+        "rationale": "Baseline subscribes unconditionally and uses the old ~L sigil; treatment uses connected?(socket) guard, ~H sigil, and PubSub-driven handle_info as the SKILL prescribes."
+      }
+    ]
+  }
+}

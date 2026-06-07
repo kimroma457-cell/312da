@@ -1,0 +1,48 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:6093ad795c037905a2890bd9af776e949a871f6171e8d7051e5eeee12757d860",
+  "scoredAt": "2026-05-13T10:15:50.905Z",
+  "backend": "subagent",
+  "model": "claude-sonnet-4-6",
+  "quality": {
+    "score": 93,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "PASS",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "WEAK",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "crossPlatform",
+        "detail": "The skill relies on vendor-specific APIs (OpenAI, Anthropic) and does not support arbitrary AI agents."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "baselineAvg": 55,
+    "treatmentAvg": 93,
+    "multiplier": 1.69,
+    "scenarios": [
+      {
+        "name": "Extract invoice fields with OpenAI guaranteed JSON",
+        "baseline": 55,
+        "treatment": 95,
+        "rationale": "Treatment uses openai.beta.chat.completions.parse with zodResponseFormat and a Zod schema as in the skill, while baseline relies on response_format json_object plus manual parsing and validation."
+      },
+      {
+        "name": "Force structured event extraction from Claude",
+        "baseline": 55,
+        "treatment": 90,
+        "rationale": "Treatment forces output via Anthropic tools with tool_choice {type: 'tool', name: ...} and pulls the tool_use block, while baseline prompts Claude to emit raw JSON and parses it."
+      }
+    ]
+  }
+}

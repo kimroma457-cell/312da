@@ -1,0 +1,48 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:8098bd8a95eb40978a2498b74355bd1f3c0d5e1c4491d538235db79f73ff0e2b",
+  "scoredAt": "2026-05-13T13:56:44.906Z",
+  "backend": "ollama",
+  "model": "gpt-oss:20b",
+  "quality": {
+    "score": 93,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The skill does not cover all error scenarios and edge cases, such as connection failures and channel errors."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "multiplier": 0.9,
+    "baselineAvg": 48,
+    "treatmentAvg": 43,
+    "scenarios": [
+      {
+        "name": "durable-queue-dlx-ttl",
+        "baseline": 55,
+        "treatment": 85,
+        "rationale": "Response B meets all rubric requirements except closing the channel/connection, while Response A misses several key details such as contentType, messageId, timestamp, prefetch count, and uses reject instead of nack."
+      },
+      {
+        "name": "topic-exchange-subscription",
+        "baseline": 40,
+        "treatment": 0,
+        "rationale": "Response A includes some correct elements but fails to meet key rubric items (exchange name, exclusive queue, binding pattern), whereas Response B provides no content."
+      }
+    ]
+  }
+}

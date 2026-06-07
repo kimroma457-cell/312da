@@ -1,6 +1,19 @@
 ---
 name: design-an-interface
-description: Generate multiple radically different interface designs for a module using parallel sub-agents. Use when user wants to design an API, explore interface options, compare module shapes, or mentions "design it twice".
+description: >-
+  Generate multiple radically different interface designs for a module using parallel sub-agents. Use when: user wants to design an API, explore interface options, compare module shapes, or mentions "design it twice".
+license: Apache-2.0
+compatibility: "Claude Code, any AI coding agent"
+metadata:
+  author: terminal-skills
+  version: "1.0.0"
+  category: development
+  tags: ["interface-design", "api-design", "deep-modules", "design-it-twice", "parallel-agents"]
+  use-cases:
+    - "Generate multiple radically different API interface designs for comparison"
+    - "Explore module shape options before committing to an implementation"
+    - "Apply 'design it twice' to find the best interface for a new module"
+  agents: [claude-code, openai-codex, gemini-cli, cursor]
 ---
 
 # Design an Interface

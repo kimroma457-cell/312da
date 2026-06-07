@@ -1,0 +1,53 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:3b492dbdc9ced18e37f0906063f05b10967d978617f090c7bc3ae2d8260961f5",
+  "scoredAt": "2026-05-13T09:16:11.200Z",
+  "backend": "subagent",
+  "model": "claude-sonnet-4-6",
+  "quality": {
+    "score": 87,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "WEAK"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The skill does not cover error scenarios or edge cases."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "examples",
+        "detail": "Only one realistic example is provided, lacking a second demonstration."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "baselineAvg": 50,
+    "treatmentAvg": 86,
+    "multiplier": 1.72,
+    "scenarios": [
+      {
+        "name": "Plan rollout of a multi-file task CRUD feature",
+        "baseline": 55,
+        "treatment": 88,
+        "rationale": "Treatment plans the work as vertical slices (create -> list -> edit -> delete) where each slice leaves the system working and is followed by `npm test` and `npm run build` plus a commit, mirroring the skill's slicing strategy and increment cycle; baseline produced a flat task list mixing schema, API, and UI without slice boundaries."
+      },
+      {
+        "name": "Implement WebSocket-based real-time updates with unknown risk",
+        "baseline": 45,
+        "treatment": 84,
+        "rationale": "Treatment applies risk-first slicing (prove WebSocket connection first, then real-time updates, then offline/reconnection) and gates each increment on tests passing and a commit, matching the skill's Risk-First strategy; baseline jumped straight to full implementation without de-risking the connection first."
+      }
+    ]
+  }
+}

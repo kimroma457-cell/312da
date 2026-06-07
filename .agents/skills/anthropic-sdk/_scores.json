@@ -1,0 +1,48 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:f3efa94f3dbf725218e1e81fdfc63943a7320d9f4fb001c5a9af602ca597d82b",
+  "scoredAt": "2026-05-13T13:59:33.881Z",
+  "backend": "ollama",
+  "model": "gpt-oss:20b",
+  "quality": {
+    "score": 93,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "Skill does not cover error handling or edge cases, only happy path."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "multiplier": 2.86,
+    "baselineAvg": 35,
+    "treatmentAvg": 100,
+    "scenarios": [
+      {
+        "name": "stream-b-tree-explanation",
+        "baseline": 20,
+        "treatment": 100,
+        "rationale": "Response B fully satisfies the rubric, while Response A uses a different API method, model, and omits the finalMessage call."
+      },
+      {
+        "name": "tool-use-stock-price",
+        "baseline": 50,
+        "treatment": 100,
+        "rationale": "Response A fully satisfies all rubric requirements, while Response B only partially addresses them."
+      }
+    ]
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:a9d7fdf3e39c489cd6309b510841e1ff43cfdeb894dbfcf4de1ff7d51b96ae16",
+  "scoredAt": "2026-05-13T14:51:11.469Z",
+  "backend": "ollama",
+  "model": "gpt-oss:20b",
+  "quality": {
+    "score": 87,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "WEAK",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The skill does not cover error handling or edge cases for Bolt.new usage."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "actionability",
+        "detail": "The skill lacks concrete, runnable procedures or code snippets for the agent to execute."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "multiplier": 0.63,
+    "baselineAvg": 80,
+    "treatmentAvg": 50,
+    "scenarios": [
+      {
+        "name": "task-management-kanban",
+        "baseline": 100,
+        "treatment": 0,
+        "rationale": "Response A provides a complete, runnable codebase with frontend, backend, SQLite, Kanban board, drag‑and‑drop, authentication, and mobile responsiveness, whereas Response B merely offers a prompt without any actual implementation."
+      },
+      {
+        "name": "url-shortener-analytics",
+        "baseline": 60,
+        "treatment": 100,
+        "rationale": "Response A fully covers all rubric items with detailed code, while Response B omits a dashboard and uses the wrong rate‑limit window."
+      }
+    ]
+  }
+}

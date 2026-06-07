@@ -1,0 +1,53 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:ffe59d05ad0f63ed8b087960238cd58425d29fb9d02f795693ea11f6109e5002",
+  "scoredAt": "2026-05-13T10:25:57.104Z",
+  "backend": "subagent",
+  "model": "claude-sonnet-4-6",
+  "quality": {
+    "score": 87,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "WEAK",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The skill does not address error handling or edge cases for API interactions or content creation."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "conciseness",
+        "detail": "The instructions contain extensive detail that may be considered verbose and not strictly necessary for execution."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "baselineAvg": 42,
+    "treatmentAvg": 87,
+    "multiplier": 2.07,
+    "scenarios": [
+      {
+        "name": "Auto-publish MP4 via TikTok Content Posting API",
+        "baseline": 35,
+        "treatment": 88,
+        "rationale": "Treatment uses the three documented endpoints (publish/video/init/, the returned upload_url with Content-Range PUT, and publish/status/fetch/) plus the FILE_UPLOAD source and PUBLIC_TO_EVERYONE privacy_level; baseline invents non-existent single-shot upload endpoints."
+      },
+      {
+        "name": "Week-long TikTok content plan for a niche brand",
+        "baseline": 50,
+        "treatment": 85,
+        "rationale": "Treatment applies the documented 40/30/20/10 content mix, hook frameworks (first 1-3s), <30s duration target, and 3-5 hashtag rule; baseline reverts to generic 'post consistently with #fyp' advice the skill explicitly warns against."
+      }
+    ]
+  }
+}

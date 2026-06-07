@@ -1,0 +1,54 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:135e61fe0bec4a094f327274bfccc8657e24b54197df5c760fcd17d74116a305",
+  "scoredAt": "2026-05-13T09:45:50.835Z",
+  "backend": "subagent",
+  "model": "claude-sonnet-4-6",
+  "quality": {
+    "score": 93,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The skill file does not cover error scenarios or edge cases."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SUSPICIOUS",
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "curl",
+        "detail": "Installation script fetched via curl without checksum verification."
+      }
+    ]
+  },
+  "impact": {
+    "baselineAvg": 50,
+    "treatmentAvg": 97,
+    "multiplier": 1.94,
+    "scenarios": [
+      {
+        "name": "Enable client-side state encryption with AWS KMS for production",
+        "baseline": 30,
+        "treatment": 98,
+        "rationale": "Baseline reached for S3 server-side encryption — the wrong feature — and missed OpenTofu's exclusive encryption block, key_provider, aes_gcm method, and enforced state stanza that the treatment delivered."
+      },
+      {
+        "name": "Import an existing S3 bucket and stand up production-ready ECS Fargate",
+        "baseline": 70,
+        "treatment": 95,
+        "rationale": "Baseline used `terraform import` and hard-coded desired_count; treatment used `tofu import` and the environment-conditional desired_count pattern while matching the FARGATE service shape."
+      }
+    ]
+  }
+}

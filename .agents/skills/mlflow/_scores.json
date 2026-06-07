@@ -1,0 +1,54 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:ab3d247f05a6db10b119e83a7bd56cf2b532acfc26f453ea65d2eec95943f490",
+  "scoredAt": "2026-05-13T09:36:01.249Z",
+  "backend": "subagent",
+  "model": "claude-sonnet-4-6",
+  "quality": {
+    "score": 93,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The skill only covers happy path scenarios and lacks error handling or edge case coverage."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SUSPICIOUS",
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "credentials",
+        "detail": "Example includes hardcoded PostgreSQL credentials in the connection string."
+      }
+    ]
+  },
+  "impact": {
+    "baselineAvg": 52,
+    "treatmentAvg": 88,
+    "multiplier": 1.69,
+    "scenarios": [
+      {
+        "name": "Register sklearn model and promote to production alias",
+        "baseline": 55,
+        "treatment": 90,
+        "rationale": "Treatment used mlflow.register_model with runs:/{run_id}/model URI and client.set_registered_model_alias for 'production', matching skill patterns; baseline used generic registry calls without aliases."
+      },
+      {
+        "name": "Serve registered model and test endpoint",
+        "baseline": 50,
+        "treatment": 85,
+        "rationale": "Treatment used mlflow models serve -m models:/iris-classifier@production with curl POST to /invocations using {\"inputs\": [...]} payload; baseline used Flask wrapping instead of the native serve command."
+      }
+    ]
+  }
+}

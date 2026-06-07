@@ -1,0 +1,50 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:d31bb8de66195032dbda5e50a0fc40e185e5940065c024b18976b6e6bdd0a5fc",
+  "scoredAt": "2026-05-13T09:06:53.008Z",
+  "backend": "ollama",
+  "model": "gpt-oss:20b",
+  "quality": {
+    "score": 93,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "Skill does not cover error scenarios or edge cases, focusing only on happy path."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "baselineAvg": 28,
+    "treatmentAvg": 95,
+    "multiplier": 3.39,
+    "backend": "subagent",
+    "model": "claude-sonnet-4-6",
+    "scenarios": [
+      {
+        "name": "Hardened production cluster with Cloud SQL access",
+        "baseline": 25,
+        "treatment": 95,
+        "rationale": "Baseline created a Standard cluster and stored Cloud SQL credentials in a Secret; treatment used create-auto with private nodes, master authorized networks, --workload-pool, and KSA->GSA binding with roles/iam.workloadIdentityUser."
+      },
+      {
+        "name": "Cheap interruptible vLLM L4 inference",
+        "baseline": 30,
+        "treatment": 95,
+        "rationale": "Baseline mentioned GPUs and preemptible generically; treatment created a Spot L4 node pool with autoscaling 0->10 and used the gke-accelerator nodeSelector with matching inference toleration."
+      }
+    ]
+  }
+}

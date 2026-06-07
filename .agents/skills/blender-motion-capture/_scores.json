@@ -1,0 +1,48 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:51080a4cb434a297b6a4c2fea7ae97c019171cc6895848ca38ff3425c271be56",
+  "scoredAt": "2026-05-13T14:47:13.777Z",
+  "backend": "ollama",
+  "model": "gpt-oss:20b",
+  "quality": {
+    "score": 93,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "Skill does not cover error scenarios or edge cases."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "multiplier": 6.3,
+    "baselineAvg": 10,
+    "treatmentAvg": 63,
+    "scenarios": [
+      {
+        "name": "batch-retarget-and-export-fbx",
+        "baseline": 0,
+        "treatment": 70,
+        "rationale": "Response A covers most rubric items but omits setting frame_start/frame_end; Response B is empty."
+      },
+      {
+        "name": "camera-solve-and-export-bvh",
+        "baseline": 20,
+        "treatment": 55,
+        "rationale": "Response B covers more rubric items (loading, configuring, solving, exporting with rotate_mode='NATIVE') than Response A, though both miss key steps like setup_tracking_scene, baking, and error threshold check."
+      }
+    ]
+  }
+}
