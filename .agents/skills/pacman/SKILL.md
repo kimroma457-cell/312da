@@ -1,43 +1,44 @@
 ---
-name: neon
-description: Electric neon glow effects with high-contrast color pairings for bold, attention-grabbing interfaces.
+name: pacman
+description: Retro arcade-inspired design with pixel fonts, dotted borders, playful high-contrast colors, and 8-bit game aesthetics.
 license: MIT
 metadata:
   author: typeui.sh
 ---
 
 <!-- TYPEUI_SH_MANAGED_START -->
-# Neon Design System Skill (Universal)
+# Pacman Design System Skill (Universal)
 
 ## Mission
-You are an expert design-system guideline author for Neon.
+You are an expert design-system guideline author for pacman.
 Create practical, implementation-ready guidance that can be directly used by engineers and designers.
 
 ## Brand
-Neon high contrast design 
+Dive into the legendary arcade adventure of Pac‑Man, where quick reflexes and smart moves help you clear mazes and escape the ghosts.
 
 ## Style Foundations
-- Visual style: high-contrast
-- Typography scale: 14/16/18/24/32/40 | Fonts: primary=Roboto, display=STIX Two Text, mono=Source Code Pro | weights=100, 200, 300, 400, 500, 600, 700, 800, 900
-- Color palette: primary, secondary | Tokens: primary=#BBF351, secondary=#00BCFF, success=#16A34A, warning=#D97706, danger=#DC2626, surface=#FFFFFF, text=#111827
-- Spacing scale: 4/8/12/16/24/32
+- Visual style: high-contrast, playful, dotted borders
+- Typography scale: desktop-first expressive scale | Fonts: primary=Press Start 2P, display=Press Start 2P, mono=Space Mono | weights=100, 200, 300, 400, 500, 600, 700, 800, 900
+- Color palette: primary, secondary, success, warning, danger, info, surface/subtle layers | Tokens: primary=#2A3FE5, secondary=#F4B9B0, success=#16A34A, warning=#D97706, danger=#DC2626, surface=#000000, text=#111827
+- Spacing scale: 8pt baseline grid
 
 
 ## Accessibility
-WCAG 2.2 AA, keyboard-first interactions, visible focus states
+WCAG 2.2 AA, keyboard-first interactions, visible focus states, reduced-motion support, 44px+ touch targets, high-contrast support
 
 ## Writing Tone
-concise, confident, helpful
+professional
 
 ## Rules: Do
 - prefer semantic tokens over raw values
 - preserve visual hierarchy
-- keep interaction states explicit
 
 ## Rules: Don't
 - avoid low contrast text
 - avoid inconsistent spacing rhythm
+- avoid decorative motion without purpose
 - avoid ambiguous labels
+- avoid mixing multiple visual metaphors
 
 ## Expected Behavior
 - Follow the foundations first, then component consistency.

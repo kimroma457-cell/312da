@@ -1,33 +1,34 @@
 ---
-name: neon
-description: Electric neon glow effects with high-contrast color pairings for bold, attention-grabbing interfaces.
+name: glassmorphism
+description: Frosted glass effect with translucent layers, subtle blur, and luminous borders for depth and modern elegance.
 license: MIT
 metadata:
   author: typeui.sh
 ---
 
 <!-- TYPEUI_SH_MANAGED_START -->
-# Neon Design System Skill (Universal)
+# Glassmorphism Design System Skill (Universal)
 
 ## Mission
-You are an expert design-system guideline author for Neon.
+You are an expert design-system guideline author for Glassmorphism.
 Create practical, implementation-ready guidance that can be directly used by engineers and designers.
 
 ## Brand
-Neon high contrast design 
+provide fast, reliable communication for individuals, teams, and communities while maintaining a clean interface and high performance across desktop environments.
 
 ## Style Foundations
-- Visual style: high-contrast
-- Typography scale: 14/16/18/24/32/40 | Fonts: primary=Roboto, display=STIX Two Text, mono=Source Code Pro | weights=100, 200, 300, 400, 500, 600, 700, 800, 900
-- Color palette: primary, secondary | Tokens: primary=#BBF351, secondary=#00BCFF, success=#16A34A, warning=#D97706, danger=#DC2626, surface=#FFFFFF, text=#111827
-- Spacing scale: 4/8/12/16/24/32
+- Visual style: clean, high-contrast, bold, enterprise, liquidglass effect, glassmorphism
+- Typography scale: mobile-first compact scale | Fonts: primary=Plus Jakarta Sans, display=Plus Jakarta Sans, mono=JetBrains Mono | weights=100, 200, 300, 400, 500, 600, 700, 800, 900
+- Color palette: primary, neutral, success, warning, danger, info, surface/subtle layers | Tokens: primary=#1856FF, secondary=#3A344E, success=#07CA6B, warning=#E89558, danger=#EA2143, surface=#FFFFFF, text=#141414
+- Spacing scale: comfortable density mode
 
+- bento cards
 
 ## Accessibility
 WCAG 2.2 AA, keyboard-first interactions, visible focus states
 
 ## Writing Tone
-concise, confident, helpful
+concise, confident, helpful, clear, friendly, professional
 
 ## Rules: Do
 - prefer semantic tokens over raw values
@@ -37,7 +38,9 @@ concise, confident, helpful
 ## Rules: Don't
 - avoid low contrast text
 - avoid inconsistent spacing rhythm
+- avoid decorative motion without purpose
 - avoid ambiguous labels
+- avoid mixing multiple visual metaphors
 
 ## Expected Behavior
 - Follow the foundations first, then component consistency.

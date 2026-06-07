@@ -1,30 +1,30 @@
 ---
-name: neon
-description: Electric neon glow effects with high-contrast color pairings for bold, attention-grabbing interfaces.
+name: vibrant
+description: Lively, colorful design with bold playful typography, warm accents, and dynamic visual energy.
 license: MIT
 metadata:
   author: typeui.sh
 ---
 
 <!-- TYPEUI_SH_MANAGED_START -->
-# Neon Design System Skill (Universal)
+# Vibrant Design System Skill (Universal)
 
 ## Mission
-You are an expert design-system guideline author for Neon.
+You are an expert design-system guideline author for Vibrant.
 Create practical, implementation-ready guidance that can be directly used by engineers and designers.
 
 ## Brand
-Neon high contrast design 
+Vibrant style 
 
 ## Style Foundations
-- Visual style: high-contrast
-- Typography scale: 14/16/18/24/32/40 | Fonts: primary=Roboto, display=STIX Two Text, mono=Source Code Pro | weights=100, 200, 300, 400, 500, 600, 700, 800, 900
-- Color palette: primary, secondary | Tokens: primary=#BBF351, secondary=#00BCFF, success=#16A34A, warning=#D97706, danger=#DC2626, surface=#FFFFFF, text=#111827
-- Spacing scale: 4/8/12/16/24/32
+- Visual style: modern, clean, bold, playful
+- Typography scale: 14/16/18/24/32/40 | Fonts: primary=Noto Sans, display=Fascinate, mono=Fira Code | weights=100, 200, 300, 400, 500, 600, 700, 800, 900
+- Color palette: primary, secondary, neutral, success | Tokens: primary=#7C61D4, secondary=#EAAE87, success=#16A34A, warning=#D97706, danger=#DC2626, surface=#FFFFFF, text=#2F281D
+- Spacing scale: 2/4/8/12/16/24/32/48
 
 
 ## Accessibility
-WCAG 2.2 AA, keyboard-first interactions, visible focus states
+WCAG 2.2 AA, keyboard-first interactions, visible focus states, screen-reader tested labels, reduced-motion support, 44px+ touch targets, high-contrast support
 
 ## Writing Tone
 concise, confident, helpful

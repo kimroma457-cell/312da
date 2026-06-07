@@ -1,33 +1,33 @@
 ---
-name: neon
-description: Electric neon glow effects with high-contrast color pairings for bold, attention-grabbing interfaces.
+name: bold
+description: Strong visual presence with heavyweight typography, high-contrast colors, and commanding layouts.
 license: MIT
 metadata:
   author: typeui.sh
 ---
 
 <!-- TYPEUI_SH_MANAGED_START -->
-# Neon Design System Skill (Universal)
+# Bold Design System Skill (Universal)
 
 ## Mission
-You are an expert design-system guideline author for Neon.
+You are an expert design-system guideline author for Bold.
 Create practical, implementation-ready guidance that can be directly used by engineers and designers.
 
 ## Brand
-Neon high contrast design 
+
 
 ## Style Foundations
-- Visual style: high-contrast
-- Typography scale: 14/16/18/24/32/40 | Fonts: primary=Roboto, display=STIX Two Text, mono=Source Code Pro | weights=100, 200, 300, 400, 500, 600, 700, 800, 900
-- Color palette: primary, secondary | Tokens: primary=#BBF351, secondary=#00BCFF, success=#16A34A, warning=#D97706, danger=#DC2626, surface=#FFFFFF, text=#111827
+- Visual style: bold
+- Typography scale: desktop-first expressive scale | Fonts: primary=Archivo Black, display=Archivo Black, mono=JetBrains Mono | weights=100, 200, 300, 400, 500, 600, 700, 800, 900
+- Color palette: primary, secondary | Tokens: primary=#0077BC, secondary=#009866, success=#16A34A, warning=#D97706, danger=#DC2626, surface=#111111, text=#111827
 - Spacing scale: 4/8/12/16/24/32
 
 
 ## Accessibility
-WCAG 2.2 AA, keyboard-first interactions, visible focus states
+WCAG 2.2 AA, keyboard-first interactions, visible focus states, screen-reader tested labels, reduced-motion support, 44px+ touch targets, high-contrast support
 
 ## Writing Tone
-concise, confident, helpful
+friendly, professional
 
 ## Rules: Do
 - prefer semantic tokens over raw values

@@ -1,27 +1,25 @@
 ---
-name: neon
-description: Electric neon glow effects with high-contrast color pairings for bold, attention-grabbing interfaces.
-license: MIT
+name: "claude"
+description: "A research-journal aesthetic printed on warm stone — authoritative, editorial, almost achromatic. Pages live on warm ivory parchment (never pure white), with near-black slate as the dominant ink."
 metadata:
   author: typeui.sh
 ---
 
 <!-- TYPEUI_SH_MANAGED_START -->
-# Neon Design System Skill (Universal)
+# Claude Design System Skill (Universal)
 
 ## Mission
-You are an expert design-system guideline author for Neon.
+You are an expert design-system guideline author for Claude.
 Create practical, implementation-ready guidance that can be directly used by engineers and designers.
 
 ## Brand
-Neon high contrast design 
+A research-journal aesthetic printed on warm stone — authoritative, editorial, almost achromatic. Pages live on warm ivory parchment (never pure white), with near-black slate as the dominant ink. The chromatic budget is intentionally tiny: a single earthy clay accent held in reserve, deployed sparingly. Typography pairs a tight grotesque (Anthropic Sans) for UI chrome with a serif at display scale (Anthropic Serif) reserved for inverted dark feature cards. Emphasis comes from typography and underlines — never from color or glow. Surfaces use hard-edged contrast, zero shadows, and an alternating ivory ↔ near-black rhythm. Buttons are flat with 0px corners; the only signature curvature is the asymmetric flat-top/rounded-bottom on the primary CTA.
 
 ## Style Foundations
-- Visual style: high-contrast
-- Typography scale: 14/16/18/24/32/40 | Fonts: primary=Roboto, display=STIX Two Text, mono=Source Code Pro | weights=100, 200, 300, 400, 500, 600, 700, 800, 900
-- Color palette: primary, secondary | Tokens: primary=#BBF351, secondary=#00BCFF, success=#16A34A, warning=#D97706, danger=#DC2626, surface=#FFFFFF, text=#111827
+- Visual style: modern, minimal, clean
+- Typography scale: 12/14/16/20/24/32 | Fonts: primary=Anthropic Sans, display=Anthropic Sans, mono=JetBrains Mono | weights=100, 200, 300, 400, 500, 600, 700, 800, 900
+- Color palette: primary, secondary, neutral, success, warning, danger | Tokens: primary=#141413, secondary=#FAF9F6, success=#16A34A, warning=#D97706, danger=#DC2626, surface=#FFFFFF, text=#111827
 - Spacing scale: 4/8/12/16/24/32
-
 
 ## Accessibility
 WCAG 2.2 AA, keyboard-first interactions, visible focus states

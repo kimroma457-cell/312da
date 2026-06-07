@@ -1,25 +1,25 @@
 ---
-name: neon
-description: Electric neon glow effects with high-contrast color pairings for bold, attention-grabbing interfaces.
+name: claymorphism
+description: Soft, rounded 3D-like shapes mimicking malleable clay with playful, puffy elements and colorful surfaces.
 license: MIT
 metadata:
   author: typeui.sh
 ---
 
 <!-- TYPEUI_SH_MANAGED_START -->
-# Neon Design System Skill (Universal)
+# claymorphism Design System Skill (Universal)
 
 ## Mission
-You are an expert design-system guideline author for Neon.
+You are an expert design-system guideline author for claymorphism.
 Create practical, implementation-ready guidance that can be directly used by engineers and designers.
 
 ## Brand
-Neon high contrast design 
+a modern UI trend characterized by soft, rounded, 3D-like, "puffy" shapes that mimic malleable, colorful clay.
 
 ## Style Foundations
-- Visual style: high-contrast
-- Typography scale: 14/16/18/24/32/40 | Fonts: primary=Roboto, display=STIX Two Text, mono=Source Code Pro | weights=100, 200, 300, 400, 500, 600, 700, 800, 900
-- Color palette: primary, secondary | Tokens: primary=#BBF351, secondary=#00BCFF, success=#16A34A, warning=#D97706, danger=#DC2626, surface=#FFFFFF, text=#111827
+- Visual style: modern, high-contrast, playful
+- Typography scale: desktop-first expressive scale | Fonts: primary=Montserrat, display=Poppins, mono=JetBrains Mono | weights=100, 200, 300, 400, 500, 600, 700, 800, 900
+- Color palette: primary, neutral, success, warning, danger | Tokens: primary=#3B82F6, secondary=#FFFFFF, success=#16A34A, warning=#D97706, danger=#DC2626, surface=#FFFFFF, text=#1C398E
 - Spacing scale: 4/8/12/16/24/32
 
 
@@ -38,6 +38,7 @@ concise, confident, helpful
 - avoid low contrast text
 - avoid inconsistent spacing rhythm
 - avoid ambiguous labels
+- avoid mixing multiple visual metaphors
 
 ## Expected Behavior
 - Follow the foundations first, then component consistency.

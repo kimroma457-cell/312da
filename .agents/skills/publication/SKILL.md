@@ -1,43 +1,49 @@
 ---
-name: neon
-description: Electric neon glow effects with high-contrast color pairings for bold, attention-grabbing interfaces.
+name: publication
+description: Print-inspired visual language for books, magazines, and reports with editorial grids and expressive typography.
 license: MIT
 metadata:
   author: typeui.sh
 ---
 
 <!-- TYPEUI_SH_MANAGED_START -->
-# Neon Design System Skill (Universal)
+# Publication Design System Skill (Universal)
 
 ## Mission
-You are an expert design-system guideline author for Neon.
+You are an expert design-system guideline author for Publication.
 Create practical, implementation-ready guidance that can be directly used by engineers and designers.
 
 ## Brand
-Neon high contrast design 
+Publication design style define the visual language of books, magazines, and reports, ranging from clean minimalism to ornate, expressive, or retro aesthetics
 
 ## Style Foundations
-- Visual style: high-contrast
-- Typography scale: 14/16/18/24/32/40 | Fonts: primary=Roboto, display=STIX Two Text, mono=Source Code Pro | weights=100, 200, 300, 400, 500, 600, 700, 800, 900
-- Color palette: primary, secondary | Tokens: primary=#BBF351, secondary=#00BCFF, success=#16A34A, warning=#D97706, danger=#DC2626, surface=#FFFFFF, text=#111827
+- Visual style: modern, editorial
+- Typography scale: desktop-first expressive scale | Fonts: primary=Nunito, display=Oswald, mono=JetBrains Mono | weights=100, 200, 300, 400, 500, 600, 700, 800, 900
+- Color palette: primary, neutral, success, warning, danger | Tokens: primary=#A855F7, secondary=#0A1829, success=#16A34A, warning=#D97706, danger=#DC2626, surface=#FFFFFF, text=#0A1829
 - Spacing scale: 4/8/12/16/24/32
 
 
 ## Accessibility
-WCAG 2.2 AA, keyboard-first interactions, visible focus states
+WCAG 2.2 AA, keyboard-first interactions, visible focus states, semantic HTML before ARIA, screen-reader tested labels, reduced-motion support, 44px+ touch targets, high-contrast support
 
 ## Writing Tone
-concise, confident, helpful
+concise, confident, professional
 
 ## Rules: Do
 - prefer semantic tokens over raw values
 - preserve visual hierarchy
 - keep interaction states explicit
+- design for empty/loading/error states
+- ensure responsive behavior by default
+- document accessibility rationale
 
 ## Rules: Don't
 - avoid low contrast text
 - avoid inconsistent spacing rhythm
+- avoid decorative motion without purpose
 - avoid ambiguous labels
+- avoid mixing multiple visual metaphors
+- avoid inaccessible hit areas
 
 ## Expected Behavior
 - Follow the foundations first, then component consistency.

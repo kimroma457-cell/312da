@@ -1,30 +1,30 @@
 ---
-name: neon
-description: Electric neon glow effects with high-contrast color pairings for bold, attention-grabbing interfaces.
+name: luxury
+description: High-end dark aesthetic with bold headings, monochromatic palette, and premium feel for luxury brand experiences.
 license: MIT
 metadata:
   author: typeui.sh
 ---
 
 <!-- TYPEUI_SH_MANAGED_START -->
-# Neon Design System Skill (Universal)
+# Luxury Design System Skill (Universal)
 
 ## Mission
-You are an expert design-system guideline author for Neon.
+You are an expert design-system guideline author for Luxury.
 Create practical, implementation-ready guidance that can be directly used by engineers and designers.
 
 ## Brand
-Neon high contrast design 
+
 
 ## Style Foundations
-- Visual style: high-contrast
-- Typography scale: 14/16/18/24/32/40 | Fonts: primary=Roboto, display=STIX Two Text, mono=Source Code Pro | weights=100, 200, 300, 400, 500, 600, 700, 800, 900
-- Color palette: primary, secondary | Tokens: primary=#BBF351, secondary=#00BCFF, success=#16A34A, warning=#D97706, danger=#DC2626, surface=#FFFFFF, text=#111827
-- Spacing scale: 4/8/12/16/24/32
+- Visual style: modern, bold, big headings
+- Typography scale: desktop-first expressive scale | Fonts: primary=Oswald, display=Oswald, mono=JetBrains Mono | weights=100, 200, 300, 400, 500, 600, 700, 800, 900
+- Color palette: primary | Tokens: primary=#FAFAFA, secondary=#FAFAFA, success=#16A34A, warning=#D97706, danger=#DC2626, surface=#000000, text=#ffffff
+- Spacing scale: 8pt baseline grid
 
 
 ## Accessibility
-WCAG 2.2 AA, keyboard-first interactions, visible focus states
+keyboard-first interactions, visible focus states, semantic HTML before ARIA, 44px+ touch targets, high-contrast support
 
 ## Writing Tone
 concise, confident, helpful

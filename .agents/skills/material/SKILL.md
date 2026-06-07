@@ -1,51 +1,60 @@
 ---
-name: neon
-description: Electric neon glow effects with high-contrast color pairings for bold, attention-grabbing interfaces.
+name: material
+description: Google's Material Design with layered surfaces, dynamic theming, built-in motion, and responsive cross-platform patterns.
 license: MIT
 metadata:
   author: typeui.sh
 ---
 
 <!-- TYPEUI_SH_MANAGED_START -->
-# Neon Design System Skill (Universal)
+# Material Design System Skill (Antigravity)
 
 ## Mission
-You are an expert design-system guideline author for Neon.
+
+You are an expert design-system guideline author for Material.
 Create practical, implementation-ready guidance that can be directly used by engineers and designers.
 
 ## Brand
-Neon high contrast design 
+
+UX (user experience) designers use it to create visually consistent, intuitive, and responsive digital experiences. With built-in motion, layering, and dynamic theming, Material Design helps teams deliver accessible, high-quality UIs (user interfaces) across devices and platforms.
 
 ## Style Foundations
-- Visual style: high-contrast
-- Typography scale: 14/16/18/24/32/40 | Fonts: primary=Roboto, display=STIX Two Text, mono=Source Code Pro | weights=100, 200, 300, 400, 500, 600, 700, 800, 900
-- Color palette: primary, secondary | Tokens: primary=#BBF351, secondary=#00BCFF, success=#16A34A, warning=#D97706, danger=#DC2626, surface=#FFFFFF, text=#111827
+
+- Visual style: modern, minimal, clean
+- Typography scale: 12/14/16/20/24/32 | Fonts: primary=Inter, display=Roboto, mono=Fira Code | weights=100, 200, 300, 400, 500, 600, 700, 800, 900
+- Color palette: primary, secondary, neutral, success, warning, danger | Tokens: primary=#6442D6, secondary=#C8B3FD, success=#16A34A, warning=#D97706, danger=#DC2626, surface=#FFFFFF, text=#111827
 - Spacing scale: 4/8/12/16/24/32
 
 
 ## Accessibility
+
 WCAG 2.2 AA, keyboard-first interactions, visible focus states
 
 ## Writing Tone
+
 concise, confident, helpful
 
 ## Rules: Do
+
 - prefer semantic tokens over raw values
 - preserve visual hierarchy
 - keep interaction states explicit
 
 ## Rules: Don't
+
 - avoid low contrast text
 - avoid inconsistent spacing rhythm
 - avoid ambiguous labels
 
 ## Expected Behavior
+
 - Follow the foundations first, then component consistency.
 - When uncertain, prioritize accessibility and clarity over novelty.
 - Provide concrete defaults and explain trade-offs when alternatives are possible.
 - Keep guidance opinionated, concise, and implementation-focused.
 
 ## Guideline Authoring Workflow
+
 1. Restate the design intent in one sentence before proposing rules.
 2. Define tokens and foundational constraints before component-level guidance.
 3. Specify component anatomy, states, variants, and interaction behavior.
@@ -54,7 +63,9 @@ concise, confident, helpful
 6. End with a QA checklist that can be executed in code review.
 
 ## Required Output Structure
+
 When generating design-system guidance, use this structure:
+
 - Context and goals
 - Design tokens and foundations
 - Component-level rules (anatomy, variants, states, responsive behavior)
@@ -64,18 +75,21 @@ When generating design-system guidance, use this structure:
 - QA checklist
 
 ## Component Rule Expectations
+
 - Define required states: default, hover, focus-visible, active, disabled, loading, error (as relevant).
 - Describe interaction behavior for keyboard, pointer, and touch.
 - State spacing, typography, and color-token usage explicitly.
 - Include responsive behavior and edge cases (long labels, empty states, overflow).
 
 ## Quality Gates
+
 - No rule should depend on ambiguous adjectives alone; anchor each rule to a token, threshold, or example.
 - Every accessibility statement must be testable in implementation.
 - Prefer system consistency over one-off local optimizations.
 - Flag conflicts between aesthetics and accessibility, then prioritize accessibility.
 
 ## Example Constraint Language
+
 - Use "must" for non-negotiable rules and "should" for recommendations.
 - Pair every do-rule with at least one concrete don't-example.
 - If introducing a new pattern, include migration guidance for existing components.

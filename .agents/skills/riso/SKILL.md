@@ -1,27 +1,25 @@
 ---
-name: neon
-description: Electric neon glow effects with high-contrast color pairings for bold, attention-grabbing interfaces.
-license: MIT
+name: "riso"
+description: "A playful, joyful, two-color risograph print aesthetic built on a single warm off-white paper surface running through every section"
 metadata:
   author: typeui.sh
 ---
 
 <!-- TYPEUI_SH_MANAGED_START -->
-# Neon Design System Skill (Universal)
+# Riso Design System Skill (Universal)
 
 ## Mission
-You are an expert design-system guideline author for Neon.
+You are an expert design-system guideline author for Riso.
 Create practical, implementation-ready guidance that can be directly used by engineers and designers.
 
 ## Brand
-Neon high contrast design 
+A playful, joyful, two-color risograph print aesthetic — built on a single warm off-white paper surface running through every section, a fluorescent brand pink reserved as the sole interaction driver, a deep federal-blue secondary carrying every heading and the signature offset print-shadow
 
 ## Style Foundations
-- Visual style: high-contrast
-- Typography scale: 14/16/18/24/32/40 | Fonts: primary=Roboto, display=STIX Two Text, mono=Source Code Pro | weights=100, 200, 300, 400, 500, 600, 700, 800, 900
-- Color palette: primary, secondary | Tokens: primary=#BBF351, secondary=#00BCFF, success=#16A34A, warning=#D97706, danger=#DC2626, surface=#FFFFFF, text=#111827
+- Visual style: clean, high-contrast
+- Typography scale: 12/14/16/20/24/32 | Fonts: primary=Space Grotesk, display=Space Grotesk, mono=Overpass Mono | weights=100, 200, 300, 400, 500, 600, 700, 800, 900
+- Color palette: primary, secondary | Tokens: primary=#F237A1, secondary=#2C40A7, success=#16A34A, warning=#D97706, danger=#DC2626, surface=#FFFFFF, text=#111827
 - Spacing scale: 4/8/12/16/24/32
-
 
 ## Accessibility
 WCAG 2.2 AA, keyboard-first interactions, visible focus states

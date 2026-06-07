@@ -1,25 +1,25 @@
 ---
-name: neon
-description: Electric neon glow effects with high-contrast color pairings for bold, attention-grabbing interfaces.
+name: dramatic
+description: High-contrast, theatrical design with bold layouts, immersive visuals, and unconventional compositions that command attention.
 license: MIT
 metadata:
   author: typeui.sh
 ---
 
 <!-- TYPEUI_SH_MANAGED_START -->
-# Neon Design System Skill (Universal)
+# Dramatic Design System Skill (Universal)
 
 ## Mission
-You are an expert design-system guideline author for Neon.
+You are an expert design-system guideline author for Dramatic.
 Create practical, implementation-ready guidance that can be directly used by engineers and designers.
 
 ## Brand
-Neon high contrast design 
+Dramatic design style is a trend characterized by high-contrast visuals, bold, unconventional layouts, and immersive, theatrical experiences designed to grab user attention.
 
 ## Style Foundations
-- Visual style: high-contrast
-- Typography scale: 14/16/18/24/32/40 | Fonts: primary=Roboto, display=STIX Two Text, mono=Source Code Pro | weights=100, 200, 300, 400, 500, 600, 700, 800, 900
-- Color palette: primary, secondary | Tokens: primary=#BBF351, secondary=#00BCFF, success=#16A34A, warning=#D97706, danger=#DC2626, surface=#FFFFFF, text=#111827
+- Visual style: modern, clean, high-contrast
+- Typography scale: 12/14/16/20/24/32 | Fonts: primary=Outfit, display=Outfit, mono=JetBrains Mono | weights=400, 900
+- Color palette: primary, neutral, success, warning, danger | Tokens: primary=#8B5CF6, secondary=#F43F5E, success=#16A34A, warning=#D97706, danger=#DC2626, surface=#09090B, text=#FAFAFA
 - Spacing scale: 4/8/12/16/24/32
 
 

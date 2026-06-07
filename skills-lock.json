@@ -121,6 +121,12 @@
       "skillPath": "skills/agent-swarm-orchestration/SKILL.md",
       "computedHash": "b60c07a12a34fd6ea34988a473ce108782704b765cb10e487930e3ab6df5833e"
     },
+    "agentic": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/agentic/SKILL.md",
+      "computedHash": "540555fad7d6cabc83d6055d4f9ad053cfcae0748be54187037731f8a2adc320"
+    },
     "agentscope": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
@@ -271,6 +277,12 @@
       "skillPath": "skills/ansible/SKILL.md",
       "computedHash": "284c600068def0ea826ac30d8523c6eb826dffdd7b274c8bdb8c93d4e24c823a"
     },
+    "ant": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/ant/SKILL.md",
+      "computedHash": "ff2dbe48d86e5606c7acc98d2690dd048f4108394f9fdd73f7c5b2261a08c224"
+    },
     "anthropic-sdk": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
@@ -337,6 +349,12 @@
       "skillPath": "skills/applicant-screening/SKILL.md",
       "computedHash": "603344fd2f432a5d4213b8cf64993a3dbcba26540cbea1af5441cc96df39374b"
     },
+    "application": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/application/SKILL.md",
+      "computedHash": "4fb5b2ff3443d3232cbbeb274d8055a22907943f92d742a0d3bc5330069c21c7"
+    },
     "appsmith": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
@@ -396,6 +414,12 @@
       "sourceType": "github",
       "skillPath": "skills/artillery/SKILL.md",
       "computedHash": "a0403913ba2670a699f334191f00dafcc6aad8e130e34621402edd9096cb67a2"
+    },
+    "artistic": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/artistic/SKILL.md",
+      "computedHash": "fc2252f9227e67441d4a5e55350846f177a9992773671acb8666f2fd57ebe45a"
     },
     "assemblyai": {
       "source": "TerminalSkills/skills",
@@ -577,6 +601,12 @@
       "skillPath": "skills/batch-processor/SKILL.md",
       "computedHash": "04971c61210663bf8c934a4fabe96eb6ff008569585d95ad413c17304070ff49"
     },
+    "bento": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/bento/SKILL.md",
+      "computedHash": "f095989f9b5f5084332b44e544451a4bcce0089bbc65b51045519567180ea73c"
+    },
     "better-auth": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
@@ -667,6 +697,12 @@
       "skillPath": "skills/blog-article-design/SKILL.md",
       "computedHash": "36818681e56ed4fffaf9c2e4ad442d7d2338f19312437d3763857c074324e396"
     },
+    "bold": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/bold/SKILL.md",
+      "computedHash": "ab7248e2175da3e180c386383bc362bbc180b7de02a169729aca073f016f24d3"
+    },
     "bolt": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
@@ -721,6 +757,12 @@
       "skillPath": "skills/bruno/SKILL.md",
       "computedHash": "5f345058d203208b5802e2ea418140a9886e8a81af3fbbdf85dcad7e81f47251"
     },
+    "brutalism": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/brutalism/SKILL.md",
+      "computedHash": "3bfccbf533a2ef61d136fd54bbca234328eda93c15318f148f92cefbd368e7e4"
+    },
     "bug-hunt-swarm": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
@@ -774,6 +816,12 @@
       "sourceType": "github",
       "skillPath": "skills/caddy/SKILL.md",
       "computedHash": "502f2404c6ddd606a9442a34cdd2a60c2d4e5e61bf64eb1846d930c085db9f6f"
+    },
+    "cafe": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/cafe/SKILL.md",
+      "computedHash": "d1b18777aaf94d8e9d023b002b002d77705b95d70a779e6ca4c9029cbb5460cb"
     },
     "cal-com": {
       "source": "TerminalSkills/skills",
@@ -997,6 +1045,12 @@
       "skillPath": "skills/class-variance-authority/SKILL.md",
       "computedHash": "45c29cedf73841c756a9ae196a2075aceac78bee65ee11ba484c7a496907409c"
     },
+    "claude": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/claude/SKILL.md",
+      "computedHash": "b122689a260de4fc943a562bad949118e3303de451982aa3fad820e712c87684"
+    },
     "claude-api": {
       "source": "anthropics/skills",
       "sourceType": "github",
@@ -1032,6 +1086,18 @@
       "sourceType": "github",
       "skillPath": "skills/clay/SKILL.md",
       "computedHash": "a0023d116865a57f315adbb35f7c1df01549ae4b2bb5dc7af579786a7fd94ce2"
+    },
+    "claymorphism": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/claymorphism/SKILL.md",
+      "computedHash": "b459affbe78e6018fc2339ea89d0c920d594ad0911001dcabd519151d780f5f2"
+    },
+    "clean": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/clean/SKILL.md",
+      "computedHash": "5260b1674529ebf22dbcd254f6a2ce6a5f304bd976f2ca38fb67201f876b45ab"
     },
     "clearml": {
       "source": "TerminalSkills/skills",
@@ -1153,6 +1219,12 @@
       "skillPath": "skills/coderabbit/SKILL.md",
       "computedHash": "3548cd184dca101ad5bcbd64efc6cc17d7581f3f36e45c6a7e9bfe0436fdd513"
     },
+    "codex": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/codex/SKILL.md",
+      "computedHash": "0b2e1acfb7df9ad7dab25d4707c3dc1e8dd281914ae05b23650c041959d57991"
+    },
     "coding-agent": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
@@ -1164,6 +1236,18 @@
       "sourceType": "github",
       "skillPath": "skills/cohere-api/SKILL.md",
       "computedHash": "4417c24fca2429f2e1c160bc0a74293dbf28c06d42d1cf7622109a21174a6a84"
+    },
+    "color-palette-generator": {
+      "source": "AlpacaLabsLLC/skills-for-architects",
+      "sourceType": "github",
+      "skillPath": "plugins/07-presentations/skills/color-palette-generator/SKILL.md",
+      "computedHash": "6dce85d2dfb86ba67b95dbc6643da2194658e1d711747752f342b2954046dc4d"
+    },
+    "colorful": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/colorful/SKILL.md",
+      "computedHash": "2d09dfb743fcbcf6ef20ad59a8db4eb75a1d4ebaa0f5b4fbebb2f784ed831ec2"
     },
     "comet-ml": {
       "source": "TerminalSkills/skills",
@@ -1224,6 +1308,12 @@
       "sourceType": "github",
       "skillPath": "skills/consul/SKILL.md",
       "computedHash": "4df4ef6cd3824da48404ca9e64a0e971cad8a9d9847790bdd3f10d25c2ba1eab"
+    },
+    "contemporary": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/contemporary/SKILL.md",
+      "computedHash": "6f7f9a477e02085172332aacbc6849fab705442d6bd69e8bd584ad7db276d5fb"
     },
     "content-creator": {
       "source": "Shubhamsaboo/awesome-llm-apps",
@@ -1309,6 +1399,12 @@
       "skillPath": "skills/copywriting/SKILL.md",
       "computedHash": "453423b48c54ed76bef91a329e375e5b53b13737ebca868f6a64c41a7c3ef4f2"
     },
+    "corporate": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/corporate/SKILL.md",
+      "computedHash": "861a213d6d8c62264577811542d685076c4f74b3e016beadce91d81ceaa56eb2"
+    },
     "cors": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
@@ -1320,6 +1416,12 @@
       "sourceType": "github",
       "skillPath": "skills/cosign/SKILL.md",
       "computedHash": "f2477e9feca9237d9e5d120e470f795507999ac4e36c171716be2b5d9716b3e4"
+    },
+    "cosmic": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/cosmic/SKILL.md",
+      "computedHash": "a79f27632577cd78ca473508126b22c1cc771c70f97767dc0aecac1c7b803722"
     },
     "cover-letter": {
       "source": "TerminalSkills/skills",
@@ -1338,6 +1440,12 @@
       "sourceType": "github",
       "skillPath": "skills/crawlee/SKILL.md",
       "computedHash": "e884b389fb85e48ac326f060d280c020c92fb37dfc4c396265f5afe3a49cf799"
+    },
+    "creative": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/creative/SKILL.md",
+      "computedHash": "a3aa768e350761d388c3f669e0e19eae67ce78452f25505d788cb6d0914649c3"
     },
     "crewai": {
       "source": "TerminalSkills/skills",
@@ -1374,6 +1482,12 @@
       "sourceType": "github",
       "skillPath": "skills/csv-parse/SKILL.md",
       "computedHash": "2852415aecddde8b0d64513b6e52251d88b0e305c11f160f170aa46da421d10a"
+    },
+    "csv-to-sif": {
+      "source": "AlpacaLabsLLC/skills-for-architects",
+      "sourceType": "github",
+      "skillPath": "plugins/06-materials-research/skills/csv-to-sif/SKILL.md",
+      "computedHash": "c04f804f1d6647d9ba2fd26be040c5dc4cd63faace2a4da3c42147f66405d2c6"
     },
     "cube": {
       "source": "TerminalSkills/skills",
@@ -1434,6 +1548,12 @@
       "sourceType": "github",
       "skillPath": "skills/dalle-api/SKILL.md",
       "computedHash": "f72715158f3389dcf3b434002c7db229da8e11e1c5140b21cc506a9cd94affe7"
+    },
+    "dashboard": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/dashboard/SKILL.md",
+      "computedHash": "2bd0e667f40a2512af8711e7f39c01093930dd15572525b03bc3aed211cf9f1e"
     },
     "data-analysis": {
       "source": "TerminalSkills/skills",
@@ -1537,6 +1657,12 @@
       "skillPath": "skills/deepgram/SKILL.md",
       "computedHash": "adab2e12823b1a3d7ae2b49e1c9b17459d258adb70a7dbac4e8bf521c8f49679"
     },
+    "demographics-analysis": {
+      "source": "AlpacaLabsLLC/skills-for-architects",
+      "sourceType": "github",
+      "skillPath": "plugins/01-site-planning/skills/demographics-analysis/SKILL.md",
+      "computedHash": "0d75ffb35f4905fb4bb6357fb22dc2c68c2433a78f8621ff33110b15e176a880"
+    },
     "deno": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
@@ -1621,6 +1747,12 @@
       "skillPath": "skills/dispatching-parallel-agents/SKILL.md",
       "computedHash": "e21044ae7496fc285f1df9ff3fb518a3a20bea6f5216c1f59f4987e12c769a0a"
     },
+    "dithered": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/dithered/SKILL.md",
+      "computedHash": "4b0e7c51d97b2ac1505b6df7c26ac6390f7f9ec9b27b5fd0eff89aeec1ac9e85"
+    },
     "django": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
@@ -1687,11 +1819,23 @@
       "skillPath": "skills/dokploy/SKILL.md",
       "computedHash": "4221233a6b706257d20359591272da8b965a1fa12bd2c2637e4a960f927d60d7"
     },
+    "doodle": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/doodle/SKILL.md",
+      "computedHash": "d332ec6c520a6699741e841934941d2fceac338112d7d353544b63c1beb50e60"
+    },
     "doppler": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
       "skillPath": "skills/doppler/SKILL.md",
       "computedHash": "d1c54eabab24737b828026b4d96aa9a9f1551471797c6312ab98cd06c4b80517"
+    },
+    "dramatic": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/dramatic/SKILL.md",
+      "computedHash": "c7556566717d16f14eb7935179d1c920fed9823dab2667f39350ef3bfdf9b2f2"
     },
     "drei": {
       "source": "TerminalSkills/skills",
@@ -1753,6 +1897,12 @@
       "skillPath": "awesome_agent_skills/editor/SKILL.md",
       "computedHash": "6956636eab9a2a0f102926ba7ac0cdaffa5fdccb8061a428aec1ae0874b8820b"
     },
+    "editorial": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/editorial/SKILL.md",
+      "computedHash": "e1520060a3f71ec27913bf6e892bb0a23b6bb7a599b39ea680ac47521c980bbb"
+    },
     "effect-ts": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
@@ -1776,6 +1926,12 @@
       "sourceType": "github",
       "skillPath": "skills/electron/SKILL.md",
       "computedHash": "8201edc333b51bfc6a6c8c814bf18bbac0d61d5f804251bfd90f619a9565543e"
+    },
+    "elegant": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/elegant/SKILL.md",
+      "computedHash": "ac5a5a8b9f17cedcc36feb2d805dba8162ca5f9b73013999e23c97284126713f"
     },
     "elevenlabs": {
       "source": "TerminalSkills/skills",
@@ -1831,17 +1987,59 @@
       "skillPath": "skills/encore/SKILL.md",
       "computedHash": "c9c85ef849d7582a2c321d4c3ac062961d87a381fb56c5453266d77b53bb1f16"
     },
+    "energetic": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/energetic/SKILL.md",
+      "computedHash": "6945883c2f4c2bff2a84aef68332255ebd3ec7f1220bfb9ffd5457fcea819579"
+    },
+    "enterprise": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/enterprise/SKILL.md",
+      "computedHash": "c6d9684aec99b00c30a35826b5d0a66a8b0f5a8d6c6f3eac08a3a34c6bebb2d9"
+    },
     "env-manager": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
       "skillPath": "skills/env-manager/SKILL.md",
       "computedHash": "be3ce537a5dff7fe81fe7519b9acf336fd276f29023ffc7026b83702d7e8daa4"
     },
+    "environmental-analysis": {
+      "source": "AlpacaLabsLLC/skills-for-architects",
+      "sourceType": "github",
+      "skillPath": "plugins/01-site-planning/skills/environmental-analysis/SKILL.md",
+      "computedHash": "87b9958c6aab41601820fb8f1a09a46c41266c1f5629a2456005f99081d8977b"
+    },
     "envoy": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
       "skillPath": "skills/envoy/SKILL.md",
       "computedHash": "f9a68b1c1a803e437f2802af890bfc1f729cdd8f5c9d2a5698e42bd4dc81a3a6"
+    },
+    "epd-compare": {
+      "source": "AlpacaLabsLLC/skills-for-architects",
+      "sourceType": "github",
+      "skillPath": "plugins/05-sustainability/skills/epd-compare/SKILL.md",
+      "computedHash": "be15ad62c9dbe40ddd28f7fc709a03a352c8af190e9bb9dd4671a2f2fb7f14b4"
+    },
+    "epd-parser": {
+      "source": "AlpacaLabsLLC/skills-for-architects",
+      "sourceType": "github",
+      "skillPath": "plugins/05-sustainability/skills/epd-parser/SKILL.md",
+      "computedHash": "1c731138ad3c8f5e30f4b7712d656b2200ec6d022deadbf4f313317da7fe53f2"
+    },
+    "epd-research": {
+      "source": "AlpacaLabsLLC/skills-for-architects",
+      "sourceType": "github",
+      "skillPath": "plugins/05-sustainability/skills/epd-research/SKILL.md",
+      "computedHash": "8af485e42845ae88b79ba5e1c9bc73930cb5192b749fea1cec2aeadeff594a6b"
+    },
+    "epd-to-spec": {
+      "source": "AlpacaLabsLLC/skills-for-architects",
+      "sourceType": "github",
+      "skillPath": "plugins/05-sustainability/skills/epd-to-spec/SKILL.md",
+      "computedHash": "7769cda8ee9b6910b1c5a7d3bf4b411f4d47c5c24185e64b080de814fe7dd4cd"
     },
     "error-monitoring": {
       "source": "TerminalSkills/skills",
@@ -1915,6 +2113,12 @@
       "skillPath": "skills/expo/SKILL.md",
       "computedHash": "6bd6a68f9a65dc5f85aee74a68cc33a32afd3a6f9d2bedce0efe4122eea018b5"
     },
+    "expressive": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/expressive/SKILL.md",
+      "computedHash": "2788cc8dca884ae5aa3acc1bbed51fa1777ecc76a146c532f673e175935170b2"
+    },
     "external-dns": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
@@ -1956,6 +2160,12 @@
       "sourceType": "github",
       "skillPath": "skills/falco/SKILL.md",
       "computedHash": "9b77f78275d3082e3fa4f869c0a503e8baed23ac02609fda28fc6d12d3a17e55"
+    },
+    "fantasy": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/fantasy/SKILL.md",
+      "computedHash": "c821430808221e6c5dae9038c381b0fc1d4889634a192c50a1c18a776fe99be7"
     },
     "fast-check": {
       "source": "TerminalSkills/skills",
@@ -2010,6 +2220,12 @@
       "sourceType": "github",
       "skillPath": "skills/ffuf/SKILL.md",
       "computedHash": "cba000415f18b554d76de236a7b443ecb0c06e47d6f069582825b1875da0aea8"
+    },
+    "fiction": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/fiction/SKILL.md",
+      "computedHash": "c67a6e6c674181c5696cec3726f76e5bbca0e68d5df7442c13d479200f316c7d"
     },
     "fig": {
       "source": "TerminalSkills/skills",
@@ -2083,6 +2299,12 @@
       "skillPath": "skills/flask/SKILL.md",
       "computedHash": "f3e085b31b24291dc32ac3613a0143144f41bed102db278e2efdabc2206d27be"
     },
+    "flat": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/flat/SKILL.md",
+      "computedHash": "016fa071162ed671db350f8fd6870624cb9e1c21f9b25e0fab48f5a9c6c3e929"
+    },
     "flink": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
@@ -2149,6 +2371,12 @@
       "skillPath": "skills/free-tool-strategy/SKILL.md",
       "computedHash": "68aab0ae7910dc262f7c4a390848a2558d4eea5a905930e35b3a38e7d7629e94"
     },
+    "friendly": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/friendly/SKILL.md",
+      "computedHash": "6231dea29e93027da159eea40caeb258306d89e287beec01ae109e9aebf34bea"
+    },
     "frontend-design": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
@@ -2166,6 +2394,12 @@
       "sourceType": "github",
       "skillPath": "skills/function-calling/SKILL.md",
       "computedHash": "daddbc96d5deec9a23736858c7e3306ff9c6a1c7e66e4f6f8615282696c04043"
+    },
+    "futuristic": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/futuristic/SKILL.md",
+      "computedHash": "1c9bde7a7a0fad3349301c04b4081d23bab716eafe946ac135f49dc551e65f1b"
     },
     "gallery-dl": {
       "source": "TerminalSkills/skills",
@@ -2323,6 +2557,12 @@
       "skillPath": "skills/gitnexus/SKILL.md",
       "computedHash": "210571d9dd58e32a2465f42178c020896c454c095c1989145e379030940434a3"
     },
+    "glassmorphism": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/glassmorphism/SKILL.md",
+      "computedHash": "c252e09e7d990eeaced228aafa1384532ff0f02e955010dfc26a46c5f3d35862"
+    },
     "gleam": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
@@ -2382,6 +2622,12 @@
       "sourceType": "github",
       "skillPath": "skills/gptzero/SKILL.md",
       "computedHash": "3b6456aac7dd5b8c21c3e5317e082b0092994a56b31eb246c6296afc1ffae0a3"
+    },
+    "gradient": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/gradient/SKILL.md",
+      "computedHash": "f9a03db3d2396923508d96413f9e23287b4b9532fb8c12d4f25669cd858d2d58"
     },
     "gradio": {
       "source": "TerminalSkills/skills",
@@ -2551,6 +2797,12 @@
       "skillPath": "skills/hipaa-compliance/SKILL.md",
       "computedHash": "889cdb5043a06850b9e0608dc2dec53ad23508056c3fcaec46f653000a8ee6bb"
     },
+    "history": {
+      "source": "AlpacaLabsLLC/skills-for-architects",
+      "sourceType": "github",
+      "skillPath": "plugins/01-site-planning/skills/history/SKILL.md",
+      "computedHash": "e527e268008f81e7319885232c581737fefe00825f3e8f46f2c2dcfb2f388fcc"
+    },
     "hono": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
@@ -2688,6 +2940,18 @@
       "sourceType": "github",
       "skillPath": "skills/imgix/SKILL.md",
       "computedHash": "d37a5c8d409fcd77c26b3072cd1c70a0e47ce81c71766b51bb8424bcc6557843"
+    },
+    "immersive": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/immersive/SKILL.md",
+      "computedHash": "25cd94fe0012f719bf878aa6f42e992dfac495a4e98f16310a7d58d61448b7bb"
+    },
+    "impeccable": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/impeccable/SKILL.md",
+      "computedHash": "db0e16efb499018bc391583e3bdc0693a5b9b739c498e4bdd198eb2615eab924"
     },
     "improve-codebase-architecture": {
       "source": "TerminalSkills/skills",
@@ -3079,6 +3343,12 @@
       "skillPath": "skills/letsencrypt/SKILL.md",
       "computedHash": "022002875cbc93a2c810e65d146a8fd1b66e3c1557d9d37217fafcfebdbcd5a4"
     },
+    "levels": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/levels/SKILL.md",
+      "computedHash": "36b48029457ccac9aff2511938074666a437fdbcbe173209d5070fa70ee36596"
+    },
     "libsql": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
@@ -3108,6 +3378,12 @@
       "sourceType": "github",
       "skillPath": "skills/linear/SKILL.md",
       "computedHash": "62b94b1ab81d3d2b76aa5ec02fcec8ef1c27c9bfbb0fe314efafcd483bb21375"
+    },
+    "lingo": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/lingo/SKILL.md",
+      "computedHash": "456a547f6835e0e45bf2b3cbdf66bae60292a5dc1bf0fdb80871591129907d81"
     },
     "linkedin-marketing": {
       "source": "TerminalSkills/skills",
@@ -3223,6 +3499,12 @@
       "skillPath": "skills/lucia-auth/SKILL.md",
       "computedHash": "113ccb385b2bbd8da1a404ead2869f83da879fffb9cb26752ab64962d57bd3e6"
     },
+    "luxury": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/luxury/SKILL.md",
+      "computedHash": "e000a22162e9c1a846d063f441b4996aed17a6bd51a3f23dcba377ec06a5169b"
+    },
     "macos-menubar-tuist-app": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
@@ -3331,11 +3613,29 @@
       "skillPath": "skills/marko/SKILL.md",
       "computedHash": "2b1cddbed85646b70dad5f2cd41956fbdf2af121c405366860c1babddbcea5c1"
     },
+    "master-schedule": {
+      "source": "AlpacaLabsLLC/skills-for-architects",
+      "sourceType": "github",
+      "skillPath": "plugins/06-materials-research/skills/master-schedule/SKILL.md",
+      "computedHash": "7eea0fac037ee37ecf79e2a59a95a3209131286f2f92de7058a5dbba94370201"
+    },
     "mastra": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
       "skillPath": "skills/mastra/SKILL.md",
       "computedHash": "b686dcd34d5350ba95cafcc6678d486944a5009964c37150b936d627bcbaefa8"
+    },
+    "material": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/material/SKILL.md",
+      "computedHash": "df56c7346f3d12f4112c9d9ed028ce9dd26ba5be042e22afa98fb6f05c691a7c"
+    },
+    "matrix": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/matrix/SKILL.md",
+      "computedHash": "671f3de24f11b8b994ec145aa3d58dd605be121c4954a87c12e2631c25837fec"
     },
     "mcp-builder": {
       "source": "anthropics/skills",
@@ -3433,6 +3733,12 @@
       "skillPath": "skills/mikro-orm/SKILL.md",
       "computedHash": "cf8d3b92413d8a9e99d509d177ae55ca43525ce7824a667f7b12eb8bfd77d1e9"
     },
+    "minimal": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/minimal/SKILL.md",
+      "computedHash": "0d76c8d85ee4cd854fb472d9ec64ee6aafa30f4d885e780f5cd3388d58176030"
+    },
     "minimalist-review": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
@@ -3493,6 +3799,12 @@
       "skillPath": "skills/mlx-vlm/SKILL.md",
       "computedHash": "c29b45681dcaeb62ea1e4e41edd56162a003efdd69a624e3c3c86f719e0591ef"
     },
+    "mobility-analysis": {
+      "source": "AlpacaLabsLLC/skills-for-architects",
+      "sourceType": "github",
+      "skillPath": "plugins/01-site-planning/skills/mobility-analysis/SKILL.md",
+      "computedHash": "aa25707a39ae08640462b150ec9f89237d8afcfaeb12fcb76e5ef4a8d98553b7"
+    },
     "mobx": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
@@ -3511,6 +3823,12 @@
       "skillPath": "skills/modal/SKILL.md",
       "computedHash": "fb8d0fd400c44a65326e11384450aa8683fa791b54c624c9b880f46aaaf5a3a3"
     },
+    "modern": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/modern/SKILL.md",
+      "computedHash": "7f3f070399b2be73135001528a84db0189629b2b8dea19275b0ab87dc401c458"
+    },
     "mojo": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
@@ -3528,6 +3846,12 @@
       "sourceType": "github",
       "skillPath": "skills/mongoose/SKILL.md",
       "computedHash": "53a74cac92d634dc45cfdb49cfffc2ed307dd8b210acd12a1f8cbd336371842c"
+    },
+    "mono": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/mono/SKILL.md",
+      "computedHash": "16778d0940088fbab3aea9c454751f99e14cfc97c35eb4e45be4dfe3d57dd4bc"
     },
     "monorepo-manager": {
       "source": "TerminalSkills/skills",
@@ -3649,17 +3973,29 @@
       "skillPath": "skills/neo4j/SKILL.md",
       "computedHash": "c553a08a58bd1c56bd07e11e85e86c0ad9b8dab914fbf5b22c5ff0abdd842ace"
     },
+    "neobrutalism": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/neobrutalism/SKILL.md",
+      "computedHash": "53dd3da4651bc1a9d7a2f826cdbba5ec7738cfb3407728f11929ca27a3355997"
+    },
     "neon": {
-      "source": "TerminalSkills/skills",
+      "source": "bergside/awesome-design-skills",
       "sourceType": "github",
       "skillPath": "skills/neon/SKILL.md",
-      "computedHash": "e2343de3c91627e02ac2d465a7cf8fb7e630b2bdc974d575a5a7dbe5f94994cd"
+      "computedHash": "36b4671e723c420217dae5fc4e6ad95d109f37aaf706cbe72813b93ca8c6c1e5"
     },
     "nestjs": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
       "skillPath": "skills/nestjs/SKILL.md",
       "computedHash": "d1edb2af09f4178e3aca31dd34804e04f286b42432e17e9bea8bec4885bbd7c2"
+    },
+    "neumorphism": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/neumorphism/SKILL.md",
+      "computedHash": "f233e9f16e96a2675256c73877f90b201650be9b79bcbbe50bd07737bce3d955"
     },
     "new-relic": {
       "source": "TerminalSkills/skills",
@@ -3793,6 +4129,48 @@
       "skillPath": "skills/nx/SKILL.md",
       "computedHash": "b4d99a6bd62da050db6f324a9c20ec05e4aa75cd3a8771a61ff120a046984276"
     },
+    "nyc-acris": {
+      "source": "AlpacaLabsLLC/skills-for-architects",
+      "sourceType": "github",
+      "skillPath": "plugins/00-due-diligence/skills/nyc-acris/SKILL.md",
+      "computedHash": "9f6d6bd587ceb033e6be3f36cb93c9831c9e69435a221feb53103375aa3c8a3a"
+    },
+    "nyc-bsa": {
+      "source": "AlpacaLabsLLC/skills-for-architects",
+      "sourceType": "github",
+      "skillPath": "plugins/00-due-diligence/skills/nyc-bsa/SKILL.md",
+      "computedHash": "306ad7ea2f11bfab476f8650d1d83e2a5c9394547aaae0eceeb74fc466ab911d"
+    },
+    "nyc-dob-permits": {
+      "source": "AlpacaLabsLLC/skills-for-architects",
+      "sourceType": "github",
+      "skillPath": "plugins/00-due-diligence/skills/nyc-dob-permits/SKILL.md",
+      "computedHash": "b0c782ae9ccd068fed81be03f1073b63e185a228d582122a462f333d6c2dc6b8"
+    },
+    "nyc-dob-violations": {
+      "source": "AlpacaLabsLLC/skills-for-architects",
+      "sourceType": "github",
+      "skillPath": "plugins/00-due-diligence/skills/nyc-dob-violations/SKILL.md",
+      "computedHash": "9d910312d4f19f44fd5a20806e660bbf05d9adb57626935520e486afe5309044"
+    },
+    "nyc-hpd": {
+      "source": "AlpacaLabsLLC/skills-for-architects",
+      "sourceType": "github",
+      "skillPath": "plugins/00-due-diligence/skills/nyc-hpd/SKILL.md",
+      "computedHash": "406685dd7a7343c4412dc051c6856ea008b95e6044927439472b27d4d7f3651c"
+    },
+    "nyc-landmarks": {
+      "source": "AlpacaLabsLLC/skills-for-architects",
+      "sourceType": "github",
+      "skillPath": "plugins/00-due-diligence/skills/nyc-landmarks/SKILL.md",
+      "computedHash": "283f5bbf63c62450e65b709aef7d6c7d4ed34fdaf0bf93c57fe4795731585957"
+    },
+    "nyc-property-report": {
+      "source": "AlpacaLabsLLC/skills-for-architects",
+      "sourceType": "github",
+      "skillPath": "plugins/00-due-diligence/skills/nyc-property-report/SKILL.md",
+      "computedHash": "2317fdff17401be01e6be325c79d9350633ff001a64926a99c5cfcf8b294cabd"
+    },
     "oauth2-oidc": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
@@ -3816,6 +4194,12 @@
       "sourceType": "github",
       "skillPath": "skills/personal/obsidian-vault/SKILL.md",
       "computedHash": "960437c7c2febc15cf9d49964f0c8bd889d90a56e81b6eaa33f3ac5b594291c3"
+    },
+    "occupancy-calculator": {
+      "source": "AlpacaLabsLLC/skills-for-architects",
+      "sourceType": "github",
+      "skillPath": "plugins/03-programming/skills/occupancy-calculator/SKILL.md",
+      "computedHash": "9b8e410367d9cac1d464c1a596206dbca3f2236d2967109468fae0f37cc578c4"
     },
     "offer-letter": {
       "source": "TerminalSkills/skills",
@@ -4051,6 +4435,12 @@
       "skillPath": "skills/packer/SKILL.md",
       "computedHash": "e2f310df69bef7e9df8d1b772116475602e6deb565a4f505799828d47ca60a6c"
     },
+    "pacman": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/pacman/SKILL.md",
+      "computedHash": "576f0bf5e213b923b25e7939ce3530c5cc9265acb10895a5ce533fec12c403ec"
+    },
     "pact": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
@@ -4098,6 +4488,12 @@
       "sourceType": "github",
       "skillPath": "skills/pandera/SKILL.md",
       "computedHash": "3cfe319e80e872bd105dae4ba291378e3c74341a2c500c824ec4e058822f7d2b"
+    },
+    "paper": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/paper/SKILL.md",
+      "computedHash": "1411ce905410f89c4f9023d182e86a309180128d9efc461425f8e2b12f683334"
     },
     "partykit": {
       "source": "TerminalSkills/skills",
@@ -4200,6 +4596,12 @@
       "sourceType": "github",
       "skillPath": "skills/perplexity-api/SKILL.md",
       "computedHash": "b1e79a991a8c0378b1851516ca6f2662e9a235564651209d83553d34881730bb"
+    },
+    "perspective": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/perspective/SKILL.md",
+      "computedHash": "c18cbf073014eea5dab8e8e1db021cd323fdb8cf0234287cb80e439a7d2a05c2"
     },
     "pglite": {
       "source": "TerminalSkills/skills",
@@ -4411,6 +4813,12 @@
       "skillPath": "skills/prefect/SKILL.md",
       "computedHash": "d594b75319084d23aff4752914626cbc798586062a81c57c216f6357800d6b21"
     },
+    "premium": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/premium/SKILL.md",
+      "computedHash": "5890697097fd3a3d1d131288b68e6082cb432842607732d0ea3c2226f0cf4d42"
+    },
     "prettier": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
@@ -4435,17 +4843,71 @@
       "skillPath": "skills/product-analytics/SKILL.md",
       "computedHash": "0e097ac5bf896d4447a1424bad5c86ba09699bc719f9d8fa8d243c8c846ae084"
     },
+    "product-data-cleanup": {
+      "source": "AlpacaLabsLLC/skills-for-architects",
+      "sourceType": "github",
+      "skillPath": "plugins/06-materials-research/skills/product-data-cleanup/SKILL.md",
+      "computedHash": "d01c42ad7fe0d87aee55e95365caabf7a32e5a158128d6d5c0e7a4ffe1e6f6dd"
+    },
+    "product-data-import": {
+      "source": "AlpacaLabsLLC/skills-for-architects",
+      "sourceType": "github",
+      "skillPath": "plugins/06-materials-research/skills/product-data-import/SKILL.md",
+      "computedHash": "549a0ab6ca46ade765068bf258b1c4b5f61b150f34bd02b68e021d9d481ffa1f"
+    },
     "product-discovery": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
       "skillPath": "skills/product-discovery/SKILL.md",
       "computedHash": "070c7d0c38dd989d64690d4ba49c48955bd5fd1081fd9249ee849f780b3ca0e6"
     },
+    "product-enrich": {
+      "source": "AlpacaLabsLLC/skills-for-architects",
+      "sourceType": "github",
+      "skillPath": "plugins/06-materials-research/skills/product-enrich/SKILL.md",
+      "computedHash": "941f325f4acf3dd9ad6416526ad66214d110ca4cb200f8e7e0661965cead2e4f"
+    },
+    "product-image-processor": {
+      "source": "AlpacaLabsLLC/skills-for-architects",
+      "sourceType": "github",
+      "skillPath": "plugins/06-materials-research/skills/product-image-processor/SKILL.md",
+      "computedHash": "3cfe7d81c86a0be6a01d62fb254187256aa0bf740929bf86ccd8ff55e00a2262"
+    },
     "product-marketing-context": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
       "skillPath": "skills/product-marketing-context/SKILL.md",
       "computedHash": "7eed780be63f12b7d6539979718d77d664251ab952a191ecab7a986ae2a80b8a"
+    },
+    "product-match": {
+      "source": "AlpacaLabsLLC/skills-for-architects",
+      "sourceType": "github",
+      "skillPath": "plugins/06-materials-research/skills/product-match/SKILL.md",
+      "computedHash": "a521ecc430f3e1a3c9f6cf2817e89babdd06e4ce5a5d05095f9f411f9d864ac3"
+    },
+    "product-pair": {
+      "source": "AlpacaLabsLLC/skills-for-architects",
+      "sourceType": "github",
+      "skillPath": "plugins/06-materials-research/skills/product-pair/SKILL.md",
+      "computedHash": "72f9f087e697e9686692a8f72c67fabe4bb8d331f8e8aaf32a1abd17a6e550f5"
+    },
+    "product-research": {
+      "source": "AlpacaLabsLLC/skills-for-architects",
+      "sourceType": "github",
+      "skillPath": "plugins/06-materials-research/skills/product-research/SKILL.md",
+      "computedHash": "bf712f66cc3959252cb037b005fb463813ea09ac0a511dc931238f3583ee21ba"
+    },
+    "product-spec-bulk-fetch": {
+      "source": "AlpacaLabsLLC/skills-for-architects",
+      "sourceType": "github",
+      "skillPath": "plugins/06-materials-research/skills/product-spec-bulk-fetch/SKILL.md",
+      "computedHash": "1d74e8619d8792fc1509685ebd04312a2f3157648a7c83e97c5ffe714e4422f6"
+    },
+    "product-spec-pdf-parser": {
+      "source": "AlpacaLabsLLC/skills-for-architects",
+      "sourceType": "github",
+      "skillPath": "plugins/06-materials-research/skills/product-spec-pdf-parser/SKILL.md",
+      "computedHash": "dc2d2b3bbe4697239e6f7c82b2cfeccc1900fac2bbe61d3850c0eca3839caf14"
     },
     "product-strategy": {
       "source": "TerminalSkills/skills",
@@ -4458,6 +4920,12 @@
       "sourceType": "github",
       "skillPath": "skills/productivity-mental-models/SKILL.md",
       "computedHash": "13e33ca1b122d1f44ce38a1433d8a33db6df2c772892575d439689e8175dff68"
+    },
+    "professional": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/professional/SKILL.md",
+      "computedHash": "d828fa1920616a53c4731b38bcc1b759fd4278be948678740d671c20bf869901"
     },
     "programmatic-seo": {
       "source": "TerminalSkills/skills",
@@ -4524,6 +4992,12 @@
       "sourceType": "github",
       "skillPath": "skills/engineering/prototype/SKILL.md",
       "computedHash": "e4d0c8f8cb3fc096ee99405a15491da466545cf4a3694bee5a0c9db2fa621a43"
+    },
+    "publication": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/publication/SKILL.md",
+      "computedHash": "6025a2d188c562471ef70b28901d34af14a55c454b8f3daece9c6ff1e0509dce"
     },
     "pulumi": {
       "source": "TerminalSkills/skills",
@@ -4741,6 +5215,12 @@
       "skillPath": "skills/refine/SKILL.md",
       "computedHash": "c22df99e6f288b12ec99ede4597e29db50e59b64cf13942ab440b2694889bbd8"
     },
+    "refined": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/refined/SKILL.md",
+      "computedHash": "e193776de1628457b4fad34c36fc125ca00c5383f21042ab17ba0fd488ce137b"
+    },
     "regression-tester": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
@@ -4807,6 +5287,12 @@
       "skillPath": "skills/resend/SKILL.md",
       "computedHash": "51458c6f387895c0b46055d57b28e9602a341e15251af9faa4b3d2ba7280b067"
     },
+    "resize-images": {
+      "source": "AlpacaLabsLLC/skills-for-architects",
+      "sourceType": "github",
+      "skillPath": "plugins/07-presentations/skills/resize-images/SKILL.md",
+      "computedHash": "24df55ee274cce011ddb741d8d06c68bcb89612e9ab4ea2b015811684d2f17be"
+    },
     "rest-api": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
@@ -4837,6 +5323,12 @@
       "skillPath": "skills/retool/SKILL.md",
       "computedHash": "7b8ceee61845679a4660c8cc92ec5712737bcb375f5385a7131fef812e9594cf"
     },
+    "retro": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/retro/SKILL.md",
+      "computedHash": "882a9079cd9c0c93f570fb466be392154fba9e35495a02d8278844292bcc2ed6"
+    },
     "review": {
       "source": "mattpocock/skills",
       "sourceType": "github",
@@ -4848,6 +5340,12 @@
       "sourceType": "github",
       "skillPath": "skills/review-swarm/SKILL.md",
       "computedHash": "17fc2953a25ede069f6487c67befa72f64fc9a66321730d1e74bc34a77359ba4"
+    },
+    "riso": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/riso/SKILL.md",
+      "computedHash": "4f56112e420fcb37effbfcc72ea85bf085320124c077e0a6b0b4d058c6fb29bc"
     },
     "rive": {
       "source": "TerminalSkills/skills",
@@ -4969,6 +5467,12 @@
       "skillPath": "skills/security-audit/SKILL.md",
       "computedHash": "8dfc3d1ac7c793127a1e1e57cf79807711d1c92d1323b1093d4bbde90ab91cd7"
     },
+    "sega": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/sega/SKILL.md",
+      "computedHash": "b9ada835b51cfe1ba92a63408a516df2ff8bd909eba0549111c50674c067c684"
+    },
     "segment": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
@@ -5047,6 +5551,12 @@
       "skillPath": "skills/misc/setup-pre-commit/SKILL.md",
       "computedHash": "f9aeedf0a1f560ec465c3939c54434c2d949ac8b958a0493db52216f688a0366"
     },
+    "shadcn": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/shadcn/SKILL.md",
+      "computedHash": "c3bbcb5f728f88651298c09cb6d05764bd8985892f976071fd0ee8d6ea468d17"
+    },
     "shadcn-ui": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
@@ -5083,6 +5593,12 @@
       "skillPath": "skills/shopify/SKILL.md",
       "computedHash": "4deb47f4c6e4c46e37f12a115aeb42816c46c66b24ffffb526370344ecc06b0e"
     },
+    "sif-to-csv": {
+      "source": "AlpacaLabsLLC/skills-for-architects",
+      "sourceType": "github",
+      "skillPath": "plugins/06-materials-research/skills/sif-to-csv/SKILL.md",
+      "computedHash": "b96bccdce31ea6c74eafb934ff66b75d0f574174095aeb84fa02b366e24b0d27"
+    },
     "signoz": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
@@ -5095,11 +5611,35 @@
       "skillPath": "skills/signup-flow-cro/SKILL.md",
       "computedHash": "4deaff789d3513c4213c486c5863bec0fa36584fb601c92f281183f17f2f17da"
     },
+    "simple": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/simple/SKILL.md",
+      "computedHash": "351d44453392a6d18bb3a72fb77c9ba4bf20a11f028e00435be89c5b995c910e"
+    },
+    "sketch": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/sketch/SKILL.md",
+      "computedHash": "fb69edd3b90f99f64afb34e6a169073363adee5bd8fdeafd3873524ec91d9623"
+    },
+    "skeumorphism": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/skeumorphism/SKILL.md",
+      "computedHash": "16ec4b5ba7151246d988e0e37c645eeaa5566d9c180eeb16484e9b5512f98830"
+    },
     "skill-creator": {
       "source": "anthropics/skills",
       "sourceType": "github",
       "skillPath": "skills/skill-creator/SKILL.md",
       "computedHash": "5ea13a6d9f0d4bb694405d79acd00cadec0d21bb138c4dd10fcf3c500cb835c2"
+    },
+    "skills-menu": {
+      "source": "AlpacaLabsLLC/skills-for-architects",
+      "sourceType": "github",
+      "skillPath": "plugins/08-dispatcher/skills/skills-menu/SKILL.md",
+      "computedHash": "08ed244af3a13f4fd3f29b194ffacd3c2b2bcbabbb8439210ed07b41fd39ad32"
     },
     "skipfish": {
       "source": "TerminalSkills/skills",
@@ -5118,6 +5658,18 @@
       "sourceType": "github",
       "skillPath": "skills/slack-gif-creator/SKILL.md",
       "computedHash": "fab4fcfcaed371071069d61a3ab94dff15d10d36403ff269d147ea986cd98083"
+    },
+    "sleek": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/sleek/SKILL.md",
+      "computedHash": "0c9e8f44c0cef9d8e5a8b617f42ba8e7ce744d5a1608c1015622d8e1a250eb7d"
+    },
+    "slide-deck-generator": {
+      "source": "AlpacaLabsLLC/skills-for-architects",
+      "sourceType": "github",
+      "skillPath": "plugins/07-presentations/skills/slide-deck-generator/SKILL.md",
+      "computedHash": "b31b062510bb7ad512bcc74124bf3e01c91de787963f97eed91c0ea16796c9f6"
     },
     "smolagents": {
       "source": "TerminalSkills/skills",
@@ -5197,6 +5749,12 @@
       "skillPath": "skills/sox/SKILL.md",
       "computedHash": "c4d55ac0464df98584b94209ba9a2c985201e1715fe1da1e1a1f560ca15ee253"
     },
+    "spacious": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/spacious/SKILL.md",
+      "computedHash": "5fee2e3cff9ebc7295db6a9e8940768bf2ef2f532993177296aadbe1d0c96769"
+    },
     "spec-driven-dev": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
@@ -5208,6 +5766,12 @@
       "sourceType": "github",
       "skillPath": "skills/spec-to-3d/SKILL.md",
       "computedHash": "0a9ea891e2e5eff1a832aebcbc4483959506e64a098da39e831e17f3198e4321"
+    },
+    "spec-writer": {
+      "source": "AlpacaLabsLLC/skills-for-architects",
+      "sourceType": "github",
+      "skillPath": "plugins/04-specifications/skills/spec-writer/SKILL.md",
+      "computedHash": "00a55c48e38b252455210953502c7586f1d4ed49406e7726e7d00b7b7d0c6e7c"
     },
     "spiderfoot": {
       "source": "TerminalSkills/skills",
@@ -5335,6 +5899,12 @@
       "skillPath": "skills/storybook/SKILL.md",
       "computedHash": "a1bc52a4f301e15573dbf641fc443ac5304fd38db652b76b3ddb38f8d4d6d247"
     },
+    "storytelling": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/storytelling/SKILL.md",
+      "computedHash": "7bf43f82476d8bff5af80b55725af3848f3e9f44dc742293349ee7ba43e8ec69"
+    },
     "strapi": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
@@ -5382,6 +5952,12 @@
       "sourceType": "github",
       "skillPath": "skills/structured-output/SKILL.md",
       "computedHash": "5579cd4b1fe3e0c5e68739a55d51f7b3bd62690cb1dbf532731f0d06e4559edb"
+    },
+    "studio": {
+      "source": "AlpacaLabsLLC/skills-for-architects",
+      "sourceType": "github",
+      "skillPath": "plugins/08-dispatcher/skills/studio/SKILL.md",
+      "computedHash": "7cc30161a22ba48ec2ea6e51cfe7af64692342b893cee068cc0d0f234173e38e"
     },
     "subagent-driven-development": {
       "source": "obra/superpowers",
@@ -5641,6 +6217,12 @@
       "skillPath": "skills/terminal-skills/SKILL.md",
       "computedHash": "3f30118d8bbf55fdf940121956b9b681a6e0002bfcd6f812ae169ec01e8ff671"
     },
+    "terracotta": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/terracotta/SKILL.md",
+      "computedHash": "14a1960d7a0bff96f17fcbd181f7520de072a2e03dc18721b59a73ccf4d75242"
+    },
     "terraform-iac": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
@@ -5682,6 +6264,12 @@
       "sourceType": "github",
       "skillPath": "skills/testing-library/SKILL.md",
       "computedHash": "43d2ad00d478bf98c27bb7e6db1ec614ddae608482eed9ae13b55b861e5a77aa"
+    },
+    "tetris": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/tetris/SKILL.md",
+      "computedHash": "354cb59ca6771db68f801d450fd41e82d66130efa651248620f794da12f84ebb"
     },
     "thanos": {
       "source": "TerminalSkills/skills",
@@ -6157,6 +6745,12 @@
       "skillPath": "skills/vibe-voice/SKILL.md",
       "computedHash": "1cd7b27262c16f3f69ea2ad1b7b39b2ed6152e2c5e63423c6883a4c56a033643"
     },
+    "vibrant": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/vibrant/SKILL.md",
+      "computedHash": "28d9f0b88c6018ea286003ccca31cab28687f4e063f5c354908d4e984f091bbf"
+    },
     "victoriametrics": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
@@ -6168,6 +6762,12 @@
       "sourceType": "github",
       "skillPath": "skills/viem/SKILL.md",
       "computedHash": "d8cdfb5b8f5074f02f707a760d299203fb9c63bcd84cd93fd55530163ea0f46e"
+    },
+    "vintage": {
+      "source": "bergside/awesome-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/vintage/SKILL.md",
+      "computedHash": "22933453b56e0328a425aacc6772ea1ba32795fc8fce147bea77cefb99222839"
     },
     "vinxi": {
       "source": "TerminalSkills/skills",
@@ -6385,6 +6985,12 @@
       "skillPath": "skills/wordpress/SKILL.md",
       "computedHash": "4e914200c978889be1cf816ff05eda4f1e22944a2c1d89f3e622964ca314a44c"
     },
+    "workplace-programmer": {
+      "source": "AlpacaLabsLLC/skills-for-architects",
+      "sourceType": "github",
+      "skillPath": "plugins/03-programming/skills/workplace-programmer/SKILL.md",
+      "computedHash": "2ff8f0f87ba7f13dcccd8e3f0d01195ca353b7044318424edb9b1872eefd2716"
+    },
     "worktrunk": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
@@ -6576,6 +7182,18 @@
       "sourceType": "github",
       "skillPath": "skills/zoho/SKILL.md",
       "computedHash": "9b66b5325e9407bf578aa06225a33dcb6473d0933515f92cbe5c7d9ed4536d88"
+    },
+    "zoning-analysis-nyc": {
+      "source": "AlpacaLabsLLC/skills-for-architects",
+      "sourceType": "github",
+      "skillPath": "plugins/02-zoning-analysis/skills/zoning-analysis-nyc/SKILL.md",
+      "computedHash": "0de86047e9bff2955de2f09f1d8b4b74520c45733f4c015deac0e62baea94f21"
+    },
+    "zoning-envelope": {
+      "source": "AlpacaLabsLLC/skills-for-architects",
+      "sourceType": "github",
+      "skillPath": "plugins/02-zoning-analysis/skills/zoning-envelope/SKILL.md",
+      "computedHash": "7670a4213182ea95ca32a9fc042a616e0374ae5f2d67c0a51c3d72750a3c2df6"
     },
     "zoom-out": {
       "source": "mattpocock/skills",

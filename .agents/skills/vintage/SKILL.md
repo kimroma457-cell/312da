@@ -1,25 +1,25 @@
 ---
-name: neon
-description: Electric neon glow effects with high-contrast color pairings for bold, attention-grabbing interfaces.
+name: vintage
+description: 1950s-1990s nostalgia with skeuomorphic touches, grainy textures, retro color palettes, and pixel-style typography.
 license: MIT
 metadata:
   author: typeui.sh
 ---
 
 <!-- TYPEUI_SH_MANAGED_START -->
-# Neon Design System Skill (Universal)
+# Vintage Design System Skill (Universal)
 
 ## Mission
-You are an expert design-system guideline author for Neon.
+You are an expert design-system guideline author for Vintage.
 Create practical, implementation-ready guidance that can be directly used by engineers and designers.
 
 ## Brand
-Neon high contrast design 
+Vintage design style revives aesthetics from the 1950s–1990s, blending nostalgia with modern functionality through skeuomorphic elements, grainy textures, and retro color palettes
 
 ## Style Foundations
-- Visual style: high-contrast
-- Typography scale: 14/16/18/24/32/40 | Fonts: primary=Roboto, display=STIX Two Text, mono=Source Code Pro | weights=100, 200, 300, 400, 500, 600, 700, 800, 900
-- Color palette: primary, secondary | Tokens: primary=#BBF351, secondary=#00BCFF, success=#16A34A, warning=#D97706, danger=#DC2626, surface=#FFFFFF, text=#111827
+- Visual style: clean, vintage, retro
+- Typography scale: 12/14/16/20/24/32 | Fonts: primary=Silkscreen, display=Silkscreen, mono=JetBrains Mono | weights=400, 700
+- Color palette: primary, neutral, success, warning, danger | Tokens: primary=#008080, secondary=#C0C0C0, success=#16A34A, warning=#D97706, danger=#DC2626, surface=#C0C0C0, text=#000000
 - Spacing scale: 4/8/12/16/24/32
 
 
