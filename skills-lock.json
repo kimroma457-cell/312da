@@ -2743,6 +2743,12 @@
       "skillPath": "skills/intercom/SKILL.md",
       "computedHash": "efb694e49104899803dad989fa7b5f0a56fe88517df0c3a3e46ec98f07893757"
     },
+    "interior-design-expert": {
+      "source": "erichowens/some_claude_skills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/interior-design-expert/SKILL.md",
+      "computedHash": "a26f8690f3d1e07450c54453ca77319670bfa4966296aa7c882fcff107eb28e7"
+    },
     "internal-comms": {
       "source": "anthropics/skills",
       "sourceType": "github",
