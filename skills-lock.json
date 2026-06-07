@@ -187,6 +187,12 @@
       "skillPath": "awesome_agent_skills/email-drafter/SKILL.md",
       "computedHash": "8e8a390730cb28f26c61ae0dd1bedc96d80c48be0d8ed107c6ec1a99ab3101e1"
     },
+    "email-marketing-bible": {
+      "source": "CosmoBlk/email-marketing-bible",
+      "sourceType": "github",
+      "skillPath": "SKILL.md",
+      "computedHash": "50ddc78b0f895e0407d7506cb065cc1adf3a5ce4d6b8c9fa38d48bfdd3dac084"
+    },
     "executing-plans": {
       "source": "obra/superpowers",
       "sourceType": "github",
