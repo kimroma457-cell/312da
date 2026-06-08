@@ -1,0 +1,53 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:33d50e842286f78bbdbdf7242b71876746ea1765705e98ff6409cf075efb91eb",
+  "scoredAt": "2026-05-13T09:27:59.368Z",
+  "backend": "subagent",
+  "model": "claude-sonnet-4-6",
+  "quality": {
+    "score": 87,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "WEAK",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "Missing comprehensive error handling and edge case coverage in the provided code snippets."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "conciseness",
+        "detail": "Excessive explanatory text and guidelines increase file length without adding actionable value."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "baselineAvg": 55,
+    "treatmentAvg": 88,
+    "multiplier": 1.6,
+    "scenarios": [
+      {
+        "name": "Coffee shop locator with PostGIS nearest-5 search on Leaflet",
+        "baseline": 55,
+        "treatment": 88,
+        "rationale": "Treatment uses ST_DWithin/ST_DistanceSphere with ST_MakePoint(lng,lat) and a Leaflet map with the OpenStreetMap tile layer and attribution; baseline uses a generic Haversine SQL filter without PostGIS spatial indexes and forgets OSM attribution."
+      },
+      {
+        "name": "Berlin delivery route optimization with 200m geofence",
+        "baseline": 55,
+        "treatment": 88,
+        "rationale": "Treatment calls Google Directions with waypoints=optimize:true, reads waypoint_order, and applies the documented haversine function with R=6371000 for the 200m radius check; baseline submits waypoints unoptimized and approximates distance with naive Pythagorean math."
+      }
+    ]
+  }
+}

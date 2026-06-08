@@ -1,0 +1,53 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:c71b6939e67a2ff15470eb4a65f2366c76b7fb8b2a04e006faaf7a1f7ce95bba",
+  "scoredAt": "2026-05-13T09:14:02.635Z",
+  "backend": "subagent",
+  "model": "claude-sonnet-4-6",
+  "quality": {
+    "score": 77,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "FAIL"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "Instructions do not cover error handling or edge cases."
+      },
+      {
+        "severity": "HIGH",
+        "category": "examples",
+        "detail": "Skill lacks 2+ realistic example demonstrations."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "baselineAvg": 58,
+    "treatmentAvg": 92,
+    "multiplier": 1.59,
+    "scenarios": [
+      {
+        "name": "Set up pre-commit linting on staged files",
+        "baseline": 55,
+        "treatment": 92,
+        "rationale": "Treatment uses npx husky init plus lint-staged with file-glob commands in package.json exactly as the skill documents, while baseline used older husky v4 hooks config."
+      },
+      {
+        "name": "Run tests on pre-push only",
+        "baseline": 60,
+        "treatment": 92,
+        "rationale": "Treatment places npm test in .husky/pre-push and explains why heavy tests do not belong in pre-commit, matching the skill's guideline."
+      }
+    ]
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:d25c68b812be025fefac3e681151667e735d13fa0b351f511b9370ee517903b4",
+  "scoredAt": "2026-05-13T13:27:08.183Z",
+  "backend": "ollama",
+  "model": "qwen2.5-coder:14b",
+  "quality": {
+    "score": 93,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "PASS",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "WEAK",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "crossPlatform",
+        "detail": "The skill assumes the Coolify CLI is available, which may not be compatible with all AI agents."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "multiplier": 1.4,
+    "baselineAvg": 63,
+    "treatmentAvg": 88,
+    "scenarios": [
+      {
+        "name": "deploy-nextjs-with-env-sync",
+        "baseline": 70,
+        "treatment": 80,
+        "rationale": "Response A correctly uses the `coolify app env sync` command with the `--file` flag, mentions that the sync is non-destructive, and provides the correct deployment and log monitoring commands. Response B incorrectly uses `coolify env:set` instead of `coolify app env sync`, omits mentioning that the sync is non-destructive, and uses `coolify logs` instead of `coolify app deployments logs <deployment-uuid>` for monitoring."
+      },
+      {
+        "name": "debug-failed-deployment",
+        "baseline": 80,
+        "treatment": 95,
+        "rationale": "Response A covers all elements of the rubric comprehensively and correctly, while Response B includes some useful additional information but does not explicitly mention the first diagnostic step using the `coolify app deployments logs` command."
+      },
+      {
+        "name": "postgres-with-nightly-backups",
+        "baseline": 40,
+        "treatment": 89,
+        "rationale": "Response B follows the rubric closely, while Response A deviates by suggesting a manual backup script instead of using Coolify's built-in backup functionality."
+      }
+    ]
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:adba21ff53b0604422c5841dc6f039d2f0fd6f304d67ffd2329f868011aa250c",
+  "scoredAt": "2026-05-13T09:10:10.075Z",
+  "backend": "subagent",
+  "model": "claude-sonnet-4-6",
+  "quality": {
+    "score": 80,
+    "dimensions": {
+      "clarity": "WEAK",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "WEAK",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "clarity",
+        "detail": "The skill description lacks step-by-step instructions, making it ambiguous for users to implement without prior knowledge."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The skill does not cover error handling or edge cases such as invalid input or database failures."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "actionability",
+        "detail": "While code examples are provided, missing context like database initialization and authentication functions reduce the ability to run the code directly."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "baselineAvg": 38,
+    "treatmentAvg": 97,
+    "multiplier": 2.55,
+    "scenarios": [
+      {
+        "name": "basic-yoga-setup",
+        "baseline": 45,
+        "treatment": 96,
+        "rationale": "Treatment uses createSchema + createYoga together, wires NODE_ENV into maskedErrors and graphiql, and implements Subscription.newUser.subscribe via pubsub.subscribe; baseline uses makeExecutableSchema and an async generator without NODE_ENV gating."
+      },
+      {
+        "name": "yoga-plugins-hardening",
+        "baseline": 30,
+        "treatment": 97,
+        "rationale": "Treatment registers useResponseCache, useRateLimiter, and useDepthLimit from the Yoga plugin packages with full config; baseline reaches for incorrect package names and falls back to validationRules-style depth limiting."
+      }
+    ]
+  }
+}

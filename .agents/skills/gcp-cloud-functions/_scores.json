@@ -1,0 +1,53 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:3af149172f5dc61dff4baac03e64046c428045449ce91f87a63699267f99319e",
+  "scoredAt": "2026-05-13T09:06:14.011Z",
+  "backend": "subagent",
+  "model": "claude-sonnet-4-6",
+  "quality": {
+    "score": 87,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "WEAK",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The skill file does not cover all error scenarios and edge cases, such as deployment failures or runtime errors."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "conciseness",
+        "detail": "The skill file contains verbose explanations that could be trimmed for brevity."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "baselineAvg": 60,
+    "treatmentAvg": 90,
+    "multiplier": 1.5,
+    "scenarios": [
+      {
+        "name": "Deploy a Cloud Storage triggered image processor",
+        "baseline": 60,
+        "treatment": 90,
+        "rationale": "Treatment uses gcloud functions deploy --gen2 with --trigger-event-filters for type=google.cloud.storage.object.v1.finalized plus the bucket filter; baseline often falls back to the legacy --trigger-bucket or Gen 1 syntax."
+      },
+      {
+        "name": "Pub/Sub triggered Python function with Secret Manager",
+        "baseline": 60,
+        "treatment": 90,
+        "rationale": "Treatment uses functions_framework.cloud_event with base64 decode plus --gen2 --trigger-topic and --set-secrets injection; baseline often skips the cloud_event framework or wires secrets through env vars."
+      }
+    ]
+  }
+}

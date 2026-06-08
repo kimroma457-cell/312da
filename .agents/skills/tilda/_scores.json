@@ -1,0 +1,48 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:6b5cea5ee1e568a7739eb53501f24073980cb2671e9f8d19ad59f992f62cdb17",
+  "scoredAt": "2026-05-13T10:26:05.381Z",
+  "backend": "subagent",
+  "model": "claude-sonnet-4-6",
+  "quality": {
+    "score": 93,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The instructions do not cover error handling or edge cases for API failures or form submission errors."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "baselineAvg": 38,
+    "treatmentAvg": 86,
+    "multiplier": 2.26,
+    "scenarios": [
+      {
+        "name": "Export Tilda page to self-hosted HTML",
+        "baseline": 30,
+        "treatment": 85,
+        "rationale": "Treatment uses the documented getpagefull endpoint and rebuilds an HTML wrapper from the returned html/css/js fields; baseline guesses at unrelated scraping or download tooling and misses Tilda's API entirely."
+      },
+      {
+        "name": "Forward Tilda form submissions to CRM and Telegram",
+        "baseline": 45,
+        "treatment": 88,
+        "rationale": "Treatment configures the documented Tilda form webhook URL and parses formData fields with capitalized keys (Name/Email/Phone) per the SKILL.md example; baseline invents a non-existent push API."
+      }
+    ]
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:5453afbd385dc4e55db6e4dac678ef44ca48c513807bd914f1663c292aa7ab6f",
+  "scoredAt": "2026-05-13T09:07:00.942Z",
+  "backend": "ollama",
+  "model": "gpt-oss:20b",
+  "quality": {
+    "score": 93,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "PASS",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "WEAK",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "crossPlatform",
+        "detail": "The skill assumes GCP-specific tools like gcloud CLI, BigQuery, and Cloud Logging, limiting its applicability to other platforms."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "baselineAvg": 20,
+    "treatmentAvg": 95,
+    "multiplier": 4.75,
+    "backend": "subagent",
+    "model": "claude-sonnet-4-6",
+    "scenarios": [
+      {
+        "name": "Top-talker egress investigation",
+        "baseline": 15,
+        "treatment": 95,
+        "rationale": "Baseline suggested Logs Explorer, billing reports, and tcpdump; treatment used the skill's BigQuery _AllLogs pattern with vpc_flows log_id and RFC1918 NET.IP_IN_NET filters grouped by VM and external IP."
+      },
+      {
+        "name": "Cloud Run reachability failure to external API",
+        "baseline": 25,
+        "treatment": 95,
+        "rationale": "Baseline went to firewall rules and Cloud Run egress settings; treatment used gcloud network-management connectivity-tests create/run/describe with reachabilityDetails as the authoritative answer."
+      }
+    ]
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:a009af87e0109550777ba1c62c5edde7f0b4961cf7ce7c35d64ad9cefa051409",
+  "scoredAt": "2026-05-21T09:10:16.099Z",
+  "backend": "ollama",
+  "model": "gpt-oss:20b",
+  "quality": {
+    "score": 87,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "WEAK",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "Skill does not cover error handling or edge cases for API failures."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "crossPlatform",
+        "detail": "Skill is vendor-locked to Hermes Agent and assumes specific plugin environment."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "multiplier": 5.2,
+    "baselineAvg": 0,
+    "treatmentAvg": 52,
+    "scenarios": [
+      {
+        "name": "search-tweets-and-read-replies",
+        "baseline": 0,
+        "treatment": 55,
+        "rationale": "Response A outlines the required API calls but omits the summary of tweet IDs, reply counts, notable users, and the explicit no‑write statement, whereas Response B provides no relevant content."
+      },
+      {
+        "name": "reply-with-approval",
+        "baseline": 0,
+        "treatment": 0,
+        "rationale": "Both responses omit the required tweet_read, tweet_action, and reply ID/URL steps; B only marginally better by including an approval prompt."
+      },
+      {
+        "name": "export-followers",
+        "baseline": 0,
+        "treatment": 100,
+        "rationale": "Response B fully meets the rubric, while Response A does not provide any relevant content."
+      }
+    ]
+  }
+}

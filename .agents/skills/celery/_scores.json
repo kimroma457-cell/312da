@@ -1,0 +1,48 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:e01f824bab8c77821287461a69f0b0bb74005ac225a607e4ecf099ec263e0da4",
+  "scoredAt": "2026-05-13T15:11:44.296Z",
+  "backend": "ollama",
+  "model": "gpt-oss:20b",
+  "quality": {
+    "score": 93,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The skill does not cover all error scenarios and edge cases for every task."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "multiplier": 5.33,
+    "baselineAvg": 15,
+    "treatmentAvg": 80,
+    "scenarios": [
+      {
+        "name": "retry-task-with-exponential-backoff",
+        "baseline": 30,
+        "treatment": 60,
+        "rationale": "Response A meets most rubric items (correct countdown and retry call) but has an incorrect max_retries value, whereas Response B fails on several key points including the countdown formula and default_retry_delay."
+      },
+      {
+        "name": "chain-three-tasks",
+        "baseline": 0,
+        "treatment": 100,
+        "rationale": "Response B fully satisfies the rubric, while Response A does not provide any tasks or chain."
+      }
+    ]
+  }
+}

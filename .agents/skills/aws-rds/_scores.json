@@ -1,0 +1,48 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:82a9a220ef17778bb2081af7ac19e12a22d366a3be8f20c7d2214a358346ef8c",
+  "scoredAt": "2026-05-13T14:27:10.166Z",
+  "backend": "ollama",
+  "model": "gpt-oss:20b",
+  "quality": {
+    "score": 93,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The skill file does not cover error scenarios or edge cases, focusing only on happy path operations."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "multiplier": 2,
+    "baselineAvg": 20,
+    "treatmentAvg": 40,
+    "scenarios": [
+      {
+        "name": "provision-multi-az-postgres",
+        "baseline": 0,
+        "treatment": 0,
+        "rationale": "Neither response provides the required aws rds create-db-instance CLI command with the specified flags; both are incomplete."
+      },
+      {
+        "name": "setup-aurora-serverless-with-replica",
+        "baseline": 40,
+        "treatment": 80,
+        "rationale": "Response B includes the required CLI commands for cluster, writer/reader, and replica, missing only the modify-db-instance step, while Response A uses Terraform and omits several rubric items."
+      }
+    ]
+  }
+}

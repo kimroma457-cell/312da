@@ -1,0 +1,58 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:09546bdd7e2b41ad0e3a95c17b3a8feb91dedf2731285ac9da86be2a7cbdff4e",
+  "scoredAt": "2026-05-13T15:34:45.351Z",
+  "backend": "ollama",
+  "model": "gpt-oss:20b",
+  "quality": {
+    "score": 80,
+    "dimensions": {
+      "clarity": "WEAK",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "WEAK",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "clarity",
+        "detail": "Instructions contain placeholders and lack full context, making them ambiguous."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "Error scenarios and edge cases are not addressed in the instructions."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "actionability",
+        "detail": "Runnable code blocks have placeholders and missing steps, reducing direct actionability."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "multiplier": 2.12,
+    "baselineAvg": 25,
+    "treatmentAvg": 53,
+    "scenarios": [
+      {
+        "name": "full-aws-audit",
+        "baseline": 20,
+        "treatment": 35,
+        "rationale": "Response A provides a more detailed scan and a cleanup script skeleton, whereas Response B only offers a high‑level playbook without the required report or safe‑cleanup script."
+      },
+      {
+        "name": "targeted-ebs-cleanup-us-west-2",
+        "baseline": 30,
+        "treatment": 70,
+        "rationale": "Response A covers most rubric items (listing details, dry-run/execute/force options, snapshot creation, tagging) but misses cost and confirmation; Response B lacks cost, tagging, dry-run/execute/force, and snapshot creation."
+      }
+    ]
+  }
+}

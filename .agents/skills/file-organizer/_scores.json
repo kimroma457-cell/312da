@@ -1,0 +1,53 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:35efaf7af21be5c474f9401cc9b40c5c780ca9469dadfc8618f46a16c24da1a2",
+  "scoredAt": "2026-05-13T08:52:46.648Z",
+  "backend": "subagent",
+  "model": "claude-sonnet-4-6",
+  "quality": {
+    "score": 87,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The code does not handle errors such as missing source directories, permission issues, or filename collisions, limiting robustness."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "crossPlatform",
+        "detail": "The bash script assumes a Unix-like environment and may not run on Windows without a compatible shell."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "baselineAvg": 55,
+    "treatmentAvg": 88,
+    "multiplier": 1.6,
+    "scenarios": [
+      {
+        "name": "Clean up a Downloads folder with 500+ mixed files",
+        "baseline": 60,
+        "treatment": 90,
+        "rationale": "Treatment uses the documented TYPE_MAP-driven bash script with a dry-run preview pass, lowercases the extension, and routes unknowns to Other/; baseline used a flat case statement, no dry-run, and skipped the Other bucket."
+      },
+      {
+        "name": "Find duplicate files and report wasted space",
+        "baseline": 50,
+        "treatment": 85,
+        "rationale": "Treatment uses the documented hashlib.md5 + defaultdict pattern that groups paths by hash and computes wasted = size * (len(paths)-1), and follows the guideline to stage duplicates instead of deleting; baseline used fdupes or deleted directly without the staging guardrail."
+      }
+    ]
+  }
+}

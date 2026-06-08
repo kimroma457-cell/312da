@@ -1,0 +1,53 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:69da9efdd440d3622900a50f30af16e8154729929128e15fcda36e7072a92172",
+  "scoredAt": "2026-05-13T09:36:42.812Z",
+  "backend": "subagent",
+  "model": "claude-sonnet-4-6",
+  "quality": {
+    "score": 87,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "WEAK",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "Missing coverage of error handling and edge cases such as invalid data, missing fields, and query failures."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "actionability",
+        "detail": "Lacks concrete code examples or step-by-step procedures for implementing the described practices."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "baselineAvg": 53,
+    "treatmentAvg": 87,
+    "multiplier": 1.64,
+    "scenarios": [
+      {
+        "name": "Product catalog schema with faceted search",
+        "baseline": 50,
+        "treatment": 88,
+        "rationale": "Treatment embeds variants/pricing, references categories as ObjectIds, adds compound indexes, and builds aggregation with $facet plus $bucket as the skill prescribes; baseline tends to normalize too aggressively and misses $facet/$bucket."
+      },
+      {
+        "name": "Auto-expiring sessions with index verification",
+        "baseline": 55,
+        "treatment": 85,
+        "rationale": "Treatment uses a TTL index for automatic expiry and verifies the plan with explain('executionStats') as the skill recommends; baseline knows TTL but typically skips the explain verification step."
+      }
+    ]
+  }
+}

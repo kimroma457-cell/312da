@@ -1,0 +1,48 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:69cba8a7caf3b778a497bf6c93d9eb26ab02a1f66c806c4c61a3bd74ef4fab32",
+  "scoredAt": "2026-05-13T08:49:20.106Z",
+  "backend": "subagent",
+  "model": "claude-sonnet-4-6",
+  "quality": {
+    "score": 93,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "PASS",
+      "conciseness": "PASS",
+      "actionability": "WEAK",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "actionability",
+        "detail": "The skill provides high-level steps but lacks concrete code or runnable procedures, making it less actionable."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "baselineAvg": 35,
+    "treatmentAvg": 90,
+    "multiplier": 2.57,
+    "scenarios": [
+      {
+        "name": "Audit a Sentry JSON export of 3,200 events from the last 14 days",
+        "baseline": 30,
+        "treatment": 92,
+        "rationale": "Baseline lists top errors by count but skips priority labels, percentages, duplicate-group merging, and resolved-but-recurring sections that the rubric requires."
+      },
+      {
+        "name": "Flag noisiest alerts and recommend which to silence vs investigate",
+        "baseline": 40,
+        "treatment": 88,
+        "rationale": "Baseline conflates severity with volume and misses the keyword-based escalation (payment/auth/password/delete/drop) and dedupe-before-rule-changes guidance the skill enforces."
+      }
+    ]
+  }
+}

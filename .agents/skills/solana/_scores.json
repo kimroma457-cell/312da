@@ -1,0 +1,64 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:32df84d1d18bde8990d2c5d0f5ec546d86b5d874da7263e5b3bbaa1d9dfee211",
+  "scoredAt": "2026-05-13T10:09:44.957Z",
+  "backend": "subagent",
+  "model": "claude-sonnet-4-6",
+  "quality": {
+    "score": 80,
+    "dimensions": {
+      "clarity": "WEAK",
+      "completeness": "WEAK",
+      "conciseness": "WEAK",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "clarity",
+        "detail": "Skill file lacks clear, actionable instructions for the agent."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "Skill file does not cover error scenarios or edge cases for agent usage."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "conciseness",
+        "detail": "Skill file contains verbose explanations that could be trimmed for brevity."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SUSPICIOUS",
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "curl",
+        "detail": "External curl command used without checksum verification."
+      }
+    ]
+  },
+  "impact": {
+    "baselineAvg": 50,
+    "treatmentAvg": 88,
+    "multiplier": 1.76,
+    "scenarios": [
+      {
+        "name": "Anchor counter program with PDA and authority check",
+        "baseline": 50,
+        "treatment": 90,
+        "rationale": "Treatment uses #[derive(InitSpace)], seeds=[b\"counter\", authority.key().as_ref()], has_one = authority, and checked_add per the skill; baseline writes raw Solana account handling and misses Anchor's account macros."
+      },
+      {
+        "name": "Create and mint an SPL token via CLI",
+        "baseline": 50,
+        "treatment": 85,
+        "rationale": "Treatment runs spl-token create-token --decimals 6 then create-account/mint/transfer in the exact sequence from the skill; baseline reaches for Token Program web3.js calls and misses the spl-token CLI shortcut."
+      }
+    ]
+  }
+}

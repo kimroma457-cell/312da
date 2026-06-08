@@ -1,0 +1,58 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:7325659f8e4c489f52fd3a86255949fc6be5f6d2fcc2f4cbe25516a470d1e3b9",
+  "scoredAt": "2026-05-13T10:07:33.690Z",
+  "backend": "subagent",
+  "model": "claude-sonnet-4-6",
+  "quality": {
+    "score": 80,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "WEAK",
+      "actionability": "PASS",
+      "crossPlatform": "WEAK",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The skill does not cover error handling or edge cases such as missing files or unsupported formats."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "conciseness",
+        "detail": "The documentation contains verbose comments and explanations that could be trimmed for brevity."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "crossPlatform",
+        "detail": "The skill assumes a Node.js environment and does not provide guidance for other platforms."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "baselineAvg": 64,
+    "treatmentAvg": 93,
+    "multiplier": 1.45,
+    "scenarios": [
+      {
+        "name": "responsive-variants-webp-and-avif",
+        "baseline": 65,
+        "treatment": 92,
+        "rationale": "Treatment iterates a [320,640,960,1280,1920] breakpoint array, reads metadata().width to skip upscaling, emits webp({quality:80}) primary plus progressive jpeg fallback, and adds avif({quality:50}) noting the differing quality scale; baseline writes one-off resize/webp calls without the upscale guard or quality-scale awareness."
+      },
+      {
+        "name": "avatar-upload-pipeline-with-exif-strip",
+        "baseline": 62,
+        "treatment": 93,
+        "rationale": "Treatment chains .rotate() first to apply EXIF orientation, uses resize(200,200,{fit:'cover',position:'centre'}) for the square avatar, generates the 800w display and 40x40 thumb, and strips metadata via withMetadata({orientation: undefined}); baseline commonly forgets the rotate() step and EXIF strip for user uploads."
+      }
+    ]
+  }
+}

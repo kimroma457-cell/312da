@@ -1,0 +1,50 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:9b6c58949b21a8a217e0745163bac02d88e2fd15dc6428ae8944337d110bc934",
+  "scoredAt": "2026-05-13T09:43:02.851Z",
+  "backend": "ollama",
+  "model": "gpt-oss:20b",
+  "quality": {
+    "score": 93,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The skill does not handle missing or incomplete user inputs and lacks error handling for edge cases."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "baselineAvg": 55,
+    "treatmentAvg": 88,
+    "multiplier": 1.6,
+    "scenarios": [
+      {
+        "name": "Senior software engineer offer letter",
+        "baseline": 58,
+        "treatment": 90,
+        "rationale": "Treatment hits every required section from the template — Position Details, Compensation with 4-year vest plus 1-year cliff (25% then monthly), Benefits, Contingencies, explicit at-will clause, Next Steps with expiration date, and signature/acceptance block — and reminds the user to have legal/HR review; baseline omits the contingencies and at-will sections and gives no acceptance/expiration deadline."
+      },
+      {
+        "name": "Revised offer after candidate counter",
+        "baseline": 52,
+        "treatment": 86,
+        "rationale": "Treatment follows the documented revision workflow: opens by acknowledging the revision, updates base to $185K, adds $15K signing bonus with clawback terms and 30-day payment, preserves expiration, and saves as a new file leaving the original intact; baseline simply rewrites numbers without clawback, revision acknowledgement, or file-preservation guidance."
+      }
+    ],
+    "backend": "subagent",
+    "model": "claude-sonnet-4-6"
+  }
+}

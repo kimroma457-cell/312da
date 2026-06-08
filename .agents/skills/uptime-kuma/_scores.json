@@ -1,0 +1,50 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:c0c22c22cfc0d04bc280550c298923c28c212bc9508cea490d04d676c1585fdc",
+  "scoredAt": "2026-05-13T10:32:20.312Z",
+  "backend": "ollama",
+  "model": "gpt-oss:20b",
+  "quality": {
+    "score": 93,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The skill file does not cover error scenarios or edge cases for monitoring, notifications, or backup operations."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "baselineAvg": 38,
+    "treatmentAvg": 87,
+    "multiplier": 2.29,
+    "scenarios": [
+      {
+        "name": "Deploy Uptime Kuma in Docker with keyword + container monitors",
+        "baseline": 50,
+        "treatment": 88,
+        "rationale": "Treatment uses louislam/uptime-kuma:1 on port 3001 with the uptime-kuma-data volume, mounts /var/run/docker.sock for container monitoring, and adds an HTTP keyword check on \"status\":\"ok\"; baseline often suggests a different self-hosted tool or omits the keyword/Docker monitor types."
+      },
+      {
+        "name": "Add monitor via Socket.IO API and configure maintenance cron",
+        "baseline": 25,
+        "treatment": 85,
+        "rationale": "Treatment connects with socket.io-client, emits login then add with type/interval/maxretries/accepted_statuscodes/notificationIDList, and sets a cron-strategy maintenance window like 0 2 * * 0; baseline does not know Kuma uses Socket.IO and proposes a fictional REST API."
+      }
+    ],
+    "backend": "subagent",
+    "model": "claude-sonnet-4-6"
+  }
+}

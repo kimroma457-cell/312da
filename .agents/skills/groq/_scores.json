@@ -1,0 +1,53 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:585f37eb45ba5a8b1334e5dd62cf9de4644ec1466d90a56413f22d5481eda68a",
+  "scoredAt": "2026-05-13T09:10:23.798Z",
+  "backend": "subagent",
+  "model": "claude-sonnet-4-6",
+  "quality": {
+    "score": 87,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "WEAK",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The skill does not cover error handling or edge cases."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "conciseness",
+        "detail": "The skill contains verbose explanatory text beyond necessary code examples."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "baselineAvg": 45,
+    "treatmentAvg": 97,
+    "multiplier": 2.16,
+    "scenarios": [
+      {
+        "name": "nextjs-streaming-chat",
+        "baseline": 55,
+        "treatment": 96,
+        "rationale": "Treatment uses groq-sdk with the documented llama-3.3-70b-versatile model and proper delta.content streaming; baseline streams via OpenAI SDK base_url with a guessed model id, missing groq-sdk specificity."
+      },
+      {
+        "name": "structured-extraction",
+        "baseline": 35,
+        "treatment": 97,
+        "rationale": "Treatment uses response_format json_object, temperature 0, and the documented llama-3.1-8b-instant fast model for extraction; baseline relies on parsing raw text with the larger Mixtral model and no JSON mode."
+      }
+    ]
+  }
+}

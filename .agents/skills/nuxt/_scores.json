@@ -1,0 +1,58 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:e337583e6ed38f9b8ab8dd75890c851b0ddcce2a18fe6ede46fdac7a65fd5499",
+  "scoredAt": "2026-05-13T09:42:29.326Z",
+  "backend": "subagent",
+  "model": "claude-sonnet-4-6",
+  "quality": {
+    "score": 80,
+    "dimensions": {
+      "clarity": "WEAK",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "WEAK",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "clarity",
+        "detail": "The skill file lacks explicit usage instructions, making it less actionable."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The skill file does not cover all error scenarios and edge cases for Nuxt usage."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "actionability",
+        "detail": "The skill file provides examples but lacks step-by-step actionable procedures for common tasks."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "baselineAvg": 53,
+    "treatmentAvg": 89,
+    "multiplier": 1.68,
+    "scenarios": [
+      {
+        "name": "Dynamic SSR post page with SEO",
+        "baseline": 55,
+        "treatment": 90,
+        "rationale": "Baseline uses pages/posts/[slug].vue and useFetch but typically omits createError for 404 and uses generic useHead only; treatment uses useAsyncData with error handling, createError({statusCode:404}), and both useHead and useSeoMeta."
+      },
+      {
+        "name": "Authenticated server route for post creation",
+        "baseline": 50,
+        "treatment": 88,
+        "rationale": "Baseline knows server/api/ exists but may not consistently use defineEventHandler, readBody, and a path-scoped middleware throwing createError({statusCode:401}); treatment composes index.post.ts plus server/middleware/auth.ts using getRequestURL to gate /api/admin."
+      }
+    ]
+  }
+}

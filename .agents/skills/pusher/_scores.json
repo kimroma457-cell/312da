@@ -1,0 +1,58 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:d71eba41523f5e23aafb9e78377c921dd68582f72a4b0046832015d36518cdfd",
+  "scoredAt": "2026-05-13T09:58:56.119Z",
+  "backend": "subagent",
+  "model": "claude-sonnet-4-6",
+  "quality": {
+    "score": 60,
+    "dimensions": {
+      "clarity": "FAIL",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "FAIL",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "HIGH",
+        "category": "clarity",
+        "detail": "The skill file lacks explicit instructions for the agent, making it vague and ambiguous."
+      },
+      {
+        "severity": "HIGH",
+        "category": "crossPlatform",
+        "detail": "The skill is tailored to Node.js and React, limiting applicability to other platforms."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The skill does not cover all error scenarios or edge cases, such as network failures or authentication errors beyond a simple 403."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "baselineAvg": 35,
+    "treatmentAvg": 95,
+    "multiplier": 2.71,
+    "scenarios": [
+      {
+        "name": "Presence channel with auth",
+        "baseline": 40,
+        "treatment": 95,
+        "rationale": "Baseline uses the older pusher.authenticate() method and only binds pusher:subscription_succeeded while omitting member_added/member_removed and the avatar field, whereas the treatment uses authorizeChannel with user_info and binds all three presence lifecycle events."
+      },
+      {
+        "name": "Batch trigger to multiple channels",
+        "baseline": 30,
+        "treatment": 95,
+        "rationale": "Baseline issues two separate pusher.trigger() calls instead of using pusher.triggerBatch() with an array of {channel, name, data} objects to send both events in a single API call as the treatment does."
+      }
+    ]
+  }
+}

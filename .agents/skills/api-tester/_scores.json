@@ -1,0 +1,53 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:e5039926a0d79e210f05c3ae1964dee2497955483b8bdd050b4e1f2e10ba13e3",
+  "scoredAt": "2026-05-13T14:02:35.714Z",
+  "backend": "ollama",
+  "model": "gpt-oss:20b",
+  "quality": {
+    "score": 87,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "WEAK",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The instructions do not explicitly cover handling network errors, timeouts, or non-JSON responses, which are common edge cases in API testing."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "crossPlatform",
+        "detail": "The skill assumes the presence of curl or Python 3.9+ with the requests library, limiting compatibility with agents lacking these tools."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "multiplier": 1.83,
+    "baselineAvg": 30,
+    "treatmentAvg": 55,
+    "scenarios": [
+      {
+        "name": "crud-flow-test",
+        "baseline": 20,
+        "treatment": 30,
+        "rationale": "Response A includes the required curl POST with -s -w and a more complete CRUD flow, whereas Response B lacks the Python snippet, detailed assertions, and PASS/FAIL reporting, making A the better answer."
+      },
+      {
+        "name": "auth-failure-debug",
+        "baseline": 40,
+        "treatment": 80,
+        "rationale": "Response A includes the required curl commands and a root‑cause report, but lacks the Python snippet; Response B misses the curl without auth, the Python code, and a clear refresh recommendation."
+      }
+    ]
+  }
+}

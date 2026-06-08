@@ -1,0 +1,53 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:e7636afc1c9cba011ae877d60ffdeaeb108957fdb0733aa8161b25204dbcd722",
+  "scoredAt": "2026-05-13T15:22:40.538Z",
+  "backend": "ollama",
+  "model": "gpt-oss:20b",
+  "quality": {
+    "score": 77,
+    "dimensions": {
+      "clarity": "FAIL",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "HIGH",
+        "category": "clarity",
+        "detail": "The skill file lacks clear, actionable instructions for the AI agent to follow, making it ambiguous."
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The examples do not cover error handling or edge cases, limiting the skill's robustness."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "multiplier": 5,
+    "baselineAvg": 20,
+    "treatmentAvg": 100,
+    "scenarios": [
+      {
+        "name": "diverging-scale-heatmap",
+        "baseline": 0,
+        "treatment": 100,
+        "rationale": "Response A fully satisfies the rubric by using chroma.scale with the specified stops, mode, domain, and .colors(7); Response B does not use chroma.scale and thus fails the rubric."
+      },
+      {
+        "name": "contrast-check-recommendation",
+        "baseline": 40,
+        "treatment": 100,
+        "rationale": "Response A fully meets the rubric with code, calculations, and a clear recommendation, while Response B lacks the required chroma.contrast usage, code, and explicit recommendation."
+      }
+    ]
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:8ab1dd89ad4c14b8c06d6ae3f6280b85d7c86e582097958a231d67700a824546",
+  "scoredAt": "2026-05-13T09:34:44.561Z",
+  "backend": "subagent",
+  "model": "claude-sonnet-4-6",
+  "quality": {
+    "score": 93,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "The skill file does not cover error scenarios or edge cases."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "baselineAvg": 28,
+    "treatmentAvg": 96,
+    "multiplier": 3.43,
+    "scenarios": [
+      {
+        "name": "Sequential Researcher-Writer-Editor pipeline with AgentGroupChat",
+        "baseline": 20,
+        "treatment": 97,
+        "rationale": "Baseline called the OpenAI API directly with no Semantic Kernel primitives; treatment composes ChatCompletionAgents in AgentGroupChat with SequentialSelectionStrategy and KernelFunctionTerminationStrategy(max_iterations=6)."
+      },
+      {
+        "name": "Parallel multi-agent market analysis with synthesizer",
+        "baseline": 35,
+        "treatment": 95,
+        "rationale": "Baseline correctly fanned out with asyncio.gather but used raw chat completions; treatment uses ChatCompletionAgent.invoke per agent under asyncio.gather and a synthesizer agent as the skill describes."
+      }
+    ]
+  }
+}

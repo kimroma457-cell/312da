@@ -1,0 +1,48 @@
+{
+  "version": "1.0.0",
+  "skillHash": "sha256:d53f9c85a58ff821349844b6c1e23f56e8fb9cac65ebd036153dac773e40ecaa",
+  "scoredAt": "2026-05-13T09:26:09.215Z",
+  "backend": "subagent",
+  "model": "claude-sonnet-4-6",
+  "quality": {
+    "score": 93,
+    "dimensions": {
+      "clarity": "PASS",
+      "completeness": "WEAK",
+      "conciseness": "PASS",
+      "actionability": "PASS",
+      "crossPlatform": "PASS",
+      "examples": "PASS"
+    },
+    "issues": [
+      {
+        "severity": "MEDIUM",
+        "category": "completeness",
+        "detail": "Skill documentation does not cover error handling or edge cases for deployment and configuration."
+      }
+    ]
+  },
+  "security": {
+    "verdict": "SAFE",
+    "issues": []
+  },
+  "impact": {
+    "baselineAvg": 43,
+    "treatmentAvg": 95,
+    "multiplier": 2.21,
+    "scenarios": [
+      {
+        "name": "Deploy Loki and Promtail with Docker container discovery",
+        "baseline": 40,
+        "treatment": 95,
+        "rationale": "Treatment uses docker_sd_configs with __meta_docker_container_name relabeling for automatic container labels; baseline typically falls back to static file paths or generic Docker logging drivers."
+      },
+      {
+        "name": "LogQL queries for service error rate and p99 duration",
+        "baseline": 45,
+        "treatment": 95,
+        "rationale": "Treatment writes idiomatic LogQL with rate()/sum by() and quantile_over_time with unwrap on parsed JSON fields; baseline confuses PromQL/LogQL syntax and misses unwrap."
+      }
+    ]
+  }
+}
