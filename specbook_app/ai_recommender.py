@@ -48,7 +48,10 @@ def recommend(query: str) -> dict:
     반환:  {item_label, item_code, 최저가:{...}, 보통:{...}, 최고가:{...}}
     """
     try:
-        client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY", ""))
+        api_key = os.environ.get("ANTHROPIC_API_KEY", "").strip()
+        if not api_key or not api_key.startswith("sk-ant-"):
+            return {"error": "API 키가 없거나 형식이 올바르지 않습니다. 사이드바에 sk-ant-... 형식의 키를 입력하세요."}
+        client = anthropic.Anthropic(api_key=api_key)
         msg = client.messages.create(
             model="claude-sonnet-4-6",
             max_tokens=1024,
