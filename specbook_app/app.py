@@ -99,22 +99,29 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# ── API 키 입력 (사이드바 최상단) ─────────────────────────────────────────────
-with st.sidebar:
-    st.markdown("### 🔑 Anthropic API Key")
-    api_key_input = st.text_input(
-        "API Key",
-        value=os.environ.get("ANTHROPIC_API_KEY", ""),
-        type="password",
-        placeholder="sk-ant-api03-...",
-        label_visibility="collapsed",
-    )
-    if api_key_input:
-        os.environ["ANTHROPIC_API_KEY"] = api_key_input
-        st.success("✓ 키 설정됨", icon="🔒")
-    else:
-        st.warning("API 키를 입력하세요")
-    st.markdown("---")
+# ── API 키 입력 (헤더 바로 아래) ──────────────────────────────────────────────
+_api_key = os.environ.get("ANTHROPIC_API_KEY", "")
+if not _api_key:
+    with st.container():
+        st.markdown("#### 🔑 Anthropic API Key 입력")
+        _col1, _col2 = st.columns([5, 1])
+        with _col1:
+            _api_key = st.text_input(
+                "API Key",
+                type="password",
+                placeholder="sk-ant-api03-... (console.anthropic.com에서 발급)",
+                label_visibility="collapsed",
+            )
+        with _col2:
+            _ok = st.button("저장", use_container_width=True, type="primary")
+        if _api_key:
+            os.environ["ANTHROPIC_API_KEY"] = _api_key
+            st.success("✓ API 키가 설정되었습니다. 이제 AI 분석을 사용할 수 있습니다.")
+        else:
+            st.info("Anthropic API 키를 입력해야 AI 자재 추천이 작동합니다. [키 발급 →](https://console.anthropic.com)")
+        st.divider()
+else:
+    os.environ["ANTHROPIC_API_KEY"] = _api_key
 
 # ── 세션 초기화 ──────────────────────────────────────────────────────────────────
 if "rooms" not in st.session_state:
