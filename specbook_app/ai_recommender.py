@@ -5,8 +5,19 @@ Anthropic Claude를 사용하여 검색어 분석 후 3단계 자재를 추천�
 import os
 import json
 import anthropic
+from pathlib import Path
 
-client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY", ""))
+def _load_dotenv():
+    """specbook_app/.env 파일이 있으면 환경변수로 로드."""
+    env_path = Path(__file__).parent / ".env"
+    if env_path.exists():
+        for line in env_path.read_text().splitlines():
+            line = line.strip()
+            if line and not line.startswith("#") and "=" in line:
+                k, v = line.split("=", 1)
+                os.environ.setdefault(k.strip(), v.strip().strip('"').strip("'"))
+
+_load_dotenv()
 
 SYSTEM = """당신은 한국 인테리어 전문가입니다.
 사용자가 인테리어 자재/가구/조명 등의 검색어를 입력하면,
@@ -37,6 +48,7 @@ def recommend(query: str) -> dict:
     반환:  {item_label, item_code, 최저가:{...}, 보통:{...}, 최고가:{...}}
     """
     try:
+        client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY", ""))
         msg = client.messages.create(
             model="claude-sonnet-4-6",
             max_tokens=1024,
