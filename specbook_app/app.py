@@ -1,13 +1,10 @@
 """
-인테리어 스펙북 생성기 — 검색 기반 AI 추천 + 다중 공간 지원
+인테리어 스펙북 생성기 — 네이버 이미지 검색 기반
 """
-import os
 import streamlit as st
 from image_search import search_image
-from ai_recommender import recommend
 from pptx_generator import generate_pptx
 
-# ── 페이지 설정 ────────────────────────────────────────────────────────────────
 st.set_page_config(
     page_title="스펙북 생성기",
     page_icon="🏠",
@@ -15,7 +12,6 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# ── CSS ────────────────────────────────────────────────────────────────────────
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
@@ -23,50 +19,27 @@ html,body,[class*="css"]{font-family:'Noto Sans KR',sans-serif;}
 .stApp{background:#F7F5F2;}
 #MainMenu,footer,header{visibility:hidden;}
 
-/* 헤더 */
-.top-bar{
-  background:#1A1816;padding:20px 28px;
-  margin:-1rem -1rem 1.5rem -1rem;
-  display:flex;align-items:center;gap:14px;
-}
+.top-bar{background:#1A1816;padding:20px 28px;margin:-1rem -1rem 1.5rem -1rem;}
 .top-bar h1{color:#fff;font-size:1.4rem;font-weight:700;margin:0;letter-spacing:1px;}
 .top-bar .sub{color:#8C7F74;font-size:0.78rem;margin:3px 0 0;}
 .gold{color:#C8A97E;}
 
-/* 카드 */
-.card{background:#fff;border-radius:10px;padding:20px 24px;
-      border:1px solid #E8E2DC;margin-bottom:12px;}
-.card-dark{background:#1A1816;border-radius:10px;padding:20px 24px;margin-bottom:12px;}
-
-/* 공간 헤더 */
-.room-header{display:flex;align-items:center;justify-content:space-between;
-             border-bottom:2px solid #1A1816;padding-bottom:8px;margin-bottom:16px;}
+.sec-label{font-size:0.65rem;font-weight:700;letter-spacing:2px;
+           text-transform:uppercase;color:#C8A97E;margin-bottom:8px;}
+.room-header{border-bottom:2px solid #1A1816;padding-bottom:8px;margin-bottom:16px;}
 .room-name{font-size:1rem;font-weight:700;color:#1A1816;}
 .room-en{font-size:0.75rem;color:#9A8F86;margin-left:8px;}
 
-/* 자재 행 */
-.item-row{display:flex;align-items:flex-start;gap:12px;
-          padding:12px 0;border-bottom:1px solid #EDE8E2;}
-.item-label-sm{font-size:0.7rem;font-weight:700;color:#9A8F86;letter-spacing:1px;}
-.item-product{font-size:0.92rem;font-weight:700;color:#1A1816;}
-.item-spec{font-size:0.75rem;color:#9A8F86;margin-top:2px;}
-.item-finish{font-size:0.82rem;color:#4A4540;margin-top:2px;}
-
-/* 등급 뱃지 */
-.badge{display:inline-block;padding:2px 8px;border-radius:20px;
-       font-size:0.68rem;font-weight:700;margin-bottom:4px;}
+.badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:0.68rem;font-weight:700;}
 .badge-최저가{background:#E8F5E9;color:#2E7D32;}
 .badge-보통  {background:#FFF8E1;color:#F57F17;}
 .badge-최고가{background:#F3E5F5;color:#7B1FA2;}
-
-/* 가격 */
 .price-tag{font-size:0.82rem;font-weight:700;color:#C8A97E;}
 
-/* 섹션 라벨 */
-.sec-label{font-size:0.65rem;font-weight:700;letter-spacing:2px;
-           text-transform:uppercase;color:#C8A97E;margin-bottom:8px;}
+.img-card{border:2px solid transparent;border-radius:8px;padding:4px;cursor:pointer;transition:.15s;}
+.img-card:hover{border-color:#C8A97E;}
+.img-selected{border-color:#1A1816!important;background:#F0EDE8;}
 
-/* 사이드바 */
 section[data-testid="stSidebar"]{background:#1A1816!important;}
 section[data-testid="stSidebar"] *{color:#E8E2DC!important;}
 section[data-testid="stSidebar"] .stButton>button{
@@ -76,16 +49,10 @@ section[data-testid="stSidebar"] .stButton>button:hover{
   background:#C8A97E!important;color:#1A1816!important;}
 section[data-testid="stSidebar"] input{
   background:#2C2A28!important;border-color:#3C3A38!important;color:#E8E2DC!important;}
-section[data-testid="stSidebar"] select{
-  background:#2C2A28!important;border-color:#3C3A38!important;}
 
-/* 등급 선택 버튼 */
-.stButton>button{border-radius:6px!important;font-size:0.8rem!important;font-weight:600!important;}
-
-/* 탭 */
 .stTabs [data-baseweb="tab-list"]{background:#EEEBE6;padding:4px;border-radius:10px;gap:3px;}
 .stTabs [data-baseweb="tab"]{border-radius:7px;font-weight:600;font-size:0.83rem;}
-.stTabs [aria-selected="true"]{background:#fff!important;color:#1A1816!important;box-shadow:0 1px 4px rgba(0,0,0,.1);}
+.stTabs [aria-selected="true"]{background:#fff!important;color:#1A1816!important;}
 </style>
 """, unsafe_allow_html=True)
 
@@ -94,38 +61,13 @@ st.markdown("""
 <div class="top-bar">
   <div>
     <h1>INTERIOR <span class="gold">SPEC BOOK</span> GENERATOR</h1>
-    <div class="sub">검색어를 입력하면 AI가 최저가 · 보통 · 최고가 자재를 추천합니다</div>
+    <div class="sub">네이버 이미지 검색으로 자재를 찾고 PPT 스펙북을 자동 생성합니다</div>
   </div>
 </div>
 """, unsafe_allow_html=True)
 
-# ── API 키 입력 (헤더 바로 아래) ──────────────────────────────────────────────
-_api_key = os.environ.get("ANTHROPIC_API_KEY", "")
-if not _api_key:
-    with st.container():
-        st.markdown("#### 🔑 Anthropic API Key 입력")
-        _col1, _col2 = st.columns([5, 1])
-        with _col1:
-            _api_key = st.text_input(
-                "API Key",
-                type="password",
-                placeholder="sk-ant-api03-... (console.anthropic.com에서 발급)",
-                label_visibility="collapsed",
-            )
-        with _col2:
-            _ok = st.button("저장", use_container_width=True, type="primary")
-        if _api_key:
-            os.environ["ANTHROPIC_API_KEY"] = _api_key
-            st.success("✓ API 키가 설정되었습니다. 이제 AI 분석을 사용할 수 있습니다.")
-        else:
-            st.info("Anthropic API 키를 입력해야 AI 자재 추천이 작동합니다. [키 발급 →](https://console.anthropic.com)")
-        st.divider()
-else:
-    os.environ["ANTHROPIC_API_KEY"] = _api_key
-
 # ── 세션 초기화 ──────────────────────────────────────────────────────────────────
 if "rooms" not in st.session_state:
-    # rooms: [{id, name, name_en, items:[{...}]}]
     st.session_state.rooms = []
 if "project" not in st.session_state:
     st.session_state.project = {
@@ -148,7 +90,9 @@ ROOM_PRESETS = {
     "다이닝": "Dining Room",
 }
 
-# ── 사이드바 — 프로젝트 정보 + 공간 추가 ──────────────────────────────────────
+TIERS = ["최저가", "보통", "최고가"]
+
+# ── 사이드바 ────────────────────────────────────────────────────────────────────
 with st.sidebar:
     st.markdown("### 📋 프로젝트 정보")
     p = st.session_state.project
@@ -165,181 +109,223 @@ with st.sidebar:
 
     preset = st.selectbox("공간 선택", list(ROOM_PRESETS.keys()) + ["직접 입력"])
     if preset == "직접 입력":
-        custom_ko = st.text_input("공간명 (한글)")
-        custom_en = st.text_input("공간명 (영어)")
-        add_name    = custom_ko
-        add_name_en = custom_en
+        add_ko = st.text_input("공간명 (한글)", key="custom_ko")
+        add_en = st.text_input("공간명 (영어)", key="custom_en")
     else:
-        add_name    = preset
-        add_name_en = ROOM_PRESETS[preset]
+        add_ko = preset
+        add_en = ROOM_PRESETS[preset]
 
-    # 이 공간이 몇 번째인지 자동 카운트
-    same_count = sum(1 for r in st.session_state.rooms if r["name"] == add_name)
-    display_name = f"{add_name}{same_count + 1}" if same_count > 0 else add_name
+    same = sum(1 for r in st.session_state.rooms if r["name"].startswith(add_ko))
+    display_name = f"{add_ko}{same + 1}" if same else add_ko
 
     if st.button("＋ 공간 추가", use_container_width=True):
-        if add_name:
+        if add_ko:
             st.session_state.rooms.append({
                 "id":      len(st.session_state.rooms),
                 "name":    display_name,
-                "name_en": add_name_en,
+                "name_en": add_en,
                 "items":   [],
             })
             st.rerun()
 
-    # 공간 목록
     if st.session_state.rooms:
         st.markdown("---")
         st.markdown("**추가된 공간**")
         for i, room in enumerate(st.session_state.rooms):
-            col_r, col_del = st.columns([4, 1])
-            col_r.markdown(f"• {room['name']}")
-            if col_del.button("✕", key=f"del_room_{i}"):
+            c1, c2 = st.columns([4, 1])
+            c1.markdown(f"• {room['name']}")
+            if c2.button("✕", key=f"del_room_{i}"):
                 st.session_state.rooms.pop(i)
                 st.rerun()
 
-# ── 메인 영역 ───────────────────────────────────────────────────────────────────
+# ── 메인 ────────────────────────────────────────────────────────────────────────
 if not st.session_state.rooms:
     st.info("👈 왼쪽 사이드바에서 공간을 추가하세요.")
     st.stop()
 
-# 탭: 각 공간 + PPT 생성
-room_names = [r["name"] for r in st.session_state.rooms]
-tabs = st.tabs(room_names + ["📄 PPT 생성"])
+tabs = st.tabs([r["name"] for r in st.session_state.rooms] + ["📄 PPT 생성"])
 
+# ── 공간별 탭 ───────────────────────────────────────────────────────────────────
 for tab_i, (tab, room) in enumerate(zip(tabs[:-1], st.session_state.rooms)):
     with tab:
         st.markdown(f"""
         <div class="room-header">
-          <div><span class="room-name">{room['name']}</span>
-               <span class="room-en">{room['name_en']}</span></div>
+          <span class="room-name">{room['name']}</span>
+          <span class="room-en">{room['name_en']}</span>
         </div>""", unsafe_allow_html=True)
 
-        # ── 검색 ────────────────────────────────────────────────────────────
+        # ── 검색 영역 ────────────────────────────────────────────────────────
         with st.expander("🔍 자재 검색 및 추가", expanded=len(room["items"]) == 0):
-            search_col, btn_col = st.columns([5, 1])
-            with search_col:
+
+            s_col, b_col = st.columns([5, 1])
+            with s_col:
                 query = st.text_input(
-                    "검색어 입력",
-                    placeholder="예: 거실 소파, 오크 헤링본 마루, 펜던트 조명 ...",
-                    key=f"search_{tab_i}",
+                    "검색어",
+                    placeholder="예: 오크 헤링본 마루, 리넨 소파, 펜던트 조명...",
+                    key=f"q_{tab_i}",
                     label_visibility="collapsed",
                 )
-            with btn_col:
-                do_search = st.button("AI 분석", key=f"sbtn_{tab_i}",
+            with b_col:
+                do_search = st.button("검색", key=f"sb_{tab_i}",
                                       use_container_width=True, type="primary")
 
             if do_search and query:
-                with st.spinner(f"'{query}' 분석 중..."):
-                    result = recommend(query)
+                with st.spinner(f"'{query}' 이미지 검색 중..."):
+                    results = search_image(query, count=9)
 
-                if "error" in result:
-                    st.error(f"오류: {result['error']}")
+                if not results:
+                    st.warning("검색 결과가 없습니다. 다른 검색어를 입력해보세요.")
                 else:
-                    st.markdown(f"**{result.get('item_label', query)}** — 등급별 추천")
-                    t_cols = st.columns(3)
-                    for ti, tier in enumerate(["최저가", "보통", "최고가"]):
-                        mat = result.get(tier, {})
-                        with t_cols[ti]:
-                            badge_class = f"badge-{tier}"
-                            imgs = search_image(mat.get("search_query", query), count=1)
-                            img_url = imgs[0]["url"] if imgs else ""
-                            if img_url:
-                                st.image(img_url, use_container_width=True)
-                            st.markdown(f'<span class="badge {badge_class}">{tier}</span>', unsafe_allow_html=True)
-                            st.markdown(f"**{mat.get('product','')}**")
-                            st.caption(f"{mat.get('brand','')}  |  {mat.get('spec','')}")
-                            st.markdown(f'<span class="price-tag">{mat.get("price","")}</span>', unsafe_allow_html=True)
-                            st.caption(mat.get("finish", ""))
+                    st.markdown(f"**검색 결과** — 이미지를 선택하고 정보를 입력 후 추가하세요")
 
-                            if st.button(f"✚ {tier} 선택", key=f"add_{tab_i}_{tier}",
-                                         use_container_width=True):
-                                item_entry = {
-                                    "item_label": result.get("item_label", query),
-                                    "item_code":  result.get("item_code", "ITEM"),
-                                    "tier":       tier,
-                                    "product":    mat.get("product", ""),
-                                    "brand":      mat.get("brand", ""),
-                                    "spec":       mat.get("spec", ""),
-                                    "finish":     mat.get("finish", ""),
-                                    "price":      mat.get("price", ""),
-                                    "vendor":     mat.get("vendor", ""),
-                                    "note":       mat.get("note", ""),
-                                    "image_url":  img_url,
-                                    "source_url": imgs[0]["page"] if imgs else "",
-                                    "search_query": mat.get("search_query", query),
-                                }
-                                st.session_state.rooms[tab_i]["items"].append(item_entry)
+                    # 이미지 그리드 (3열)
+                    img_cols = st.columns(3)
+                    selected_img = st.session_state.get(f"sel_img_{tab_i}", None)
+
+                    for ri, res in enumerate(results):
+                        with img_cols[ri % 3]:
+                            st.image(res["url"], use_container_width=True)
+                            if st.button("이 이미지 선택", key=f"imgsel_{tab_i}_{ri}",
+                                         use_container_width=True,
+                                         type="primary" if selected_img == ri else "secondary"):
+                                st.session_state[f"sel_img_{tab_i}"] = ri
+                                st.session_state[f"sel_url_{tab_i}"] = res["url"]
+                                st.session_state[f"sel_page_{tab_i}"] = res["page"]
                                 st.rerun()
 
-        # ── 선택된 자재 목록 ─────────────────────────────────────────────────
-        items = room["items"]
-        if not items:
-            st.caption("아직 선택된 자재가 없습니다. 위 검색창에서 추가하세요.")
-        else:
-            st.markdown(f'<p class="sec-label">선택된 자재 {len(items)}개</p>', unsafe_allow_html=True)
-            for ii, item in enumerate(items):
-                with st.container():
-                    ic1, ic2, ic3 = st.columns([1, 5, 1])
-                    with ic1:
-                        if item.get("image_url"):
-                            st.image(item["image_url"], use_container_width=True)
-                    with ic2:
-                        badge_c = f"badge-{item['tier']}"
-                        st.markdown(f"""
-                        <span class="badge {badge_c}">{item['tier']}</span>
-                        <span class="item-label-sm"> {item['item_code']}</span><br>
-                        <span class="item-product">{item['product']}</span><br>
-                        <span class="item-spec">{item.get('spec','')}</span><br>
-                        <span class="item-finish">{item.get('finish','')}</span>
-                        <span class="price-tag"> &nbsp; {item.get('price','')}</span>
-                        """, unsafe_allow_html=True)
-                    with ic3:
-                        if st.button("삭제", key=f"del_{tab_i}_{ii}"):
-                            st.session_state.rooms[tab_i]["items"].pop(ii)
+                    st.markdown("---")
+
+                    # 선택된 이미지 확인
+                    sel_idx = st.session_state.get(f"sel_img_{tab_i}")
+                    sel_url = st.session_state.get(f"sel_url_{tab_i}", "")
+
+                    if sel_url:
+                        st.success(f"✓ {sel_idx+1}번 이미지 선택됨")
+                    else:
+                        st.info("위에서 이미지를 선택해주세요")
+
+                    # 자재 정보 입력
+                    st.markdown("**자재 정보 입력**")
+                    f1, f2, f3 = st.columns(3)
+                    with f1:
+                        item_code = st.text_input("품목 코드", "FLOOR",
+                                                   placeholder="SOFA / FLOOR / LIGHT ...",
+                                                   key=f"code_{tab_i}")
+                        product   = st.text_input("제품명 *", "",
+                                                   placeholder="예: 오크 헤링본 마루",
+                                                   key=f"prod_{tab_i}")
+                    with f2:
+                        spec   = st.text_input("규격", "",
+                                                placeholder="예: 600×120×15T mm",
+                                                key=f"spec_{tab_i}")
+                        finish = st.text_input("재질/마감", "",
+                                               placeholder="예: White Oak / 내추럴 오일",
+                                               key=f"fin_{tab_i}")
+                    with f3:
+                        price  = st.text_input("가격대", "",
+                                               placeholder="예: ㎡당 120,000원",
+                                               key=f"price_{tab_i}")
+                        vendor = st.text_input("비고", "",
+                                               placeholder="기성품 / 커스텀 / 수입",
+                                               key=f"vend_{tab_i}")
+
+                    tier = st.radio(
+                        "등급 선택",
+                        TIERS,
+                        horizontal=True,
+                        key=f"tier_{tab_i}",
+                        index=1,
+                    )
+
+                    if st.button("＋ 자재 추가", key=f"add_{tab_i}",
+                                 use_container_width=True, type="primary"):
+                        if not product:
+                            st.error("제품명을 입력하세요.")
+                        elif not sel_url:
+                            st.error("이미지를 선택하세요.")
+                        else:
+                            st.session_state.rooms[tab_i]["items"].append({
+                                "item_code":  item_code,
+                                "item_label": product,
+                                "tier":       tier,
+                                "product":    product,
+                                "spec":       spec,
+                                "finish":     finish,
+                                "price":      price,
+                                "vendor":     vendor,
+                                "image_url":  sel_url,
+                                "source_url": st.session_state.get(f"sel_page_{tab_i}", ""),
+                            })
+                            # 선택 초기화
+                            for k in [f"sel_img_{tab_i}", f"sel_url_{tab_i}", f"sel_page_{tab_i}"]:
+                                st.session_state.pop(k, None)
+                            st.success(f"✓ '{product}' 추가됨!")
                             st.rerun()
-                    st.markdown("<hr style='border:none;border-top:1px solid #EDE8E2;margin:6px 0;'>",
-                                unsafe_allow_html=True)
+
+        # ── 선택된 자재 목록 ──────────────────────────────────────────────────
+        items = room["items"]
+        if items:
+            st.markdown(f'<p class="sec-label">선택된 자재 {len(items)}개</p>',
+                        unsafe_allow_html=True)
+            for ii, item in enumerate(items):
+                c_img, c_info, c_del = st.columns([1, 5, 1])
+                with c_img:
+                    if item.get("image_url"):
+                        st.image(item["image_url"], use_container_width=True)
+                with c_info:
+                    badge = f'<span class="badge badge-{item["tier"]}">{item["tier"]}</span>'
+                    st.markdown(
+                        f'{badge} <span style="font-size:.75rem;color:#9A8F86">{item["item_code"]}</span><br>'
+                        f'<strong>{item["product"]}</strong><br>'
+                        f'<span style="font-size:.78rem;color:#9A8F86">{item.get("spec","")}</span><br>'
+                        f'<span style="font-size:.82rem;color:#4A4540">{item.get("finish","")}</span>&nbsp;&nbsp;'
+                        f'<span class="price-tag">{item.get("price","")}</span>',
+                        unsafe_allow_html=True,
+                    )
+                    if item.get("source_url"):
+                        st.caption(f"[이미지 출처]({item['source_url']})")
+                with c_del:
+                    if st.button("삭제", key=f"del_{tab_i}_{ii}"):
+                        st.session_state.rooms[tab_i]["items"].pop(ii)
+                        st.rerun()
+                st.markdown("<hr style='border:none;border-top:1px solid #EDE8E2;margin:6px 0;'>",
+                            unsafe_allow_html=True)
+        else:
+            st.caption("아직 선택된 자재가 없습니다.")
 
 # ── PPT 생성 탭 ─────────────────────────────────────────────────────────────────
 with tabs[-1]:
     st.markdown('<p class="sec-label">Export Summary</p>', unsafe_allow_html=True)
 
-    total_items = sum(len(r["items"]) for r in st.session_state.rooms)
+    total = sum(len(r["items"]) for r in st.session_state.rooms)
     m1, m2 = st.columns(2)
     m1.metric("공간 수", len(st.session_state.rooms))
-    m2.metric("자재 수", total_items)
+    m2.metric("자재 수", total)
 
-    if st.session_state.rooms:
-        for room in st.session_state.rooms:
-            if room["items"]:
-                st.markdown(f"**{room['name']}** ({len(room['items'])}개)")
-                for item in room["items"]:
-                    badge_c = f"badge-{item['tier']}"
-                    st.markdown(
-                        f'<span class="badge {badge_c}">{item["tier"]}</span> '
-                        f'{item["item_code"]} · {item["product"]}',
-                        unsafe_allow_html=True,
-                    )
+    for room in st.session_state.rooms:
+        if room["items"]:
+            st.markdown(f"**{room['name']}** ({len(room['items'])}개)")
+            for item in room["items"]:
+                bc = f"badge badge-{item['tier']}"
+                st.markdown(
+                    f'<span class="{bc}">{item["tier"]}</span> '
+                    f'{item["item_code"]} · {item["product"]}',
+                    unsafe_allow_html=True,
+                )
 
     st.markdown("---")
-
-    if not os.environ.get("ANTHROPIC_API_KEY"):
-        st.warning("⚠️ ANTHROPIC_API_KEY 환경변수를 설정해야 AI 검색이 작동합니다.")
-
-    gen_col, _ = st.columns([2, 3])
-    with gen_col:
+    col, _ = st.columns([2, 3])
+    with col:
         if st.button("🎨  PPT 스펙북 생성", type="primary",
-                     use_container_width=True, disabled=total_items == 0):
-            with st.spinner("PPT 생성 중... 이미지 다운로드 포함"):
+                     use_container_width=True, disabled=total == 0):
+            with st.spinner("이미지 다운로드 및 PPT 생성 중..."):
                 pptx_bytes = generate_pptx(
                     st.session_state.project,
                     st.session_state.rooms,
                 )
-
             proj_name = st.session_state.project.get("name", "스펙북")
             st.download_button(
-                label="⬇️  PPT 다운로드",
+                "⬇️  PPT 다운로드",
                 data=pptx_bytes,
                 file_name=f"{proj_name}_스펙북.pptx",
                 mime="application/vnd.openxmlformats-officedocument.presentationml.presentation",
@@ -347,5 +333,5 @@ with tabs[-1]:
             )
             st.success("생성 완료!")
 
-    if total_items == 0:
-        st.caption("각 공간 탭에서 자재를 검색 · 추가한 뒤 생성하세요.")
+    if total == 0:
+        st.caption("각 공간 탭에서 자재를 추가한 뒤 생성하세요.")
