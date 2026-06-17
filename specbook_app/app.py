@@ -99,6 +99,23 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
+# ── API 키 입력 (사이드바 최상단) ─────────────────────────────────────────────
+with st.sidebar:
+    st.markdown("### 🔑 Anthropic API Key")
+    api_key_input = st.text_input(
+        "API Key",
+        value=os.environ.get("ANTHROPIC_API_KEY", ""),
+        type="password",
+        placeholder="sk-ant-api03-...",
+        label_visibility="collapsed",
+    )
+    if api_key_input:
+        os.environ["ANTHROPIC_API_KEY"] = api_key_input
+        st.success("✓ 키 설정됨", icon="🔒")
+    else:
+        st.warning("API 키를 입력하세요")
+    st.markdown("---")
+
 # ── 세션 초기화 ──────────────────────────────────────────────────────────────────
 if "rooms" not in st.session_state:
     # rooms: [{id, name, name_en, items:[{...}]}]
