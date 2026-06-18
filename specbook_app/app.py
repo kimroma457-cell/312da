@@ -241,6 +241,23 @@ for ri, (tab, room) in enumerate(zip(tabs[:-2], st.session_state.rooms)):
 
             # ── STEP 1: 카테고리 선택 ──────────────────────────────────────
             st.markdown('<p class="sec-label">① 카테고리</p>', unsafe_allow_html=True)
+
+            # 즐겨찾기 버튼 (starred items count)
+            fav_items = [
+                it for items in room["specbook"].values()
+                for it in items if it.get("is_common")
+            ]
+            fav_active = sel["cat"] == "__fav__"
+            fav_label = f"⭐ 즐겨찾기 ({len(fav_items)})" if fav_items else "⭐ 즐겨찾기"
+            if st.button(fav_label, key=f"cat_{ri}___fav__",
+                         use_container_width=False,
+                         type="primary" if fav_active else "secondary"):
+                sel["cat"] = None if fav_active else "__fav__"
+                sel["brand"] = None
+                sel["group"] = None
+                st.session_state.pop(f"res_{ri}", None)
+                st.rerun()
+
             cat_cols = st.columns(4)
             for ci, ck in enumerate(CAT_KEYS):
                 meta = CATEGORY_META[ck]
@@ -258,6 +275,43 @@ for ri, (tab, room) in enumerate(zip(tabs[:-2], st.session_state.rooms)):
                             sel["group"] = None
                             st.session_state.pop(f"res_{ri}", None)
                         st.rerun()
+
+            # ── 즐겨찾기 뷰 ───────────────────────────────────────────────
+            if sel["cat"] == "__fav__":
+                if not fav_items:
+                    st.info("⭐ 별표 항목이 없습니다. 추가된 자재에서 ☆ 버튼으로 즐겨찾기 등록하세요.")
+                else:
+                    st.markdown(f"**⭐ 즐겨찾기 — {len(fav_items)}개**")
+                    for fi, item in enumerate(fav_items):
+                        ck = item["category"]
+                        meta = CATEGORY_META.get(ck, {"icon": "📦"})
+                        c_img, c_info = st.columns([1, 6])
+                        with c_img:
+                            if item.get("image_url"):
+                                st.image(item["image_url"], use_container_width=True)
+                            else:
+                                st.markdown(
+                                    f'<div style="width:44px;height:44px;background:#F0EDE8;'
+                                    f'border-radius:6px;display:flex;align-items:center;'
+                                    f'justify-content:center;font-size:1.1rem">{meta["icon"]}</div>',
+                                    unsafe_allow_html=True,
+                                )
+                        with c_info:
+                            st.markdown(
+                                f'<div class="pcard-title">{item["name"][:44]}</div>'
+                                f'<div class="pcard-price">{item["price"]}</div>'
+                                f'<div class="pcard-meta">'
+                                f'<span class="badge">{meta["icon"]} {ck}</span>'
+                                f' {item.get("brand_name","")}' +
+                                (f' › {item["product_group"]}' if item.get("product_group") else "")
+                                + "</div>",
+                                unsafe_allow_html=True,
+                            )
+                        st.markdown(
+                            "<hr style='border:none;border-top:1px solid #F0EBE4;margin:4px 0'>",
+                            unsafe_allow_html=True,
+                        )
+                st.stop()
 
             if not sel["cat"]:
                 st.info("카테고리를 선택하면 관련 업체 목록이 표시됩니다.")
