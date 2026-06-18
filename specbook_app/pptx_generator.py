@@ -10,6 +10,7 @@ from lxml import etree
 from pptx import Presentation
 from pptx.util import Inches, Pt, Emu
 from pptx.dml.color import RGBColor
+from pptx.enum.text import MSO_AUTO_SIZE
 
 TEMPLATE_PATH = Path(__file__).parent / "template.pptx"
 
@@ -129,6 +130,7 @@ def _set_text(shape, text: str, font_size_pt: float | None = None):
         return
     tf = shape.text_frame
     tf.word_wrap = False  # 줄바꿈 금지 — 셀 경계 초과 방지
+    tf.auto_size = MSO_AUTO_SIZE.TEXT_TO_FIT_SHAPE  # 셀 크기에 맞게 자동 축소
     for para in tf.paragraphs:
         for run in para.runs:
             run.text = ""
@@ -299,7 +301,12 @@ def _update_ffande(slide, items: list[dict]):
             for cx, cw, ckey in zip(COL_X, COL_W, COL_KEY):
                 # X 위치와 너비 모두 검증해서 배경 shape 오매칭 방지
                 if _near(l, cx, 0.12) and _near(w / 914400, cw, 0.25) and _near(t, ry, 0.20):
-                    val = item.get(ckey, "")
+                    if ckey == "product":
+                        brand = item.get("brand", "")
+                        product = item.get("product", "")
+                        val = f"{brand} {product}".strip() if brand else product
+                    else:
+                        val = item.get(ckey, "")
                     val = str(val) if val else ("1" if ckey == "qty" else "")
                     _set_text(shape, val, font_size_pt=COL_PT[ckey])
                     break
