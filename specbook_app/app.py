@@ -425,7 +425,11 @@ for ri, (tab, room) in enumerate(zip(tabs[:-2], st.session_state.rooms)):
                         st.rerun()
 
             elif do_search and query and not products:
-                st.warning("검색 결과 없음. 검색어를 바꿔보세요.")
+                st.warning(
+                    "⚠️ 전문 시공용 자재 결과가 부족합니다.\n\n"
+                    "검색어를 더 구체화해주세요.  \n"
+                    "예) '실크' → '실크벽지 시공'  |  '타일' → '포세린타일 600x600'  |  '조명' → '매입등 다운라이트'"
+                )
 
         # ── 오른쪽: 추가된 자재 목록 ──────────────────────────────────────
         with right:
