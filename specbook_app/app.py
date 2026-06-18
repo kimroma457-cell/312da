@@ -277,7 +277,7 @@ for ri, (tab, room) in enumerate(zip(tabs[:-2], st.session_state.rooms)):
             sel_info = CATEGORIES[sel_cat]
 
             st.markdown(f"<div style='margin:8px 0 4px;font-size:.78rem;color:#8C7F74'>"
-                        f"검색 예시: {', '.join(sel_info['include'][:4])}</div>",
+                        f"검색 예시: {', '.join(sel_info['pro_queries'][:4])}</div>",
                         unsafe_allow_html=True)
 
             # 검색창 + 버튼
@@ -285,7 +285,7 @@ for ri, (tab, room) in enumerate(zip(tabs[:-2], st.session_state.rooms)):
             with q_col:
                 query = st.text_input(
                     "검색어",
-                    placeholder=f"{sel_info['include'][0]} / {sel_info['include'][1]} ...",
+                    placeholder=f"{sel_info['pro_queries'][0]} ...",
                     key=f"q_{ri}_{sel_cat}",
                     label_visibility="collapsed",
                 )
