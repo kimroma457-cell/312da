@@ -236,12 +236,12 @@ def _move_slide(prs: Presentation, old_idx: int, new_idx: int):
 
 # ── 텍스트 교체 ───────────────────────────────────────────────────────────────
 
-def _set_text(shape, text: str, font_size_pt: float | None = None):
-    """shape 텍스트를 교체한다 (서식은 첫 run 기준 유지). word_wrap 강제 비활성화."""
+def _set_text(shape, text: str, font_size_pt: float | None = None, word_wrap: bool = False):
+    """shape 텍스트를 교체한다 (서식은 첫 run 기준 유지)."""
     if not shape or not shape.has_text_frame:
         return
     tf = shape.text_frame
-    tf.word_wrap = False  # 줄바꿈 금지 — 셀 경계 초과 방지
+    tf.word_wrap = word_wrap
     tf.auto_size = MSO_AUTO_SIZE.TEXT_TO_FIT_SHAPE  # 셀 크기에 맞게 자동 축소
     for para in tf.paragraphs:
         for run in para.runs:
@@ -540,12 +540,14 @@ def _update_model_slide(slide, room_name: str, model_images: list | None = None)
 def _update_ffande(slide, items: list[dict]):
     """FF&E 슬라이드: 행 데이터 업데이트 (최대 8행)."""
     ROW_Y   = [1.75, 2.22, 2.69, 3.16, 3.63, 4.10, 4.57, 5.04]
-    # 실제 컬럼: ITEM=1.55" ROOM=0.85" QTY=0.45" SPEC=2.35" FINISH=1.6" VENDOR=0.9" NOTE=0.9"
     COL_X   = [0.50, 2.15, 3.05, 3.58, 5.98, 7.63, 8.60]
-    COL_W   = [1.55, 0.85, 0.45, 2.35, 1.60, 0.90, 0.90]  # 각 컬럼 실제 너비
+    COL_W   = [1.55, 0.85, 0.45, 2.35, 1.60, 0.90, 0.90]
     COL_KEY = ["product", "room", "qty", "spec", "finish", "vendor", "note"]
-    COL_PT  = {"product": 6.0, "room": 6.5, "qty": 6.5,
-               "spec": 6.5, "finish": 6.5, "vendor": 6.5, "note": 6.5}
+    COL_PT  = {"product": 6.0, "room": 6.0, "qty": 6.0,
+               "spec": 6.0, "finish": 6.0, "vendor": 6.0, "note": 6.0}
+
+    # ITEM 헤더 shape 너비도 함께 확장 (Y < 1.60 인 헤더 행)
+    ITEM_NEW_W = _emu(3.40)  # 원본 1.55" → 3.40"으로 확장
 
     for shape in slide.shapes:
         if not shape.has_text_frame:
@@ -553,27 +555,31 @@ def _update_ffande(slide, items: list[dict]):
         l, t = shape.left, shape.top
         w = shape.width
 
-        # 배경 구분선(전체 행 너비) 제외 — W > 2.5" 이면 데이터 셀이 아님
-        if w > _emu(2.5) and shape.has_text_frame and not shape.text_frame.text.strip():
+        if w > _emu(2.5) and not shape.text_frame.text.strip():
             continue
+
+        # 헤더 행 ITEM 셀 너비 확장 (T < 1.60")
+        if _near(l, 0.50, 0.12) and _near(w, 1.55, 0.25) and t < _emu(1.60):
+            shape.width = ITEM_NEW_W
 
         for ri, ry in enumerate(ROW_Y):
             item = items[ri] if ri < len(items) else None
             for cx, cw, ckey in zip(COL_X, COL_W, COL_KEY):
-                # X 위치와 너비 모두 검증해서 배경 shape 오매칭 방지
                 if _near(l, cx, 0.12) and _near(w, cw, 0.25) and _near(t, ry, 0.20):
+                    if ckey == "product":
+                        shape.width = ITEM_NEW_W  # 데이터 셀도 확장
                     if item is None:
-                        # 항목 없는 행 — 템플릿 기본값 지우기
                         _set_text(shape, "", font_size_pt=COL_PT[ckey])
                     else:
                         if ckey == "product":
                             brand_v = item.get("brand", "")
                             prod_v  = item.get("product", "")
                             val = f"{brand_v} {prod_v}".strip() if brand_v else prod_v
+                            _set_text(shape, val, font_size_pt=COL_PT[ckey], word_wrap=True)
                         else:
                             val = item.get(ckey, "")
-                        val = str(val) if val else ("1" if ckey == "qty" else "")
-                        _set_text(shape, val, font_size_pt=COL_PT[ckey])
+                            val = str(val) if val else ("1" if ckey == "qty" else "")
+                            _set_text(shape, val, font_size_pt=COL_PT[ckey])
                     break
 
 
