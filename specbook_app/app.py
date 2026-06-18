@@ -657,6 +657,7 @@ for ri, (tab, room) in enumerate(zip(tabs[:-2], st.session_state.rooms)):
 
 # ── PPT 생성 탭 ────────────────────────────────────────────────────────────────
 with tabs[-1]:
+  try:
     st.markdown('<p class="sec-label">Export</p>', unsafe_allow_html=True)
     total_all = sum(
         len(items)
@@ -760,3 +761,6 @@ with tabs[-1]:
             st.success("✓ 생성 완료!")
     if total_all == 0:
         st.caption("각 공간 탭에서 자재를 추가한 뒤 생성하세요.")
+  except Exception as e:
+    st.error(f"PPT 탭 오류: {e}")
+    import traceback; st.code(traceback.format_exc())
