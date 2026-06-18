@@ -393,6 +393,18 @@ for ri, (tab, room) in enumerate(zip(tabs[:-2], st.session_state.rooms)):
                             ):
                                 sel["group"] = None if is_active else g
                                 st.session_state.pop(f"res_{ri}", None)
+                                # 제품군 선택 시 자동 검색
+                                if sel["group"]:
+                                    with st.spinner(f"{sel['brand']} {sel['group']} 검색 중..."):
+                                        auto_results = search_products(
+                                            brand=sel["brand"],
+                                            category=sel["cat"],
+                                            product_group=sel["group"],
+                                            keyword="",
+                                            count=50,
+                                        )
+                                    st.session_state[f"res_{ri}"] = auto_results
+                                    st.session_state[f"page_{ri}"] = 0
                                 st.rerun()
 
                     # ── 검색창 ────────────────────────────────────────────────
