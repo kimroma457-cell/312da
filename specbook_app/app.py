@@ -343,8 +343,22 @@ for ri, (tab, room) in enumerate(zip(tabs[:-2], st.session_state.rooms)):
                 PAGE_SIZE = 10
 
                 if products:
-                    total_pages = -(-len(products) // PAGE_SIZE)
-                    page_items  = products[page * PAGE_SIZE: (page+1) * PAGE_SIZE]
+                    SORT_OPTIONS = {
+                        "인기순": None,
+                        "가격 낮은순": lambda x: x["price_int"],
+                        "가격 높은순": lambda x: -x["price_int"],
+                    }
+                    sort_key = st.selectbox(
+                        "정렬",
+                        options=list(SORT_OPTIONS.keys()),
+                        key=f"sort_{ri}",
+                        label_visibility="collapsed",
+                    )
+                    sort_fn = SORT_OPTIONS[sort_key]
+                    sorted_products = sorted(products, key=sort_fn) if sort_fn else products
+
+                    total_pages = -(-len(sorted_products) // PAGE_SIZE)
+                    page_items  = sorted_products[page * PAGE_SIZE: (page+1) * PAGE_SIZE]
 
                     hc1, hc2, hc3 = st.columns([3,2,3])
                     with hc1:
