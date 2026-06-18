@@ -249,16 +249,18 @@ def _update_cover(slide, project: dict):
         if not shape.has_text_frame:
             continue
         text = shape.text_frame.text.strip()
+        text_flat = text.upper().replace('\n', ' ')  # 개행 정규화
 
-        if "TAILORED CLASSIC" in text.upper():
+        # 회사명 플레이스홀더 (TAILORED CLASSIC — 개행 포함 가능)
+        if "TAILORED" in text_flat and "CLASSIC" in text_flat:
             _set_text(shape, company or text)
+        # 위치·면적·공사기간 줄 (템플릿에 해당 shape이 있으면)
         elif any(kw in text for kw in ["위치:", "면적:", "공사기간:"]):
             _set_text(shape, info)
-        elif len(text) > 0 and len(text) < 80 and "INTERIOR" not in text.upper() \
-                and "SPEC" not in text.upper() and "2026" not in text:
-            # 서브타이틀 후보 (짧은 텍스트이면서 메인 타이틀이 아닌 것)
-            if any(kw in text for kw in ["·", "DESICODE", "아파트", "리모델링", "designer"]):
-                _set_text(shape, subtitle)
+        # 서브타이틀: DESICODE 포함이거나 '·' 구분자 있는 텍스트
+        elif ("DESICODE" in text or ("·" in text and len(text) < 100
+              and "INTERIOR" not in text_flat and "SPEC BOOK" not in text_flat)):
+            _set_text(shape, subtitle)
 
 
 def _update_color_story(slide, top_items: list[dict]):
@@ -437,10 +439,10 @@ def _update_spec_slide(slide, room_name: str, room_en: str, items: list[dict]):
             if _near(l, 1.38) and _near(t, rt + 0.50, 0.14):
                 _set_text(shape, item.get("spec", ""), font_size_pt=6.5)
                 break
-            if _near(l, 4.45, 0.18) and _near(t, rt, 0.30):
+            if _near(l, 4.45, 0.18) and _near(t, rt, 0.15):
                 _set_text(shape, item.get("finish", ""), font_size_pt=6.5)
                 break
-            if _near(l, 8.80, 0.18) and _near(t, rt, 0.30):
+            if _near(l, 8.80, 0.18) and _near(t, rt, 0.15):
                 _set_text(shape, item.get("vendor", ""), font_size_pt=6.5)
                 break
 
@@ -573,7 +575,7 @@ def generate_pptx(
     all_ff = []
     for room in rooms:
         for it in room.get("items", []):
-            all_ff.append({**it, "room": it.get("room", room["name"])})
+            all_ff.append({**it, "room": it.get("room") or room["name"]})
 
     _update_ffande(prs.slides[IDX_FFANDE], all_ff[:8])
     for extra_start in range(8, len(all_ff), 8):
