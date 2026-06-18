@@ -773,6 +773,22 @@ for ri, (tab, room) in enumerate(zip(tabs[:-2], st.session_state.rooms)):
                             unsafe_allow_html=True,
                         )
 
+            # ── 모델링 이미지 ───────────────────────────────────────────
+            st.markdown("---")
+            with st.expander("🖼 모델링 이미지 업로드 (PPT VIEW 01~04)", expanded=False):
+                st.caption("각 VIEW 박스에 삽입할 렌더링 이미지를 업로드하세요.")
+                img_cols = st.columns(2)
+                for vi in range(4):
+                    with img_cols[vi % 2]:
+                        key = f"model_img_{room['id']}_{vi}"
+                        uf = st.file_uploader(
+                            f"VIEW {vi+1:02d}",
+                            type=["png", "jpg", "jpeg"],
+                            key=key,
+                        )
+                        if uf:
+                            st.image(uf, use_container_width=True)
+
 
 # ── PPT 생성 탭 ────────────────────────────────────────────────────────────────
 with tabs[-1]:
@@ -898,8 +914,17 @@ with tabs[-1]:
                     for it in items
                 ]
                 if all_items:
+                    # 모델링 이미지 (VIEW 01~04)
+                    model_images = []
+                    for vi in range(4):
+                        uf = st.session_state.get(f"model_img_{room['id']}_{vi}")
+                        if uf is not None:
+                            uf.seek(0)
+                            model_images.append(uf.read())
+                        else:
+                            model_images.append(None)
                     ppt_rooms.append({"name": room["name"], "name_en": room["name_en"],
-                                      "items": all_items})
+                                      "items": all_items, "model_images": model_images})
 
             with st.spinner("PPT 생성 중..."):
                 pptx_bytes = generate_pptx(p, ppt_rooms, common_materials,

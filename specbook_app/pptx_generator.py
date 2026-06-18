@@ -264,8 +264,32 @@ def _update_spec_slide(slide, room_name: str, room_en: str, items: list[dict]):
                 break
 
 
-def _update_model_slide(slide, room_name: str):
-    """모델링 이미지 슬라이드: VIEW 박스에 방 이름 추가."""
+def _update_model_slide(slide, room_name: str, model_images: list | None = None):
+    """모델링 이미지 슬라이드: VIEW 박스에 이미지 삽입 + 방 이름 업데이트."""
+    model_images = model_images or [None, None, None, None]
+
+    # 이미지 플레이스홀더 수집 (크고 비어있는 shape) — top, left 순으로 정렬
+    img_boxes = []
+    for shape in slide.shapes:
+        if shape.width < _emu(3) or shape.height < _emu(2):
+            continue
+        text = shape.text_frame.text.strip() if shape.has_text_frame else ""
+        if text in ("", "+"):
+            img_boxes.append(shape)
+    img_boxes.sort(key=lambda s: (s.top, s.left))  # 좌상→우상→좌하→우하 순
+
+    for i, box in enumerate(img_boxes[:4]):
+        img_bytes = model_images[i] if i < len(model_images) else None
+        if img_bytes:
+            _hide_shape(box)
+            slide.shapes.add_picture(
+                io.BytesIO(img_bytes),
+                box.left, box.top, box.width, box.height,
+            )
+        else:
+            _hide_shape(box)
+
+    # VIEW 라벨에 방 이름 추가
     for shape in slide.shapes:
         if not shape.has_text_frame:
             continue
@@ -355,7 +379,7 @@ def generate_pptx(
             _update_spec_slide(s, room["name"], room.get("name_en", ""), chunk)
 
         m = _copy_slide(prs, IDX_MODEL)
-        _update_model_slide(m, room["name"])
+        _update_model_slide(m, room["name"], room.get("model_images"))
 
         room_slide_counts.append(n_chunks + 1)
 
