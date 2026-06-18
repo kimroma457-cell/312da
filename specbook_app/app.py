@@ -82,7 +82,7 @@ section[data-testid="stSidebar"] label{color:#8C7F74!important;font-size:.74rem!
 
 /* 탭 */
 .stTabs [data-baseweb="tab-list"]{background:#EEEBE6;padding:4px;border-radius:10px;gap:2px;}
-.stTabs [data-baseweb="tab"]{border-radius:7px;font-weight:600;font-size:.78rem;padding:5px 12px;}
+.stTabs [data-baseweb="tab"]{border-radius:7px;font-weight:600;font-size:.78rem;padding:5px 12px;color:#6B6059!important;}
 .stTabs [aria-selected="true"]{background:#fff!important;color:#1A1816!important;}
 
 /* 일반 버튼 */
