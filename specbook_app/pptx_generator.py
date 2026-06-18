@@ -6,8 +6,10 @@ import io
 import requests
 from copy import deepcopy
 from pathlib import Path
+from lxml import etree
 from pptx import Presentation
 from pptx.util import Inches, Pt, Emu
+from pptx.dml.color import RGBColor
 
 TEMPLATE_PATH = Path(__file__).parent / "template.pptx"
 
@@ -24,10 +26,57 @@ IDX_THANKS    = 11  # Thank You — 변경 없음
 N_EXAMPLE_ROOM_SLIDES = 6  # 인덱스 4~9 (거실/침실/주방 spec+model 6장)
 
 ROW_TOPS_IN = [1.505, 2.325, 3.145, 3.965, 4.785]  # Space Spec 행 Y 위치(인치)
+IMG_BOX_L   = 0.50   # 이미지 박스 X (인치)
+IMG_BOX_W   = 0.70   # 이미지 박스 너비
+IMG_BOX_H   = 0.70   # 이미지 박스 높이
 
 
 def _emu(inches: float) -> int:
     return int(inches * 914400)
+
+
+def _fetch_image(url: str) -> io.BytesIO | None:
+    """URL에서 이미지를 다운로드해 BytesIO로 반환. 실패 시 None."""
+    if not url:
+        return None
+    try:
+        r = requests.get(url, timeout=8, headers={"User-Agent": "Mozilla/5.0"})
+        r.raise_for_status()
+        return io.BytesIO(r.content)
+    except Exception:
+        return None
+
+
+def _hide_shape(shape):
+    """도형을 투명하게 숨긴다 (fill/line 제거, 텍스트 클리어)."""
+    try:
+        sp = shape._element
+        # spPr 안의 fill → noFill
+        ns = "http://schemas.openxmlformats.org/drawingml/2006/main"
+        spPr = sp.find(f"{{{ns}}}spPr")
+        if spPr is None:
+            spPr = etree.SubElement(sp, f"{{{ns}}}spPr")
+        # 기존 fill 제거 후 noFill 삽입
+        for tag in ["solidFill", "gradFill", "pattFill", "blipFill", "noFill"]:
+            el = spPr.find(f"{{{ns}}}{tag}")
+            if el is not None:
+                spPr.remove(el)
+        etree.SubElement(spPr, f"{{{ns}}}noFill")
+        # 테두리 제거
+        ln = spPr.find(f"{{{ns}}}ln")
+        if ln is None:
+            ln = etree.SubElement(spPr, f"{{{ns}}}ln")
+        for tag in ["solidFill", "gradFill", "pattFill", "noFill"]:
+            el = ln.find(f"{{{ns}}}{tag}")
+            if el is not None:
+                ln.remove(el)
+        etree.SubElement(ln, f"{{{ns}}}noFill")
+    except Exception:
+        pass
+    if shape.has_text_frame:
+        for para in shape.text_frame.paragraphs:
+            for run in para.runs:
+                run.text = ""
 
 
 def _near(a: int, b: float, tol_in: float = 0.14) -> bool:
@@ -140,6 +189,43 @@ def _update_materials(slide, common_materials: list[dict]):
 
 def _update_spec_slide(slide, room_name: str, room_en: str, items: list[dict]):
     """공간 스펙 슬라이드: 방 이름 + 5행 데이터 업데이트."""
+    # 이미지 박스 플레이스홀더 shapes 수집 (text == "+", L≈0.5)
+    img_placeholders: dict[int, list] = {ri: [] for ri in range(len(ROW_TOPS_IN))}
+    for shape in slide.shapes:
+        l, t = shape.left, shape.top
+        if not _near(l, IMG_BOX_L, 0.12):
+            continue
+        for ri, rt in enumerate(ROW_TOPS_IN):
+            if _near(t, rt, 0.12):
+                img_placeholders[ri].append(shape)
+                break
+
+    # 이미지 삽입 또는 플레이스홀더 숨김
+    for ri, rt in enumerate(ROW_TOPS_IN):
+        item = items[ri] if ri < len(items) else {}
+        img_url = item.get("image_url", "")
+        ph_shapes = img_placeholders[ri]
+
+        if img_url:
+            img_data = _fetch_image(img_url)
+        else:
+            img_data = None
+
+        if img_data:
+            # 플레이스홀더 숨기고 실제 이미지 삽입
+            for s in ph_shapes:
+                _hide_shape(s)
+            slide.shapes.add_picture(
+                img_data,
+                _emu(IMG_BOX_L), _emu(rt),
+                _emu(IMG_BOX_W), _emu(IMG_BOX_H),
+            )
+        else:
+            # 이미지 없으면 "+" 박스 숨김
+            for s in ph_shapes:
+                _hide_shape(s)
+
+    # 텍스트 업데이트
     for shape in slide.shapes:
         if not shape.has_text_frame:
             continue
