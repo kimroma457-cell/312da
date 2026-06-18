@@ -237,36 +237,34 @@ def _update_spec_slide(slide, room_name: str, room_en: str, items: list[dict]):
             _set_text(shape, f"{room_name} 공간 스펙  ·  {room_en}")
             continue
 
-        # 행별 데이터
+        # 행별 데이터 — word_wrap=False, 컬럼 너비 기준 글자 수 상한
         for ri, rt in enumerate(ROW_TOPS_IN):
             item = items[ri] if ri < len(items) else {}
 
-            # 컬럼별 (최대글자, pt): 단일행 강제 — word_wrap=False와 함께 동작
             if _near(l, 1.38) and _near(t, rt + 0.05, 0.12):
-                # item_code: W=1.5, H=0.18 → 1줄 10자
-                val = item.get("item_code", "").upper()[:10]
-                _set_text(shape, val, font_size_pt=7)
+                # item_code: W=1.5 → 10자 한도
+                _set_text(shape, item.get("item_code", "").upper()[:10], font_size_pt=7)
                 break
             if _near(l, 1.38) and _near(t, rt + 0.24, 0.14):
-                # product name: W=2.9, H=0.28 → 1줄 14자
+                # product name: W=2.9 → 전체 표시, 6pt로 최대한 수용
                 product = item.get("product", "")
-                val = product[:13] + "…" if len(product) > 14 else product
-                _set_text(shape, val, font_size_pt=7.5)
+                val = product[:28] + "…" if len(product) > 29 else product
+                _set_text(shape, val, font_size_pt=6)
                 break
             if _near(l, 1.38) and _near(t, rt + 0.50, 0.14):
-                # spec: W=2.9, H=0.20 → 1줄 20자
+                # spec: W=2.9 → 24자
                 spec = item.get("spec", "")
-                val = spec[:19] + "…" if len(spec) > 20 else spec
-                _set_text(shape, val, font_size_pt=7)
+                val = spec[:23] + "…" if len(spec) > 24 else spec
+                _set_text(shape, val, font_size_pt=6.5)
                 break
             if _near(l, 4.45, 0.18) and _near(t, rt, 0.30):
-                # finish: W=3.6, H=0.26 → 1줄 18자
+                # finish: W=3.6 → 20자
                 finish = item.get("finish", "")
-                val = finish[:17] + "…" if len(finish) > 18 else finish
-                _set_text(shape, val, font_size_pt=7.5)
+                val = finish[:19] + "…" if len(finish) > 20 else finish
+                _set_text(shape, val, font_size_pt=7)
                 break
             if _near(l, 8.80, 0.18) and _near(t, rt, 0.30):
-                # vendor: W=0.7, H=0.26 → 1줄 5자
+                # vendor: W=0.7 → 5자
                 vendor = item.get("vendor", "")
                 val = vendor[:4] + "…" if len(vendor) > 5 else vendor
                 _set_text(shape, val, font_size_pt=7)
@@ -288,15 +286,17 @@ def _update_ffande(slide, items: list[dict]):
     ROW_Y   = [1.75, 2.22, 2.69, 3.16, 3.63, 4.10, 4.57, 5.04]
     COL_X   = [0.50, 2.15, 3.05, 3.58, 5.98, 7.63, 8.60]
     COL_KEY = ["product", "room", "qty", "spec", "finish", "vendor", "note"]
-    # 컬럼별 (최대 글자수, 폰트pt) — word_wrap=False 단일행 기준
+    # 실제 컬럼 너비(") 기준, 6.5pt 한글 ~0.13"/자
+    # ITEM=1.55" → 11자  ROOM=0.85" → 6자  QTY=0.45" → 3자
+    # SPEC=2.35" → 17자  FINISH=1.6" → 11자  VENDOR=0.9" → 7자  NOTE=0.9" → 7자
     COL_CFG = {
-        "product": (16, 7.0),
-        "room":    (5,  7.0),
-        "qty":     (4,  7.0),
-        "spec":    (12, 6.5),
-        "finish":  (12, 6.5),
-        "vendor":  (6,  6.5),
-        "note":    (10, 6.5),
+        "product": (11, 6.5),
+        "room":    (6,  6.5),
+        "qty":     (3,  6.5),
+        "spec":    (17, 6.5),
+        "finish":  (11, 6.5),
+        "vendor":  (7,  6.5),
+        "note":    (7,  6.5),
     }
 
     for shape in slide.shapes:
