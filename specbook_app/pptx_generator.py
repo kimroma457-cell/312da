@@ -237,37 +237,28 @@ def _update_spec_slide(slide, room_name: str, room_en: str, items: list[dict]):
             _set_text(shape, f"{room_name} 공간 스펙  ·  {room_en}")
             continue
 
-        # 행별 데이터 — word_wrap=False, 컬럼 너비 기준 글자 수 상한
+        # 배경 구분선 제외 (너비 > 2.5인치인 빈 shape)
+        if shape.width > _emu(2.5) and not shape.text_frame.text.strip():
+            continue
+
+        # 행별 데이터 — word_wrap=False, 전체 텍스트 표시 (폰트로 수용)
         for ri, rt in enumerate(ROW_TOPS_IN):
             item = items[ri] if ri < len(items) else {}
 
             if _near(l, 1.38) and _near(t, rt + 0.05, 0.12):
-                # item_code: W=1.5 → 10자 한도
-                _set_text(shape, item.get("item_code", "").upper()[:10], font_size_pt=7)
+                _set_text(shape, item.get("item_code", "").upper(), font_size_pt=7)
                 break
             if _near(l, 1.38) and _near(t, rt + 0.24, 0.14):
-                # product name: W=2.9 → 전체 표시, 6pt로 최대한 수용
-                product = item.get("product", "")
-                val = product[:28] + "…" if len(product) > 29 else product
-                _set_text(shape, val, font_size_pt=6)
+                _set_text(shape, item.get("product", ""), font_size_pt=6)
                 break
             if _near(l, 1.38) and _near(t, rt + 0.50, 0.14):
-                # spec: W=2.9 → 24자
-                spec = item.get("spec", "")
-                val = spec[:23] + "…" if len(spec) > 24 else spec
-                _set_text(shape, val, font_size_pt=6.5)
+                _set_text(shape, item.get("spec", ""), font_size_pt=6.5)
                 break
             if _near(l, 4.45, 0.18) and _near(t, rt, 0.30):
-                # finish: W=3.6 → 20자
-                finish = item.get("finish", "")
-                val = finish[:19] + "…" if len(finish) > 20 else finish
-                _set_text(shape, val, font_size_pt=7)
+                _set_text(shape, item.get("finish", ""), font_size_pt=6.5)
                 break
             if _near(l, 8.80, 0.18) and _near(t, rt, 0.30):
-                # vendor: W=0.7 → 5자
-                vendor = item.get("vendor", "")
-                val = vendor[:4] + "…" if len(vendor) > 5 else vendor
-                _set_text(shape, val, font_size_pt=7)
+                _set_text(shape, item.get("vendor", ""), font_size_pt=6.5)
                 break
 
 
@@ -284,41 +275,33 @@ def _update_model_slide(slide, room_name: str):
 def _update_ffande(slide, items: list[dict]):
     """FF&E 슬라이드: 행 데이터 업데이트 (최대 8행)."""
     ROW_Y   = [1.75, 2.22, 2.69, 3.16, 3.63, 4.10, 4.57, 5.04]
+    # 실제 컬럼: ITEM=1.55" ROOM=0.85" QTY=0.45" SPEC=2.35" FINISH=1.6" VENDOR=0.9" NOTE=0.9"
     COL_X   = [0.50, 2.15, 3.05, 3.58, 5.98, 7.63, 8.60]
+    COL_W   = [1.55, 0.85, 0.45, 2.35, 1.60, 0.90, 0.90]  # 각 컬럼 실제 너비
     COL_KEY = ["product", "room", "qty", "spec", "finish", "vendor", "note"]
-    # 실제 컬럼 너비(") 기준, 6.5pt 한글 ~0.13"/자
-    # ITEM=1.55" → 11자  ROOM=0.85" → 6자  QTY=0.45" → 3자
-    # SPEC=2.35" → 17자  FINISH=1.6" → 11자  VENDOR=0.9" → 7자  NOTE=0.9" → 7자
-    COL_CFG = {
-        "product": (11, 6.5),
-        "room":    (6,  6.5),
-        "qty":     (3,  6.5),
-        "spec":    (17, 6.5),
-        "finish":  (11, 6.5),
-        "vendor":  (7,  6.5),
-        "note":    (7,  6.5),
-    }
+    COL_PT  = {"product": 6.0, "room": 6.5, "qty": 6.5,
+               "spec": 6.5, "finish": 6.5, "vendor": 6.5, "note": 6.5}
 
     for shape in slide.shapes:
         if not shape.has_text_frame:
             continue
         l, t = shape.left, shape.top
+        w = shape.width
+
+        # 배경 구분선(전체 행 너비) 제외 — W > 2.5" 이면 데이터 셀이 아님
+        if w > _emu(2.5) and shape.has_text_frame and not shape.text_frame.text.strip():
+            continue
 
         for ri, ry in enumerate(ROW_Y):
             if ri >= len(items):
                 break
             item = items[ri]
-            for cx, ckey in zip(COL_X, COL_KEY):
-                if _near(l, cx, 0.18) and _near(t, ry, 0.20):
-                    max_len, fpt = COL_CFG[ckey]
+            for cx, cw, ckey in zip(COL_X, COL_W, COL_KEY):
+                # X 위치와 너비 모두 검증해서 배경 shape 오매칭 방지
+                if _near(l, cx, 0.12) and _near(w / 914400, cw, 0.25) and _near(t, ry, 0.20):
                     val = item.get(ckey, "")
-                    if ckey == "qty":
-                        val = str(val) if val else "1"
-                    else:
-                        val = str(val)
-                    if len(val) > max_len:
-                        val = val[:max_len - 1] + "…"
-                    _set_text(shape, val, font_size_pt=fpt)
+                    val = str(val) if val else ("1" if ckey == "qty" else "")
+                    _set_text(shape, val, font_size_pt=COL_PT[ckey])
                     break
 
 
