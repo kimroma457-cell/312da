@@ -109,7 +109,9 @@ def _init_selector():
 if "rooms" not in st.session_state:
     st.session_state.rooms = []
 if "favorites" not in st.session_state:
-    st.session_state.favorites = []   # 전역 즐겨찾기 (방과 무관)
+    st.session_state.favorites = []
+if "logo_bytes" not in st.session_state:
+    st.session_state.logo_bytes = None
 if "project" not in st.session_state:
     st.session_state.project = {
         "company":  "DESICODE",
@@ -161,6 +163,16 @@ with st.sidebar:
     p["period"]   = st.text_input("공사기간",  p["period"])
     p["designer"] = st.text_input("담당자",    p["designer"])
     p["date"]     = st.text_input("작성일",    p["date"])
+    st.markdown("---")
+    st.markdown("**🖼 표지 로고**")
+    logo_file = st.file_uploader("로고 이미지 (PNG/JPG)", type=["png","jpg","jpeg"],
+                                  key="logo_upload", label_visibility="collapsed")
+    if logo_file:
+        st.session_state.logo_bytes = logo_file.read()
+    if st.session_state.logo_bytes:
+        st.image(st.session_state.logo_bytes, width=120)
+        if st.button("로고 제거", key="logo_clear"):
+            st.session_state.logo_bytes = None; st.rerun()
     st.markdown("---")
     if st.session_state.rooms:
         st.markdown("**추가된 공간**")
@@ -569,9 +581,77 @@ for ri, (tab, room) in enumerate(zip(tabs[:-2], st.session_state.rooms)):
                             "다른 업체를 선택하거나, 제품군·검색어를 변경해보세요."
                         )
 
+                    # ── 직접 입력 ─────────────────────────────────────────
+                    with st.expander("✏ 자재 직접 입력 (검색 외 제품)"):
+                        m_cat = st.selectbox("카테고리", CAT_KEYS, key=f"mcat_{ri}")
+                        mc1, mc2 = st.columns(2)
+                        with mc1:
+                            m_name     = st.text_input("제품명 *", key=f"mname_{ri}")
+                            m_brand    = st.text_input("브랜드",   key=f"mbrand_{ri}")
+                            m_supplier = st.text_input("판매처",   key=f"msup_{ri}")
+                            m_price    = st.text_input("가격 (예: 50,000원)", key=f"mprice_{ri}")
+                        with mc2:
+                            m_size     = st.text_input("규격",  key=f"msize_{ri}")
+                            m_color    = st.text_input("색상",  key=f"mcolor_{ri}")
+                            m_material = st.text_input("재질",  key=f"mmat_{ri}")
+                            m_modelno  = st.text_input("품번",  key=f"mmodel_{ri}")
+                            m_unit     = st.text_input("단위",  value="EA", key=f"munit_{ri}")
+                        m_loc  = st.text_input("적용 위치", placeholder="예: 거실 벽면", key=f"mloc_{ri}")
+                        m_memo = st.text_area("비고", key=f"mmemo_{ri}", height=52)
+                        if st.button("＋ 추가", key=f"madd_{ri}", type="primary"):
+                            if not m_name.strip():
+                                st.warning("제품명을 입력하세요.")
+                            else:
+                                meta_m = CATEGORY_META[m_cat]
+                                # price_int 파싱
+                                try:
+                                    p_int = int("".join(c for c in m_price if c.isdigit()))
+                                except Exception:
+                                    p_int = 0
+                                room["specbook"][m_cat].append({
+                                    "id":           str(uuid.uuid4())[:8],
+                                    "category":     m_cat,
+                                    "brand_name":   m_brand,
+                                    "product_group":"",
+                                    "name":         m_name.strip(),
+                                    "brand":        m_brand,
+                                    "maker":        "",
+                                    "supplier":     m_supplier,
+                                    "price":        m_price or "0원",
+                                    "price_int":    p_int,
+                                    "image_url":    "",
+                                    "source_url":   "",
+                                    "material":     m_material,
+                                    "color":        m_color,
+                                    "size":         m_size,
+                                    "model_number": m_modelno,
+                                    "unit":         m_unit or "EA",
+                                    "qty":          1,
+                                    "location":     m_loc,
+                                    "memo":         m_memo,
+                                    "item_code":    meta_m["item_code"],
+                                    "is_common":    False,
+                                    "created_at":   datetime.now().strftime("%Y-%m-%d %H:%M"),
+                                })
+                                st.success(f"'{m_name}' 추가 완료!")
+                                st.rerun()
+
         # ── 오른쪽: 추가된 자재 목록 ──────────────────────────────────────
         with right:
-            st.markdown('<p class="sec-label">추가된 자재</p>', unsafe_allow_html=True)
+            room_total_price = sum(
+                it.get("price_int", 0) * it.get("qty", 1)
+                for its in room["specbook"].values() for it in its
+            )
+            header_cols = st.columns([3, 2])
+            with header_cols[0]:
+                st.markdown('<p class="sec-label">추가된 자재</p>', unsafe_allow_html=True)
+            with header_cols[1]:
+                if room_total_price:
+                    st.markdown(
+                        f'<div style="text-align:right;color:#C8A97E;font-size:.78rem;'
+                        f'font-weight:700;padding-top:4px">합계 {room_total_price:,}원</div>',
+                        unsafe_allow_html=True,
+                    )
             if total_room == 0:
                 st.caption("왼쪽에서 업체 → 제품군 선택 후 추가하세요.")
             else:
@@ -585,7 +665,7 @@ for ri, (tab, room) in enumerate(zip(tabs[:-2], st.session_state.rooms)):
                         unsafe_allow_html=True,
                     )
                     for ii, item in enumerate(items):
-                        c_img, c_info, c_act = st.columns([1,5,2])
+                        c_img, c_info, c_act = st.columns([1, 5, 2])
                         with c_img:
                             if item.get("image_url"):
                                 st.image(item["image_url"], use_container_width=True)
@@ -597,9 +677,10 @@ for ri, (tab, room) in enumerate(zip(tabs[:-2], st.session_state.rooms)):
                                     unsafe_allow_html=True,
                                 )
                         with c_info:
+                            qty_str = f" × {item['qty']}" if item.get("qty", 1) > 1 else ""
                             st.markdown(
                                 f'<div class="item-name">{item["name"][:26]}</div>'
-                                f'<div class="item-price">{item["price"]}</div>'
+                                f'<div class="item-price">{item["price"]}{qty_str}</div>'
                                 f'<div style="font-size:.68rem;color:#9A8F86">'
                                 f'{item.get("brand_name","")}' +
                                 (f' › {item["product_group"]}' if item.get("product_group") else "")
@@ -609,9 +690,11 @@ for ri, (tab, room) in enumerate(zip(tabs[:-2], st.session_state.rooms)):
                         with c_act:
                             item_url = item.get("source_url", "")
                             fav_urls_right = {f["url"] for f in st.session_state.favorites}
-                            is_fav_right = item_url and item_url in fav_urls_right
+                            is_fav_right = bool(item_url and item_url in fav_urls_right)
+                            is_common = item.get("is_common", False)
+                            # 즐겨찾기
                             if st.button("⭐" if is_fav_right else "☆",
-                                         key=f"cm_{ri}_{ck}_{ii}",
+                                         key=f"fav_r_{ri}_{ck}_{ii}",
                                          help="즐겨찾기 등록/해제"):
                                 if is_fav_right:
                                     st.session_state.favorites = [
@@ -633,6 +716,11 @@ for ri, (tab, room) in enumerate(zip(tabs[:-2], st.session_state.rooms)):
                                         "product_group": item.get("product_group", ""),
                                     })
                                 st.rerun()
+                            # 공통 자재 지정 (PPT 슬라이드4)
+                            if st.button("📌" if is_common else "📍",
+                                         key=f"cm_{ri}_{ck}_{ii}",
+                                         help="공통 자재(PPT 슬라이드4) 지정/해제"):
+                                item["is_common"] = not is_common; st.rerun()
                             if st.button("🗑", key=f"del_{ri}_{ck}_{ii}"):
                                 room["specbook"][ck].pop(ii); st.rerun()
 
@@ -657,6 +745,28 @@ for ri, (tab, room) in enumerate(zip(tabs[:-2], st.session_state.rooms)):
                                 key=f"emm_{ri}_{ck}_{ii}", height=52)
                             if item.get("source_url"):
                                 st.markdown(f"[🔗 상품 페이지]({item['source_url']})")
+                            # 방 간 복사
+                            other_rooms = [r for r in st.session_state.rooms if r["id"] != room["id"]]
+                            if other_rooms:
+                                cp1, cp2 = st.columns([3, 1])
+                                with cp1:
+                                    copy_target = st.selectbox(
+                                        "다른 공간으로 복사",
+                                        [r["name"] for r in other_rooms],
+                                        key=f"cptgt_{ri}_{ck}_{ii}",
+                                        label_visibility="collapsed",
+                                    )
+                                with cp2:
+                                    if st.button("복사", key=f"cp_{ri}_{ck}_{ii}",
+                                                 use_container_width=True):
+                                        tgt = next(r for r in other_rooms if r["name"] == copy_target)
+                                        import copy as _copy
+                                        new_item = _copy.deepcopy(item)
+                                        new_item["id"] = str(uuid.uuid4())[:8]
+                                        new_item["created_at"] = datetime.now().strftime("%Y-%m-%d %H:%M")
+                                        tgt["specbook"][ck].append(new_item)
+                                        st.success(f"'{copy_target}'에 복사 완료!")
+                                        st.rerun()
 
                         st.markdown(
                             "<hr style='border:none;border-top:1px solid #F0EBE4;margin:3px 0'>",
@@ -678,10 +788,17 @@ with tabs[-1]:
         for items in room["specbook"].values()
         for it in items if it.get("is_common")
     )
-    m1, m2, m3 = st.columns(3)
+    total_budget = sum(
+        it.get("price_int", 0) * it.get("qty", 1)
+        for room in st.session_state.rooms
+        for its in room["specbook"].values()
+        for it in its
+    )
+    m1, m2, m3, m4 = st.columns(4)
     m1.metric("공간 수", len(st.session_state.rooms))
     m2.metric("총 자재 수", total_all)
     m3.metric("공통 자재 (슬라이드4)", common_cnt)
+    m4.metric("총 예산", f"{total_budget:,}원")
 
     if common_cnt:
         st.markdown("**⭐ 공통 자재**")
@@ -712,18 +829,45 @@ with tabs[-1]:
                 )
 
     st.markdown("---")
-    col_j, col_p, _ = st.columns([2,2,3])
+
+    # ── JSON 불러오기 ─────────────────────────────────────────────────
+    uploaded = st.file_uploader("📂 저장된 스펙북 불러오기", type="json", key="json_import")
+    if uploaded:
+        try:
+            data = json.loads(uploaded.read())
+            st.session_state.project  = data.get("project", st.session_state.project)
+            st.session_state.favorites = data.get("favorites", [])
+            for r in data.get("rooms", []):
+                sb = _init_specbook()
+                for it in r.get("items", []):
+                    cat = it.get("category", "")
+                    if cat in sb:
+                        sb[cat].append(it)
+                st.session_state.rooms.append({
+                    "id":       str(uuid.uuid4())[:8],
+                    "name":     r["name"],
+                    "name_en":  r.get("name_en", ""),
+                    "specbook": sb,
+                    "sel":      _init_selector(),
+                })
+            st.success("불러오기 완료!"); st.rerun()
+        except Exception as e:
+            st.error(f"파일 오류: {e}")
+
+    st.markdown("---")
+    col_j, col_p, _ = st.columns([2, 2, 3])
     export_data = {
-        "project": st.session_state.project,
+        "project":   st.session_state.project,
+        "favorites": st.session_state.favorites,
         "rooms": [
             {"name": r["name"], "name_en": r["name_en"],
-             "items": [it for items in r["specbook"].values() for it in items]}
+             "items": [it for its in r["specbook"].values() for it in its]}
             for r in st.session_state.rooms
         ],
     }
     with col_j:
         st.download_button(
-            "📊 JSON 내보내기",
+            "📊 JSON 저장",
             data=json.dumps(export_data, ensure_ascii=False, indent=2),
             file_name=f"{p['name']}_specbook.json",
             mime="application/json",
@@ -758,7 +902,8 @@ with tabs[-1]:
                                       "items": all_items})
 
             with st.spinner("PPT 생성 중..."):
-                pptx_bytes = generate_pptx(p, ppt_rooms, common_materials)
+                pptx_bytes = generate_pptx(p, ppt_rooms, common_materials,
+                                           logo_bytes=st.session_state.logo_bytes)
 
             st.download_button(
                 "⬇️ PPT 다운로드",

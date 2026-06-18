@@ -328,6 +328,7 @@ def generate_pptx(
     project: dict,
     rooms: list[dict],
     common_materials: list[dict] | None = None,
+    logo_bytes: bytes | None = None,
 ) -> bytes:
     """
     project: {company, name, location, area, period, designer, date}
@@ -339,6 +340,14 @@ def generate_pptx(
 
     # 1. 표지 수정
     _update_cover(prs.slides[IDX_COVER], project)
+    if logo_bytes:
+        try:
+            prs.slides[IDX_COVER].shapes.add_picture(
+                io.BytesIO(logo_bytes),
+                _emu(0.25), _emu(0.15), _emu(1.6), _emu(0.55),
+            )
+        except Exception:
+            pass
 
     # 2. 공통 자재 수정
     if common_materials:
