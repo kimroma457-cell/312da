@@ -133,16 +133,6 @@ def search_products(
             continue
         if _has_forbidden_cat(it):
             continue
-        # 브랜드명이 제목/브랜드 필드에 없으면 제외 (다른 업체 제품 혼입 방지)
-        it_brand = (it.get("brand", "") or it.get("maker", "") or "").lower()
-        brand_match = (
-            brand.lower() in title.lower()
-            or brand.lower() in it_brand
-            or any(part.lower() in title.lower()
-                   for part in brand.split() if len(part) > 1)
-        )
-        if not brand_match:
-            continue
         seen.add(url)
         results.append(_to_result(it))
         if len(results) >= count:
