@@ -346,6 +346,7 @@ def _update_color_story(slide, top_items: list[dict]):
         # 이미지 없으면 빈 박스 → 색상으로 채우기는 skip (투명)
 
         # 텍스트 박스들 — 원래 해당 cx_orig 위치 shape을 이동 후 내용 업데이트
+        SWATCH_W = _emu(1.32)  # 스와치 너비 — 텍스트박스 최대 너비 제한
         for shape in slide.shapes:
             if not shape.has_text_frame:
                 continue
@@ -356,22 +357,23 @@ def _update_color_story(slide, top_items: list[dict]):
             if t < _emu(3.5):
                 continue  # 스와치 박스 영역 건너뜀
 
-            # shape을 새 X 위치로 이동
-            shape.left = _emu(cx_new) + (shape.left - _emu(cx_orig))
+            # shape을 새 X 위치로 이동 (너비는 스와치 너비에 맞게 제한)
+            shape.left  = _emu(cx_new) + (shape.left - _emu(cx_orig))
+            shape.width = min(shape.width, SWATCH_W)
 
             cur = shape.text_frame.text.strip()
             # 브랜드명 라벨 (T≈3.62)
             if _near(t, 3.62, 0.12):
-                _set_text(shape, (brand or product[:12]).upper(), font_size_pt=7)
+                _set_text(shape, (brand or product[:14]).upper(), font_size_pt=7, word_wrap=True)
             # 제품명 (T≈3.86)
             elif _near(t, 3.86, 0.12):
-                _set_text(shape, product[:22], font_size_pt=6.5)
+                _set_text(shape, product[:28], font_size_pt=6.5, word_wrap=True)
             # 색상 hex 코드 (T≈4.07) — 이미지 지배 색상
             elif _near(t, 4.07, 0.12):
                 _set_text(shape, hex_color, font_size_pt=6)
             # 적용 위치 (T≈4.30, 내용 있는 것만)
             elif _near(t, 4.30, 0.12) and cur:
-                _set_text(shape, usage[:18], font_size_pt=6)
+                _set_text(shape, usage[:20], font_size_pt=6)
 
 
 def _update_materials(slide, slot_items: dict[str, dict]):
@@ -407,7 +409,7 @@ def _update_materials(slide, slot_items: dict[str, dict]):
 
             # 이미지 박스 (W≈0.9, H≈0.9, 이미지X, 행Y)
             if _near(l, il, 0.15) and _near(t, row_t, 0.15) and \
-               _near(w / 914400, 0.9, 0.15) and _near(h / 914400, 0.9, 0.15):
+               _near(w, 0.9, 0.15) and _near(h, 0.9, 0.15):
                 if img_data:
                     img_data.seek(0)
                     _hide_shape(shape)
@@ -497,10 +499,14 @@ def _update_spec_slide(slide, room_name: str, room_en: str, items: list[dict]):
             if _near(l, 1.38) and _near(t, rt + 0.24, 0.14):
                 brand_v = item.get("brand", "")
                 prod_v  = item.get("product", "")
-                _set_text(shape, f"{brand_v} {prod_v}".strip() if brand_v else prod_v, font_size_pt=7)
+                # 가용 너비 4.45"-1.38"=3.07" 로 확장, 줄바꿈 허용
+                shape.width = _emu(3.00)
+                _set_text(shape, f"{brand_v} {prod_v}".strip() if brand_v else prod_v,
+                          font_size_pt=7, word_wrap=True)
                 break
             if _near(l, 1.38) and _near(t, rt + 0.50, 0.14):
-                _set_text(shape, item.get("spec", ""), font_size_pt=6.5)
+                shape.width = _emu(3.00)
+                _set_text(shape, item.get("spec", ""), font_size_pt=6.5, word_wrap=True)
                 break
             if _near(l, 4.45, 0.18) and _near(t, rt, 0.15):
                 _set_text(shape, item.get("finish", ""), font_size_pt=6.5)
@@ -608,7 +614,9 @@ def _update_ffande(slide, items: list[dict]):
                 else:
                     val = item.get(ckey, "")
                     val = str(val) if val else ("1" if ckey == "qty" else "")
-                    _set_text(shape, val, font_size_pt=COL_PT[ckey])
+                    # SPEC/FINISH도 좁아졌으므로 줄바꿈 허용
+                    wrap = ckey in ("spec", "finish", "note")
+                    _set_text(shape, val, font_size_pt=COL_PT[ckey], word_wrap=wrap)
                 break
 
 
