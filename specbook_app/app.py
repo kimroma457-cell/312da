@@ -882,11 +882,13 @@ with tabs[-1]:
 
     # ── JSON 불러오기 ─────────────────────────────────────────────────
     uploaded = st.file_uploader("📂 저장된 스펙북 불러오기", type="json", key="json_import")
-    if uploaded:
+    if uploaded and st.session_state.get("_last_json") != uploaded.name:
+        st.session_state["_last_json"] = uploaded.name
         try:
             data = json.loads(uploaded.read())
             st.session_state.project  = data.get("project", st.session_state.project)
             st.session_state.favorites = data.get("favorites", [])
+            st.session_state.rooms = []  # 기존 방 초기화 후 JSON으로 교체
             for r in data.get("rooms", []):
                 sb = _init_specbook()
                 for it in r.get("items", []):
