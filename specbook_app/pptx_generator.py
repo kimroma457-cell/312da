@@ -500,20 +500,22 @@ def _update_ffande(slide, items: list[dict]):
             continue
 
         for ri, ry in enumerate(ROW_Y):
-            if ri >= len(items):
-                break
-            item = items[ri]
+            item = items[ri] if ri < len(items) else None
             for cx, cw, ckey in zip(COL_X, COL_W, COL_KEY):
                 # X 위치와 너비 모두 검증해서 배경 shape 오매칭 방지
-                if _near(l, cx, 0.12) and _near(w / 914400, cw, 0.25) and _near(t, ry, 0.20):
-                    if ckey == "product":
-                        brand = item.get("brand", "")
-                        product = item.get("product", "")
-                        val = f"{brand} {product}".strip() if brand else product
+                if _near(l, cx, 0.12) and _near(w, cw, 0.25) and _near(t, ry, 0.20):
+                    if item is None:
+                        # 항목 없는 행 — 템플릿 기본값 지우기
+                        _set_text(shape, "", font_size_pt=COL_PT[ckey])
                     else:
-                        val = item.get(ckey, "")
-                    val = str(val) if val else ("1" if ckey == "qty" else "")
-                    _set_text(shape, val, font_size_pt=COL_PT[ckey])
+                        if ckey == "product":
+                            brand = item.get("brand", "")
+                            product = item.get("product", "")
+                            val = f"{brand} {product}".strip() if brand else product
+                        else:
+                            val = item.get(ckey, "")
+                        val = str(val) if val else ("1" if ckey == "qty" else "")
+                        _set_text(shape, val, font_size_pt=COL_PT[ckey])
                     break
 
 
