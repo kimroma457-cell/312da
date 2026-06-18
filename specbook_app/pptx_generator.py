@@ -550,16 +550,22 @@ def _update_model_slide(slide, room_name: str, model_images: list | None = None)
 
 
 def _update_ffande(slide, items: list[dict]):
-    """FF&E 슬라이드: 행 데이터 업데이트 (최대 8행)."""
-    ROW_Y   = [1.75, 2.22, 2.69, 3.16, 3.63, 4.10, 4.57, 5.04]
-    COL_X   = [0.50, 2.15, 3.05, 3.58, 5.98, 7.63, 8.60]
-    COL_W   = [1.55, 0.85, 0.45, 2.35, 1.60, 0.90, 0.90]
-    COL_KEY = ["product", "room", "qty", "spec", "finish", "vendor", "note"]
-    COL_PT  = {"product": 6.0, "room": 6.0, "qty": 6.0,
-               "spec": 6.0, "finish": 6.0, "vendor": 6.0, "note": 6.0}
+    """FF&E 슬라이드: 행 데이터 업데이트 (최대 8행).
+    ITEM 컬럼을 3.10"으로 확장하고 나머지 컬럼을 우측으로 재배치한다."""
+    ROW_Y = [1.75, 2.22, 2.69, 3.16, 3.63, 4.10, 4.57, 5.04]
 
-    # ITEM 헤더 shape 너비도 함께 확장 (Y < 1.60 인 헤더 행)
-    ITEM_NEW_W = _emu(3.40)  # 원본 1.55" → 3.40"으로 확장
+    # 원본 템플릿 컬럼 위치 (매칭용)
+    ORIG_X = [0.50, 2.15, 3.05, 3.58, 5.98, 7.63, 8.60]
+    ORIG_W = [1.55, 0.85, 0.45, 2.35, 1.60, 0.90, 0.90]
+
+    # 새 컬럼 위치 — ITEM(3.10") 확장 후 나머지 우측 이동
+    NEW_X  = [0.50, 3.65, 4.50, 4.98, 6.10, 7.25, 8.20]
+    NEW_W  = [3.10, 0.80, 0.45, 1.08, 1.10, 0.90, 0.90]
+
+    COL_KEY = ["product", "room", "qty", "spec", "finish", "vendor", "note"]
+    COL_PT  = {k: 6.0 for k in COL_KEY}
+
+    HEADER_Y_MAX = _emu(1.60)  # 헤더 행 Y 상한
 
     for shape in slide.shapes:
         if not shape.has_text_frame:
@@ -567,32 +573,42 @@ def _update_ffande(slide, items: list[dict]):
         l, t = shape.left, shape.top
         w = shape.width
 
+        # 빈 배경 구분선 제외
         if w > _emu(2.5) and not shape.text_frame.text.strip():
             continue
 
-        # 헤더 행 ITEM 셀 너비 확장 (T < 1.60")
-        if _near(l, 0.50, 0.12) and _near(w, 1.55, 0.25) and t < _emu(1.60):
-            shape.width = ITEM_NEW_W
+        for i, (ox, ow, nw_f, nx_f, ckey) in enumerate(
+                zip(ORIG_X, ORIG_W, NEW_W, NEW_X, COL_KEY)):
+            if not (_near(l, ox, 0.12) and _near(w, ow, 0.25)):
+                continue
 
-        for ri, ry in enumerate(ROW_Y):
-            item = items[ri] if ri < len(items) else None
-            for cx, cw, ckey in zip(COL_X, COL_W, COL_KEY):
-                if _near(l, cx, 0.12) and _near(w, cw, 0.25) and _near(t, ry, 0.20):
-                    if ckey == "product":
-                        shape.width = ITEM_NEW_W  # 데이터 셀도 확장
-                    if item is None:
-                        _set_text(shape, "", font_size_pt=COL_PT[ckey])
-                    else:
-                        if ckey == "product":
-                            brand_v = item.get("brand", "")
-                            prod_v  = item.get("product", "")
-                            val = f"{brand_v} {prod_v}".strip() if brand_v else prod_v
-                            _set_text(shape, val, font_size_pt=COL_PT[ckey], word_wrap=True)
-                        else:
-                            val = item.get(ckey, "")
-                            val = str(val) if val else ("1" if ckey == "qty" else "")
-                            _set_text(shape, val, font_size_pt=COL_PT[ckey])
-                    break
+            # 헤더 행 처리
+            if t < HEADER_Y_MAX:
+                shape.left  = _emu(nx_f)
+                shape.width = _emu(nw_f)
+                break
+
+            # 데이터 행 처리
+            for ri, ry in enumerate(ROW_Y):
+                if not _near(t, ry, 0.20):
+                    continue
+                item = items[ri] if ri < len(items) else None
+
+                shape.left  = _emu(nx_f)
+                shape.width = _emu(nw_f)
+
+                if item is None:
+                    _set_text(shape, "", font_size_pt=COL_PT[ckey])
+                elif ckey == "product":
+                    brand_v = item.get("brand", "")
+                    prod_v  = item.get("product", "")
+                    val = f"{brand_v} {prod_v}".strip() if brand_v else prod_v
+                    _set_text(shape, val, font_size_pt=COL_PT[ckey], word_wrap=True)
+                else:
+                    val = item.get(ckey, "")
+                    val = str(val) if val else ("1" if ckey == "qty" else "")
+                    _set_text(shape, val, font_size_pt=COL_PT[ckey])
+                break
 
 
 # ── 공개 API ──────────────────────────────────────────────────────────────────
