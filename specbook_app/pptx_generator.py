@@ -362,7 +362,7 @@ def _update_materials(slide, slot_items: dict[str, dict]):
                 pass  # 슬롯 코드(FLOOR 등) 유지
             # 제품명 (T+0.28)
             elif _near(l, tl, 0.15) and _near(t, row_t + 0.28, 0.15):
-                _set_text(shape, f"{brand} {product}".strip(), font_size_pt=7.5)
+                _set_text(shape, product, font_size_pt=7.5)
             # 규격/마감 (T+0.55)
             elif _near(l, tl, 0.15) and _near(t, row_t + 0.55, 0.15):
                 detail = " / ".join(filter(None, [spec, finish]))
@@ -451,26 +451,32 @@ def _update_model_slide(slide, room_name: str, model_images: list | None = None)
     """모델링 이미지 슬라이드: VIEW 박스에 이미지 삽입 + 방 이름 업데이트."""
     model_images = model_images or [None, None, None, None]
 
-    # 이미지 플레이스홀더 수집 (크고 비어있는 shape) — top, left 순으로 정렬
-    img_boxes = []
+    # 이미지 플레이스홀더 수집 — 동일 위치의 여러 shape을 (t_key, l_key)로 그룹화
+    from collections import defaultdict
+    quadrant_shapes: dict = defaultdict(list)
     for shape in slide.shapes:
         if shape.width < _emu(3) or shape.height < _emu(2):
             continue
         text = shape.text_frame.text.strip() if shape.has_text_frame else ""
         if text in ("", "+"):
-            img_boxes.append(shape)
-    img_boxes.sort(key=lambda s: (s.top, s.left))  # 좌상→우상→좌하→우하 순
+            t_key = round(shape.top / 914400)   # 인치 반올림
+            l_key = round(shape.left / 914400)
+            quadrant_shapes[(t_key, l_key)].append(shape)
 
-    for i, box in enumerate(img_boxes[:4]):
+    # 좌상→우상→좌하→우하 정렬 (t 우선, l 다음)
+    sorted_keys = sorted(quadrant_shapes.keys())
+
+    for i, key in enumerate(sorted_keys[:4]):
+        shapes = quadrant_shapes[key]
         img_bytes = model_images[i] if i < len(model_images) else None
+        ref = shapes[0]  # 위치/크기 기준 shape
+        for s in shapes:
+            _hide_shape(s)  # 빈 배경 + "+" 모두 숨기기
         if img_bytes:
-            _hide_shape(box)
             slide.shapes.add_picture(
                 io.BytesIO(img_bytes),
-                box.left, box.top, box.width, box.height,
+                ref.left, ref.top, ref.width, ref.height,
             )
-        else:
-            _hide_shape(box)
 
     # VIEW 라벨에 방 이름 추가
     for shape in slide.shapes:
@@ -511,9 +517,8 @@ def _update_ffande(slide, items: list[dict]):
                         _set_text(shape, "", font_size_pt=COL_PT[ckey])
                     else:
                         if ckey == "product":
-                            brand = item.get("brand", "")
-                            product = item.get("product", "")
-                            val = f"{brand} {product}".strip() if brand else product
+                            # 네이버 상품명에 브랜드가 이미 포함되어 있으므로 product만 표시
+                            val = item.get("product", "")
                         else:
                             val = item.get(ckey, "")
                         val = str(val) if val else ("1" if ckey == "qty" else "")
