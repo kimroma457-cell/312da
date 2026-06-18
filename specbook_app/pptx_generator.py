@@ -15,15 +15,16 @@ from pptx.enum.text import MSO_AUTO_SIZE
 TEMPLATE_PATH = Path(__file__).parent / "template.pptx"
 
 # 템플릿 슬라이드 인덱스 (0-based, 12장 기준)
+# 슬라이드 2(Design Direction)는 생성 시 즉시 삭제하므로 인덱스 조정 불필요
 IDX_COVER     = 0   # 표지
-IDX_DESIGN    = 1   # Design Direction — 변경 없음
-IDX_COLOR     = 2   # Color Story — 변경 없음
-IDX_MATERIALS = 3   # Materials & Finishes — 공통 자재
-IDX_SPEC      = 4   # Space Spec 템플릿 (거실)
-IDX_MODEL     = 5   # Modeling Image 템플릿 (거실)
+IDX_DESIGN    = 1   # Design Direction — 생성 직후 삭제
+IDX_COLOR     = 2   # Color Story (삭제 후 → 1)
+IDX_MATERIALS = 3   # Materials & Finishes (삭제 후 → 2)
+IDX_SPEC      = 4   # Space Spec 템플릿 (삭제 후 → 3)
+IDX_MODEL     = 5   # Modeling Image 템플릿 (삭제 후 → 4)
 # 6,7: 침실 spec+model  8,9: 주방 spec+model  → 모두 삭제
-IDX_FFANDE    = 10  # FF&E Schedule
-IDX_THANKS    = 11  # Thank You — 변경 없음
+IDX_FFANDE    = 10  # FF&E Schedule (삭제 후 → 8)
+IDX_THANKS    = 11  # Thank You (삭제 후 → 9)
 N_EXAMPLE_ROOM_SLIDES = 6  # 인덱스 4~9 (거실/침실/주방 spec+model 6장)
 
 ROW_TOPS_IN = [1.505, 2.325, 3.145, 3.965, 4.785]  # Space Spec 행 Y 위치(인치)
@@ -626,6 +627,15 @@ def generate_pptx(
     """
     prs = Presentation(TEMPLATE_PATH)
 
+    # 0. 슬라이드 2 (Design Direction) 삭제 — 인덱스 1
+    _delete_slide(prs, IDX_DESIGN)
+    # 이후 인덱스: Cover=0, Color=1, Materials=2, Spec=3, Model=4, ..., FF&E=8, TY=9
+    C_COLOR     = IDX_COLOR     - 1  # 1
+    C_MATERIALS = IDX_MATERIALS - 1  # 2
+    C_SPEC      = IDX_SPEC      - 1  # 3
+    C_MODEL     = IDX_MODEL     - 1  # 4
+    C_FFANDE    = IDX_FFANDE    - 1  # 9
+
     # 1. 표지 수정
     _update_cover(prs.slides[IDX_COVER], project)
     if logo_bytes:
@@ -640,8 +650,8 @@ def generate_pptx(
     # 2. 벽/바닥/타일/천장 자재 자동 선택 → Color Story + Materials & Finishes 업데이트
     slot_items = _auto_select_materials(rooms)
     top_items  = _top_items_ordered(rooms)
-    _update_color_story(prs.slides[IDX_COLOR], top_items)
-    _update_materials(prs.slides[IDX_MATERIALS], slot_items)
+    _update_color_story(prs.slides[C_COLOR], top_items)
+    _update_materials(prs.slides[C_MATERIALS], slot_items)
 
     # 3. 각 방 스펙+모델링 슬라이드 복사 (prs 끝에 추가)
     room_slide_counts = []
@@ -651,10 +661,10 @@ def generate_pptx(
 
         for chunk_i in range(n_chunks):
             chunk = items[chunk_i * 5: chunk_i * 5 + 5]
-            s = _copy_slide(prs, IDX_SPEC)
+            s = _copy_slide(prs, C_SPEC)
             _update_spec_slide(s, room["name"], room.get("name_en", ""), chunk)
 
-        m = _copy_slide(prs, IDX_MODEL)
+        m = _copy_slide(prs, C_MODEL)
         _update_model_slide(m, room["name"], room.get("model_images"))
 
         room_slide_counts.append(n_chunks + 1)
@@ -667,19 +677,19 @@ def generate_pptx(
         for it in room.get("items", []):
             all_ff.append({**it, "room": it.get("room") or room["name"]})
 
-    _update_ffande(prs.slides[IDX_FFANDE], all_ff[:8])
+    _update_ffande(prs.slides[C_FFANDE], all_ff[:8])
     for extra_start in range(8, len(all_ff), 8):
-        extra = _copy_slide(prs, IDX_FFANDE)
+        extra = _copy_slide(prs, C_FFANDE)
         _update_ffande(extra, all_ff[extra_start: extra_start + 8])
 
-    # 5. 예제 방 슬라이드 삭제 (인덱스 4~9: 항상 4번을 반복 삭제)
+    # 5. 예제 방 슬라이드 삭제 (Design 삭제 후: Spec=3, 항상 3번을 반복 삭제)
     for _ in range(N_EXAMPLE_ROOM_SLIDES):
-        _delete_slide(prs, IDX_SPEC)
+        _delete_slide(prs, C_SPEC)
 
-    # 삭제 후 순서: [0:Cover,1:Design,2:Color,3:Materials,4:FF&E,5:TY, 6+:새방슬라이드들]
-    # 방 슬라이드를 인덱스 4 위치로 이동
+    # 삭제 후 순서: [0:Cover,1:Color,2:Materials,3:FF&E,4:TY, 5+:새방슬라이드들]
+    # 방 슬라이드를 인덱스 3 위치로 이동
     for i in range(total_room_slides):
-        _move_slide(prs, 6 + i, 4 + i)
+        _move_slide(prs, 5 + i, 3 + i)
 
     # 6. Thank You 슬라이드를 항상 맨 마지막으로
     total = len(prs.slides)
