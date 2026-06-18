@@ -85,10 +85,40 @@ section[data-testid="stSidebar"] label{color:#8C7F74!important;font-size:.74rem!
 .stTabs [data-baseweb="tab"]{border-radius:7px;font-weight:600;font-size:.78rem;padding:5px 12px;}
 .stTabs [aria-selected="true"]{background:#fff!important;color:#1A1816!important;}
 
-/* 버튼 */
-.stButton>button{border-radius:8px!important;font-size:.78rem!important;font-weight:600!important;}
+/* 일반 버튼 */
+.stButton>button{
+  border-radius:10px!important;font-size:.78rem!important;font-weight:600!important;
+  background:#FFFFFF!important;color:#4A4540!important;
+  border:1.5px solid #DDD8D2!important;
+  transition:.15s!important;box-shadow:0 1px 3px rgba(0,0,0,.06)!important;}
+.stButton>button:hover{
+  background:#F3EDE6!important;border-color:#C8A97E!important;color:#1A1816!important;
+  box-shadow:0 2px 8px rgba(200,169,126,.18)!important;}
 div[data-testid="stButton"]>button[kind="primary"]{
-  background:#1A1816!important;color:#C8A97E!important;border:none!important;}
+  background:#C8A97E!important;color:#fff!important;border:none!important;
+  box-shadow:0 2px 8px rgba(200,169,126,.30)!important;}
+div[data-testid="stButton"]>button[kind="primary"]:hover{
+  background:#B8956A!important;}
+
+/* 공간 프리셋 버튼 (탭 내 공간 추가) */
+div[data-testid="column"] .stButton>button{
+  height:72px!important;
+  flex-direction:column!important;
+  font-size:.82rem!important;
+  font-weight:600!important;
+  letter-spacing:.3px!important;
+  background:#FFFFFF!important;
+  border:1.5px solid #E0DAD4!important;
+  border-radius:14px!important;
+  color:#4A4540!important;
+  box-shadow:0 1px 4px rgba(0,0,0,.05)!important;
+  transition:.15s!important;}
+div[data-testid="column"] .stButton>button:hover{
+  background:#FDF8F2!important;
+  border-color:#C8A97E!important;
+  color:#1A1816!important;
+  box-shadow:0 3px 10px rgba(200,169,126,.22)!important;
+  transform:translateY(-1px);}
 </style>
 """, unsafe_allow_html=True)
 
@@ -204,12 +234,16 @@ tabs = st.tabs(tab_labels)
 # ── 공간 추가 탭 ───────────────────────────────────────────────────────────────
 with tabs[-2]:
     st.markdown("#### 공간 추가")
-    st.caption("프리셋을 클릭하면 즉시 추가됩니다. 같은 공간은 번호가 자동으로 붙습니다.")
+    st.caption("공간 카드를 클릭하면 즉시 추가됩니다. 같은 공간은 번호가 자동으로 붙습니다.")
+
+    # 공간 프리셋 버튼 (5열 그리드)
     cols = st.columns(5)
     for idx, (ko, en, icon) in enumerate(ROOM_PRESETS):
         with cols[idx % 5]:
-            if st.button(f"{icon}\n{ko}", key=f"preset_{ko}", use_container_width=True):
+            label = f"{icon}  {ko}"
+            if st.button(label, key=f"preset_{ko}", use_container_width=True):
                 _add_room(ko, en)
+                st.rerun()
     st.markdown("---")
     c1, c2, c3 = st.columns([3,3,1])
     with c1: custom_ko = st.text_input("공간명 (한글)", placeholder="홈짐", key="cko")
