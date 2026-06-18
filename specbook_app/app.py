@@ -347,218 +347,215 @@ for ri, (tab, room) in enumerate(zip(tabs[:-2], st.session_state.rooms)):
                             "<hr style='border:none;border-top:1px solid #F0EBE4;margin:4px 0'>",
                             unsafe_allow_html=True,
                         )
-                st.stop()
 
-            if not sel["cat"]:
+            elif not sel["cat"]:
                 st.info("카테고리를 선택하면 관련 업체 목록이 표시됩니다.")
-                st.stop()
 
-            # ── STEP 2: 업체 선택 ─────────────────────────────────────────
-            st.markdown('<p class="sec-label" style="margin-top:12px">② 업체 / 브랜드</p>',
-                        unsafe_allow_html=True)
-            brands = BRAND_CATALOG[sel["cat"]]
-            brand_cols = st.columns(3)
-            for bi, b in enumerate(brands):
-                is_active = sel["brand"] == b["name"]
-                with brand_cols[bi % 3]:
-                    if st.button(
-                        b["name"],
-                        key=f"brand_{ri}_{bi}",
-                        use_container_width=True,
-                        type="primary" if is_active else "secondary",
-                    ):
-                        if sel["brand"] != b["name"]:
-                            sel["brand"] = b["name"]
-                            sel["group"] = None
-                            st.session_state.pop(f"res_{ri}", None)
-                        st.rerun()
-
-            if not sel["brand"]:
-                st.caption("업체를 선택하면 제품군과 검색창이 활성화됩니다.")
             else:
-                # ── STEP 3: 제품군 선택 ───────────────────────────────────
-                brand_data = next((b for b in brands if b["name"] == sel["brand"]), None)
-                groups = brand_data["groups"] if brand_data else []
-
-                st.markdown('<p class="sec-label" style="margin-top:10px">③ 제품군 선택</p>',
+                # ── STEP 2: 업체 선택 ─────────────────────────────────────
+                st.markdown('<p class="sec-label" style="margin-top:12px">② 업체 / 브랜드</p>',
                             unsafe_allow_html=True)
-                group_cols = st.columns(4)
-                for gi, g in enumerate(groups):
-                    is_active = sel["group"] == g
-                    with group_cols[gi % 4]:
+                brands = BRAND_CATALOG[sel["cat"]]
+                brand_cols = st.columns(3)
+                for bi, b in enumerate(brands):
+                    is_active = sel["brand"] == b["name"]
+                    with brand_cols[bi % 3]:
                         if st.button(
-                            g,
-                            key=f"group_{ri}_{gi}",
+                            b["name"],
+                            key=f"brand_{ri}_{bi}",
                             use_container_width=True,
                             type="primary" if is_active else "secondary",
                         ):
-                            sel["group"] = None if is_active else g
-                            st.session_state.pop(f"res_{ri}", None)
+                            if sel["brand"] != b["name"]:
+                                sel["brand"] = b["name"]
+                                sel["group"] = None
+                                st.session_state.pop(f"res_{ri}", None)
                             st.rerun()
 
-                # ── 검색창 (업체 선택 후에만 활성화) ─────────────────────
-                st.markdown('<p class="sec-label" style="margin-top:10px">🔍 제품 검색</p>',
-                            unsafe_allow_html=True)
-                group_hint = sel["group"] or "제품군을 선택하거나"
-                q_col, b_col = st.columns([5,1])
-                with q_col:
-                    keyword = st.text_input(
-                        "검색어",
-                        placeholder=f"{group_hint} 여기에 추가 키워드 입력 (예: 베이지, 600각, 방염)",
-                        key=f"kw_{ri}",
-                        label_visibility="collapsed",
-                    )
-                with b_col:
-                    do_search = st.button("검색", key=f"sb_{ri}",
-                                          use_container_width=True, type="primary")
+                if not sel["brand"]:
+                    st.caption("업체를 선택하면 제품군과 검색창이 활성화됩니다.")
+                else:
+                    # ── STEP 3: 제품군 선택 ───────────────────────────────────
+                    brand_data = next((b for b in brands if b["name"] == sel["brand"]), None)
+                    groups = brand_data["groups"] if brand_data else []
 
-                if do_search:
-                    if not sel["group"] and not keyword.strip():
-                        st.warning("제품군을 선택하거나 검색어를 입력하세요.")
-                    else:
-                        with st.spinner(f"{sel['brand']} 제품 검색 중..."):
-                            results = search_products(
-                                brand=sel["brand"],
-                                category=sel["cat"],
-                                product_group=sel["group"] or "",
-                                keyword=keyword.strip(),
-                                count=50,
-                            )
-                        st.session_state[f"res_{ri}"] = results
-                        st.session_state[f"page_{ri}"] = 0
+                    st.markdown('<p class="sec-label" style="margin-top:10px">③ 제품군 선택</p>',
+                                unsafe_allow_html=True)
+                    group_cols = st.columns(4)
+                    for gi, g in enumerate(groups):
+                        is_active = sel["group"] == g
+                        with group_cols[gi % 4]:
+                            if st.button(
+                                g,
+                                key=f"group_{ri}_{gi}",
+                                use_container_width=True,
+                                type="primary" if is_active else "secondary",
+                            ):
+                                sel["group"] = None if is_active else g
+                                st.session_state.pop(f"res_{ri}", None)
+                                st.rerun()
 
-                # ── 검색 결과 표시 ────────────────────────────────────────
-                products = st.session_state.get(f"res_{ri}", [])
-                page     = st.session_state.get(f"page_{ri}", 0)
-                PAGE_SIZE = 10
-
-                if products:
-                    SORT_OPTIONS = {
-                        "인기순": None,
-                        "가격 낮은순": lambda x: x["price_int"],
-                        "가격 높은순": lambda x: -x["price_int"],
-                    }
-                    sort_key = st.selectbox(
-                        "정렬",
-                        options=list(SORT_OPTIONS.keys()),
-                        key=f"sort_{ri}",
-                        label_visibility="collapsed",
-                    )
-                    sort_fn = SORT_OPTIONS[sort_key]
-                    sorted_products = sorted(products, key=sort_fn) if sort_fn else products
-
-                    total_pages = -(-len(sorted_products) // PAGE_SIZE)
-                    page_items  = sorted_products[page * PAGE_SIZE: (page+1) * PAGE_SIZE]
-
-                    hc1, hc2, hc3 = st.columns([3,2,3])
-                    with hc1:
-                        st.markdown(f"**{len(products)}개 결과**")
-                    with hc2:
-                        st.markdown(
-                            f"<div style='text-align:center;font-size:.75rem;color:#9A8F86'>"
-                            f"{page+1} / {total_pages} 페이지</div>",
-                            unsafe_allow_html=True,
+                    # ── 검색창 ────────────────────────────────────────────────
+                    st.markdown('<p class="sec-label" style="margin-top:10px">🔍 제품 검색</p>',
+                                unsafe_allow_html=True)
+                    group_hint = sel["group"] or "제품군을 선택하거나"
+                    q_col, b_col = st.columns([5,1])
+                    with q_col:
+                        keyword = st.text_input(
+                            "검색어",
+                            placeholder=f"{group_hint} 여기에 추가 키워드 입력 (예: 베이지, 600각, 방염)",
+                            key=f"kw_{ri}",
+                            label_visibility="collapsed",
                         )
-                    with hc3:
-                        pc1, pc2 = st.columns(2)
-                        with pc1:
-                            if st.button("◀", key=f"prev_{ri}", disabled=(page==0),
-                                         use_container_width=True):
-                                st.session_state[f"page_{ri}"] = page-1; st.rerun()
-                        with pc2:
-                            if st.button("▶", key=f"next_{ri}",
-                                         disabled=(page>=total_pages-1), use_container_width=True):
-                                st.session_state[f"page_{ri}"] = page+1; st.rerun()
+                    with b_col:
+                        do_search = st.button("검색", key=f"sb_{ri}",
+                                              use_container_width=True, type="primary")
 
-                    existing_urls = {
-                        it["source_url"]
-                        for items in room["specbook"].values()
-                        for it in items
-                    }
-
-                    fav_urls = {f["url"] for f in st.session_state.favorites}
-
-                    for pi, prod in enumerate(page_items):
-                        gpi = page * PAGE_SIZE + pi
-                        is_dup = prod["url"] in existing_urls
-                        is_fav = prod["url"] in fav_urls
-                        with st.container():
-                            ic, inf, ac = st.columns([1,5,2])
-                            with ic:
-                                if prod["image"]:
-                                    st.image(prod["image"], use_container_width=True)
-                            with inf:
-                                st.markdown(
-                                    f'<div class="pcard-title">{prod["title"][:44]}</div>'
-                                    f'<div class="pcard-price">{prod["price"]}</div>'
-                                    f'<div class="pcard-meta">'
-                                    f'{prod["brand"] or sel["brand"]}'
-                                    f' | {prod["mall"] or "—"}</div>',
-                                    unsafe_allow_html=True,
+                    if do_search:
+                        if not sel["group"] and not keyword.strip():
+                            st.warning("제품군을 선택하거나 검색어를 입력하세요.")
+                        else:
+                            with st.spinner(f"{sel['brand']} 제품 검색 중..."):
+                                results = search_products(
+                                    brand=sel["brand"],
+                                    category=sel["cat"],
+                                    product_group=sel["group"] or "",
+                                    keyword=keyword.strip(),
+                                    count=50,
                                 )
-                                if prod["url"]:
-                                    st.markdown(f"[🔗 상품 링크]({prod['url']})")
-                            with ac:
-                                # 즐겨찾기 토글
-                                if st.button("⭐" if is_fav else "☆",
-                                             key=f"fav_{ri}_{gpi}",
-                                             help="즐겨찾기 등록/해제"):
-                                    if is_fav:
-                                        st.session_state.favorites = [
-                                            f for f in st.session_state.favorites
-                                            if f["url"] != prod["url"]
-                                        ]
-                                    else:
-                                        st.session_state.favorites.append({
-                                            **prod,
-                                            "cat": sel["cat"],
-                                            "brand_name": sel["brand"],
-                                            "product_group": sel["group"] or "",
-                                        })
-                                    st.rerun()
-                                if is_dup:
-                                    st.caption("✓ 추가됨")
-                                else:
-                                    if st.button("＋ 추가", key=f"add_{ri}_{gpi}",
-                                                 use_container_width=True, type="primary"):
-                                        cat_key = sel["cat"]
-                                        meta = CATEGORY_META[cat_key]
-                                        room["specbook"][cat_key].append({
-                                            "id":           str(uuid.uuid4())[:8],
-                                            "category":     cat_key,
-                                            "brand_name":   sel["brand"],
-                                            "product_group":sel["group"] or "",
-                                            "name":         prod["title"],
-                                            "brand":        prod["brand"] or sel["brand"],
-                                            "maker":        prod["maker"] or "",
-                                            "supplier":     prod["mall"] or "",
-                                            "price":        prod["price"],
-                                            "price_int":    prod["price_int"],
-                                            "image_url":    prod["image"],
-                                            "source_url":   prod["url"],
-                                            "material":     "",
-                                            "color":        "",
-                                            "size":         _extract_spec(prod["title"]),
-                                            "model_number": "",
-                                            "unit":         "EA",
-                                            "qty":          1,
-                                            "location":     "",
-                                            "memo":         "",
-                                            "item_code":    meta["item_code"],
-                                            "is_common":    False,
-                                            "created_at":   datetime.now().strftime("%Y-%m-%d %H:%M"),
-                                        })
-                                        st.rerun()
+                            st.session_state[f"res_{ri}"] = results
+                            st.session_state[f"page_{ri}"] = 0
+
+                    # ── 검색 결과 표시 ────────────────────────────────────────
+                    products = st.session_state.get(f"res_{ri}", [])
+                    page     = st.session_state.get(f"page_{ri}", 0)
+                    PAGE_SIZE = 10
+
+                    if products:
+                        SORT_OPTIONS = {
+                            "인기순": None,
+                            "가격 낮은순": lambda x: x["price_int"],
+                            "가격 높은순": lambda x: -x["price_int"],
+                        }
+                        sort_key = st.selectbox(
+                            "정렬",
+                            options=list(SORT_OPTIONS.keys()),
+                            key=f"sort_{ri}",
+                            label_visibility="collapsed",
+                        )
+                        sort_fn = SORT_OPTIONS[sort_key]
+                        sorted_products = sorted(products, key=sort_fn) if sort_fn else products
+
+                        total_pages = -(-len(sorted_products) // PAGE_SIZE)
+                        page_items  = sorted_products[page * PAGE_SIZE: (page+1) * PAGE_SIZE]
+
+                        hc1, hc2, hc3 = st.columns([3,2,3])
+                        with hc1:
+                            st.markdown(f"**{len(products)}개 결과**")
+                        with hc2:
                             st.markdown(
-                                "<hr style='border:none;border-top:1px solid #F0EBE4;margin:4px 0'>",
+                                f"<div style='text-align:center;font-size:.75rem;color:#9A8F86'>"
+                                f"{page+1} / {total_pages} 페이지</div>",
                                 unsafe_allow_html=True,
                             )
+                        with hc3:
+                            pc1, pc2 = st.columns(2)
+                            with pc1:
+                                if st.button("◀", key=f"prev_{ri}", disabled=(page==0),
+                                             use_container_width=True):
+                                    st.session_state[f"page_{ri}"] = page-1; st.rerun()
+                            with pc2:
+                                if st.button("▶", key=f"next_{ri}",
+                                             disabled=(page>=total_pages-1), use_container_width=True):
+                                    st.session_state[f"page_{ri}"] = page+1; st.rerun()
 
-                elif f"res_{ri}" in st.session_state:
-                    st.warning(
-                        f"**{sel['brand']}**의 전문 시공 자재 결과가 없습니다.\n\n"
-                        "다른 업체를 선택하거나, 제품군·검색어를 변경해보세요."
-                    )
+                        existing_urls = {
+                            it["source_url"]
+                            for items in room["specbook"].values()
+                            for it in items
+                        }
+                        fav_urls = {f["url"] for f in st.session_state.favorites}
+
+                        for pi, prod in enumerate(page_items):
+                            gpi = page * PAGE_SIZE + pi
+                            is_dup = prod["url"] in existing_urls
+                            is_fav = prod["url"] in fav_urls
+                            with st.container():
+                                ic, inf, ac = st.columns([1,5,2])
+                                with ic:
+                                    if prod["image"]:
+                                        st.image(prod["image"], use_container_width=True)
+                                with inf:
+                                    st.markdown(
+                                        f'<div class="pcard-title">{prod["title"][:44]}</div>'
+                                        f'<div class="pcard-price">{prod["price"]}</div>'
+                                        f'<div class="pcard-meta">'
+                                        f'{prod["brand"] or sel["brand"]}'
+                                        f' | {prod["mall"] or "—"}</div>',
+                                        unsafe_allow_html=True,
+                                    )
+                                    if prod["url"]:
+                                        st.markdown(f"[🔗 상품 링크]({prod['url']})")
+                                with ac:
+                                    if st.button("⭐" if is_fav else "☆",
+                                                 key=f"fav_{ri}_{gpi}",
+                                                 help="즐겨찾기 등록/해제"):
+                                        if is_fav:
+                                            st.session_state.favorites = [
+                                                f for f in st.session_state.favorites
+                                                if f["url"] != prod["url"]
+                                            ]
+                                        else:
+                                            st.session_state.favorites.append({
+                                                **prod,
+                                                "cat": sel["cat"],
+                                                "brand_name": sel["brand"],
+                                                "product_group": sel["group"] or "",
+                                            })
+                                        st.rerun()
+                                    if is_dup:
+                                        st.caption("✓ 추가됨")
+                                    else:
+                                        if st.button("＋ 추가", key=f"add_{ri}_{gpi}",
+                                                     use_container_width=True, type="primary"):
+                                            cat_key = sel["cat"]
+                                            meta = CATEGORY_META[cat_key]
+                                            room["specbook"][cat_key].append({
+                                                "id":           str(uuid.uuid4())[:8],
+                                                "category":     cat_key,
+                                                "brand_name":   sel["brand"],
+                                                "product_group":sel["group"] or "",
+                                                "name":         prod["title"],
+                                                "brand":        prod["brand"] or sel["brand"],
+                                                "maker":        prod["maker"] or "",
+                                                "supplier":     prod["mall"] or "",
+                                                "price":        prod["price"],
+                                                "price_int":    prod["price_int"],
+                                                "image_url":    prod["image"],
+                                                "source_url":   prod["url"],
+                                                "material":     "",
+                                                "color":        "",
+                                                "size":         _extract_spec(prod["title"]),
+                                                "model_number": "",
+                                                "unit":         "EA",
+                                                "qty":          1,
+                                                "location":     "",
+                                                "memo":         "",
+                                                "item_code":    meta["item_code"],
+                                                "is_common":    False,
+                                                "created_at":   datetime.now().strftime("%Y-%m-%d %H:%M"),
+                                            })
+                                            st.rerun()
+                                st.markdown(
+                                    "<hr style='border:none;border-top:1px solid #F0EBE4;margin:4px 0'>",
+                                    unsafe_allow_html=True,
+                                )
+
+                    elif f"res_{ri}" in st.session_state:
+                        st.warning(
+                            f"**{sel['brand']}**의 전문 시공 자재 결과가 없습니다.\n\n"
+                            "다른 업체를 선택하거나, 제품군·검색어를 변경해보세요."
+                        )
 
         # ── 오른쪽: 추가된 자재 목록 ──────────────────────────────────────
         with right:
