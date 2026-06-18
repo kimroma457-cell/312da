@@ -108,6 +108,8 @@ def _init_selector():
 
 if "rooms" not in st.session_state:
     st.session_state.rooms = []
+if "favorites" not in st.session_state:
+    st.session_state.favorites = []   # 전역 즐겨찾기 (방과 무관)
 if "project" not in st.session_state:
     st.session_state.project = {
         "company":  "DESICODE",
@@ -242,13 +244,10 @@ for ri, (tab, room) in enumerate(zip(tabs[:-2], st.session_state.rooms)):
             # ── STEP 1: 카테고리 선택 ──────────────────────────────────────
             st.markdown('<p class="sec-label">① 카테고리</p>', unsafe_allow_html=True)
 
-            # 즐겨찾기 버튼 (starred items count)
-            fav_items = [
-                it for items in room["specbook"].values()
-                for it in items if it.get("is_common")
-            ]
+            # 즐겨찾기 버튼 (전역 favorites 카운트)
+            fav_count = len(st.session_state.favorites)
             fav_active = sel["cat"] == "__fav__"
-            fav_label = f"⭐ 즐겨찾기 ({len(fav_items)})" if fav_items else "⭐ 즐겨찾기"
+            fav_label = f"⭐ 즐겨찾기 ({fav_count})" if fav_count else "⭐ 즐겨찾기"
             if st.button(fav_label, key=f"cat_{ri}___fav__",
                          use_container_width=False,
                          type="primary" if fav_active else "secondary"):
@@ -278,35 +277,72 @@ for ri, (tab, room) in enumerate(zip(tabs[:-2], st.session_state.rooms)):
 
             # ── 즐겨찾기 뷰 ───────────────────────────────────────────────
             if sel["cat"] == "__fav__":
-                if not fav_items:
-                    st.info("⭐ 별표 항목이 없습니다. 추가된 자재에서 ☆ 버튼으로 즐겨찾기 등록하세요.")
+                favs = st.session_state.favorites
+                if not favs:
+                    st.info("⭐ 즐겨찾기가 비어있습니다. 검색 결과에서 ☆ 버튼으로 추가하세요.")
                 else:
-                    st.markdown(f"**⭐ 즐겨찾기 — {len(fav_items)}개**")
-                    for fi, item in enumerate(fav_items):
-                        ck = item["category"]
-                        meta = CATEGORY_META.get(ck, {"icon": "📦"})
-                        c_img, c_info = st.columns([1, 6])
+                    st.markdown(f"**⭐ 즐겨찾기 — {len(favs)}개**")
+                    existing_urls = {
+                        it["source_url"]
+                        for items in room["specbook"].values()
+                        for it in items
+                    }
+                    for fi, fav in enumerate(favs):
+                        ck = fav.get("cat", "")
+                        meta = CATEGORY_META.get(ck, {"icon": "📦", "item_code": ck})
+                        is_dup = fav["url"] in existing_urls
+                        c_img, c_info, c_act = st.columns([1, 5, 2])
                         with c_img:
-                            if item.get("image_url"):
-                                st.image(item["image_url"], use_container_width=True)
-                            else:
-                                st.markdown(
-                                    f'<div style="width:44px;height:44px;background:#F0EDE8;'
-                                    f'border-radius:6px;display:flex;align-items:center;'
-                                    f'justify-content:center;font-size:1.1rem">{meta["icon"]}</div>',
-                                    unsafe_allow_html=True,
-                                )
+                            if fav.get("image"):
+                                st.image(fav["image"], use_container_width=True)
                         with c_info:
                             st.markdown(
-                                f'<div class="pcard-title">{item["name"][:44]}</div>'
-                                f'<div class="pcard-price">{item["price"]}</div>'
+                                f'<div class="pcard-title">{fav["title"][:44]}</div>'
+                                f'<div class="pcard-price">{fav["price"]}</div>'
                                 f'<div class="pcard-meta">'
                                 f'<span class="badge">{meta["icon"]} {ck}</span>'
-                                f' {item.get("brand_name","")}' +
-                                (f' › {item["product_group"]}' if item.get("product_group") else "")
+                                f' {fav.get("brand_name","")}' +
+                                (f' › {fav["product_group"]}' if fav.get("product_group") else "")
                                 + "</div>",
                                 unsafe_allow_html=True,
                             )
+                            if fav.get("url"):
+                                st.markdown(f"[🔗 상품 링크]({fav['url']})")
+                        with c_act:
+                            if st.button("⭐", key=f"unfav_{ri}_{fi}",
+                                         help="즐겨찾기 해제"):
+                                st.session_state.favorites.pop(fi); st.rerun()
+                            if is_dup:
+                                st.caption("✓ 추가됨")
+                            elif ck:
+                                if st.button("＋ 추가", key=f"favadd_{ri}_{fi}",
+                                             use_container_width=True, type="primary"):
+                                    room["specbook"][ck].append({
+                                        "id":           str(uuid.uuid4())[:8],
+                                        "category":     ck,
+                                        "brand_name":   fav.get("brand_name", ""),
+                                        "product_group":fav.get("product_group", ""),
+                                        "name":         fav["title"],
+                                        "brand":        fav["brand"] or fav.get("brand_name", ""),
+                                        "maker":        fav.get("maker", ""),
+                                        "supplier":     fav.get("mall", ""),
+                                        "price":        fav["price"],
+                                        "price_int":    fav["price_int"],
+                                        "image_url":    fav.get("image", ""),
+                                        "source_url":   fav["url"],
+                                        "material":     "",
+                                        "color":        "",
+                                        "size":         _extract_spec(fav["title"]),
+                                        "model_number": "",
+                                        "unit":         "EA",
+                                        "qty":          1,
+                                        "location":     "",
+                                        "memo":         "",
+                                        "item_code":    meta["item_code"],
+                                        "is_common":    False,
+                                        "created_at":   datetime.now().strftime("%Y-%m-%d %H:%M"),
+                                    })
+                                    st.rerun()
                         st.markdown(
                             "<hr style='border:none;border-top:1px solid #F0EBE4;margin:4px 0'>",
                             unsafe_allow_html=True,
@@ -440,9 +476,12 @@ for ri, (tab, room) in enumerate(zip(tabs[:-2], st.session_state.rooms)):
                         for it in items
                     }
 
+                    fav_urls = {f["url"] for f in st.session_state.favorites}
+
                     for pi, prod in enumerate(page_items):
                         gpi = page * PAGE_SIZE + pi
                         is_dup = prod["url"] in existing_urls
+                        is_fav = prod["url"] in fav_urls
                         with st.container():
                             ic, inf, ac = st.columns([1,5,2])
                             with ic:
@@ -460,6 +499,23 @@ for ri, (tab, room) in enumerate(zip(tabs[:-2], st.session_state.rooms)):
                                 if prod["url"]:
                                     st.markdown(f"[🔗 상품 링크]({prod['url']})")
                             with ac:
+                                # 즐겨찾기 토글
+                                if st.button("⭐" if is_fav else "☆",
+                                             key=f"fav_{ri}_{gpi}",
+                                             help="즐겨찾기 등록/해제"):
+                                    if is_fav:
+                                        st.session_state.favorites = [
+                                            f for f in st.session_state.favorites
+                                            if f["url"] != prod["url"]
+                                        ]
+                                    else:
+                                        st.session_state.favorites.append({
+                                            **prod,
+                                            "cat": sel["cat"],
+                                            "brand_name": sel["brand"],
+                                            "product_group": sel["group"] or "",
+                                        })
+                                    st.rerun()
                                 if is_dup:
                                     st.caption("✓ 추가됨")
                                 else:
