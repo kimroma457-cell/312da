@@ -294,29 +294,77 @@ for ri, (tab, room) in enumerate(zip(tabs[:-2], st.session_state.rooms)):
                                       use_container_width=True, type="primary")
 
             result_key = f"results_{ri}_{sel_cat}"
+            page_key   = f"page_{ri}_{sel_cat}"
+            PAGE_SIZE  = 10
+            MAX_COUNT  = 50
+
             if do_search and query:
-                with st.spinner(f"'{query}' 검색 중..."):
-                    products = search_products(query, sel_cat, count=8)
+                with st.spinner(f"'{query}' 검색 중 (최대 {MAX_COUNT}개)..."):
+                    products = search_products(query, sel_cat, count=MAX_COUNT)
                 st.session_state[result_key] = products
+                st.session_state[page_key]   = 0  # 검색 시 첫 페이지로
 
             products = st.session_state.get(result_key, [])
+            page     = st.session_state.get(page_key, 0)
+
             if products:
-                st.markdown(f"**{len(products)}개 결과**")
+                total_pages = -(-len(products) // PAGE_SIZE)  # ceil
+                page_start  = page * PAGE_SIZE
+                page_items  = products[page_start: page_start + PAGE_SIZE]
+
+                # 상단: 결과 수 + 페이지 네비
+                hc1, hc2, hc3 = st.columns([3, 2, 3])
+                with hc1:
+                    lx_cnt = sum(1 for p in products if "LX" in (p.get("brand","") + p.get("mall","")))
+                    st.markdown(
+                        f"**{len(products)}개 결과**"
+                        + (f" <span style='color:#C8A97E;font-size:.75rem'>(LX지인 {lx_cnt}개 포함)</span>"
+                           if lx_cnt and sel_cat in {"벽","바닥","천장"} else ""),
+                        unsafe_allow_html=True,
+                    )
+                with hc2:
+                    st.markdown(
+                        f"<div style='text-align:center;font-size:.78rem;color:#9A8F86'>"
+                        f"{page+1} / {total_pages} 페이지</div>",
+                        unsafe_allow_html=True,
+                    )
+                with hc3:
+                    pc1, pc2 = st.columns(2)
+                    with pc1:
+                        if st.button("◀ 이전", key=f"prev_{ri}_{sel_cat}",
+                                     disabled=(page == 0), use_container_width=True):
+                            st.session_state[page_key] = page - 1
+                            st.rerun()
+                    with pc2:
+                        if st.button("다음 ▶", key=f"next_{ri}_{sel_cat}",
+                                     disabled=(page >= total_pages - 1), use_container_width=True):
+                            st.session_state[page_key] = page + 1
+                            st.rerun()
+
                 existing_urls = {
                     it["source_url"]
                     for items in room["specbook"].values()
                     for it in items
                 }
-                for pi, prod in enumerate(products):
+
+                for pi, prod in enumerate(page_items):
+                    global_pi = page_start + pi
                     is_dup = prod["url"] in existing_urls
+                    is_lx  = "LX" in (prod.get("brand","") + prod.get("mall",""))
                     with st.container():
                         ic, inf, ac = st.columns([1, 5, 2])
                         with ic:
                             if prod["image"]:
                                 st.image(prod["image"], use_container_width=True)
                         with inf:
+                            brand_tag = (
+                                '<span style="background:#1A1816;color:#C8A97E;'
+                                'font-size:.65rem;padding:1px 6px;border-radius:10px;'
+                                'margin-right:4px">LX Z:IN</span>'
+                                if is_lx else ""
+                            )
                             st.markdown(
-                                f'<div class="pcard-title">{prod["title"][:45]}</div>'
+                                f'<div class="pcard-title">{brand_tag}{prod["title"][:42]}</div>'
                                 f'<div class="pcard-price">{prod["price"]}</div>'
                                 f'<div class="pcard-meta">'
                                 f'{prod["brand"] or "브랜드 미상"}'
@@ -329,40 +377,52 @@ for ri, (tab, room) in enumerate(zip(tabs[:-2], st.session_state.rooms)):
                             if is_dup:
                                 st.caption("✓ 추가됨")
                             else:
-                                if st.button("＋ 추가", key=f"add_{ri}_{sel_cat}_{pi}",
+                                if st.button("＋ 추가", key=f"add_{ri}_{sel_cat}_{global_pi}",
                                              use_container_width=True, type="primary"):
                                     auto_spec = _extract_spec(prod["title"])
                                     new_item = {
-                                        "id":          str(uuid.uuid4())[:8],
-                                        "category":    sel_cat,
-                                        "name":        prod["title"],
-                                        "brand":       prod["brand"] or "",
-                                        "maker":       prod["maker"] or "",
-                                        "supplier":    prod["mall"] or "",
-                                        "price":       prod["price"],
-                                        "price_int":   prod["price_int"],
-                                        "image_url":   prod["image"],
-                                        "source_url":  prod["url"],
-                                        "material":    "",
-                                        "color":       "",
-                                        "size":        auto_spec,
+                                        "id":           str(uuid.uuid4())[:8],
+                                        "category":     sel_cat,
+                                        "name":         prod["title"],
+                                        "brand":        prod["brand"] or "",
+                                        "maker":        prod["maker"] or "",
+                                        "supplier":     prod["mall"] or "",
+                                        "price":        prod["price"],
+                                        "price_int":    prod["price_int"],
+                                        "image_url":    prod["image"],
+                                        "source_url":   prod["url"],
+                                        "material":     "",
+                                        "color":        "",
+                                        "size":         auto_spec,
                                         "model_number": "",
-                                        "unit":        "EA",
-                                        "qty":         1,
-                                        "location":    "",
-                                        "memo":        "",
-                                        "item_code":   sel_info["item_code"],
-                                        "is_common":   False,
-                                        "source":      "naver",
-                                        "created_at":  datetime.now().strftime("%Y-%m-%d %H:%M"),
+                                        "unit":         "EA",
+                                        "qty":          1,
+                                        "location":     "",
+                                        "memo":         "",
+                                        "item_code":    sel_info["item_code"],
+                                        "is_common":    False,
+                                        "source":       "lxzin" if is_lx else "naver",
+                                        "created_at":   datetime.now().strftime("%Y-%m-%d %H:%M"),
                                     }
                                     room["specbook"][sel_cat].append(new_item)
-                                    st.session_state[result_key] = []
                                     st.rerun()
                         st.markdown(
                             "<hr style='border:none;border-top:1px solid #F0EBE4;margin:4px 0'>",
                             unsafe_allow_html=True,
                         )
+
+                # 하단 페이지 버튼
+                bc1, bc2, bc3 = st.columns([3, 2, 3])
+                with bc1:
+                    if st.button("◀ 이전 ", key=f"prev2_{ri}_{sel_cat}",
+                                 disabled=(page == 0), use_container_width=True):
+                        st.session_state[page_key] = page - 1
+                        st.rerun()
+                with bc3:
+                    if st.button(" 다음 ▶", key=f"next2_{ri}_{sel_cat}",
+                                 disabled=(page >= total_pages - 1), use_container_width=True):
+                        st.session_state[page_key] = page + 1
+                        st.rerun()
 
             elif do_search and query and not products:
                 st.warning("검색 결과 없음. 검색어를 바꿔보세요.")

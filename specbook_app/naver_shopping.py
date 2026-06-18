@@ -173,14 +173,18 @@ def _is_valid(item: dict, category_key: str) -> bool:
     return True
 
 
-def search_products(user_query: str, category_key: str, count: int = 10,
-                    sort: str = "sim") -> list[dict]:
-    """
-    user_query   : 사용자가 입력한 검색어
-    category_key : CATEGORIES 키 (벽/바닥/천장/조명/욕실/주방/가구/전기/기타)
-    반환          : 필터링된 상품 리스트
-    """
-    query = _build_query(user_query, category_key)
+# LX지인 우선 검색 카테고리 (벽지·바닥재 공식 브랜드)
+LXZIN_FIRST_CATEGORIES = {"벽", "바닥", "천장"}
+
+LXZIN_BRAND_QUERIES = {
+    "벽":  "LX지인 실크벽지 합지벽지",
+    "바닥": "LX지인 강마루 강화마루 바닥재",
+    "천장": "LX지인 천장재 몰딩",
+}
+
+
+def _fetch_naver(query: str, count: int, sort: str) -> list[dict]:
+    """네이버 쇼핑 API 단일 호출."""
     try:
         res = requests.get(
             "https://openapi.naver.com/v1/search/shop.json",
@@ -188,46 +192,64 @@ def search_products(user_query: str, category_key: str, count: int = 10,
                 "X-Naver-Client-Id":     NAVER_CLIENT_ID,
                 "X-Naver-Client-Secret": NAVER_CLIENT_SECRET,
             },
-            params={"query": query, "display": count * 2, "sort": sort},
+            params={"query": query, "display": min(count, 100), "sort": sort},
             timeout=6,
         )
         res.raise_for_status()
-        raw_items = res.json().get("items", [])
+        return res.json().get("items", [])
     except Exception as e:
         print(f"[쇼핑 검색 오류] {e}")
         return []
 
-    results = []
-    seen_urls = set()
 
-    for it in raw_items:
-        if not _is_valid(it, category_key):
-            continue
-        url = it.get("link","")
-        if url in seen_urls:
-            continue
-        seen_urls.add(url)
+def search_products(user_query: str, category_key: str, count: int = 50,
+                    sort: str = "sim") -> list[dict]:
+    """
+    user_query   : 사용자가 입력한 검색어
+    category_key : CATEGORIES 키 (벽/바닥/천장/조명/욕실/주방/가구/전기/기타)
+    반환          : 필터링된 상품 리스트
+    """
+    seen_urls: set = set()
+    results: list[dict] = []
 
-        lp = int(it.get("lprice", 0))
-        hp = int(it.get("hprice", 0) or lp)
-        price_str = f"{lp:,}원" if (lp == hp or hp == 0) else f"{lp:,}~{hp:,}원"
+    def _parse_items(raw_items):
+        for it in raw_items:
+            if not _is_valid(it, category_key):
+                continue
+            url = it.get("link", "")
+            if not url or url in seen_urls:
+                continue
+            seen_urls.add(url)
+            lp = int(it.get("lprice", 0))
+            hp = int(it.get("hprice", 0) or lp)
+            price_str = f"{lp:,}원" if (lp == hp or hp == 0) else f"{lp:,}~{hp:,}원"
+            results.append({
+                "title":      _clean(it.get("title", "")),
+                "price":      price_str,
+                "price_int":  lp,
+                "brand":      it.get("brand", "") or it.get("maker", ""),
+                "maker":      it.get("maker", ""),
+                "mall":       it.get("mallName", ""),
+                "url":        url,
+                "image":      it.get("image", ""),
+                "category":   " > ".join(filter(None, [
+                    it.get("category1", ""), it.get("category2", ""),
+                    it.get("category3", ""),
+                ])),
+                "product_id": it.get("productId", ""),
+            })
 
-        results.append({
-            "title":    _clean(it.get("title","")),
-            "price":    price_str,
-            "price_int": lp,
-            "brand":    it.get("brand","") or it.get("maker",""),
-            "maker":    it.get("maker",""),
-            "mall":     it.get("mallName",""),
-            "url":      url,
-            "image":    it.get("image",""),
-            "category": " > ".join(filter(None,[
-                it.get("category1",""), it.get("category2",""),
-                it.get("category3",""),
-            ])),
-            "product_id": it.get("productId",""),
-        })
-        if len(results) >= count:
-            break
+    # ── 1차: LX지인 브랜드 우선 검색 (해당 카테고리만) ─────────────────────────
+    if category_key in LXZIN_FIRST_CATEGORIES:
+        lx_query = f"{LXZIN_BRAND_QUERIES[category_key]} {user_query.strip()}"
+        lx_raw = _fetch_naver(lx_query, count, sort)
+        _parse_items(lx_raw)
 
-    return results
+    # ── 2차: 일반 검색으로 나머지 채우기 ─────────────────────────────────────────
+    if len(results) < count:
+        general_query = _build_query(user_query, category_key)
+        need = (count - len(results)) * 2  # 필터링 감안해 여유 있게 요청
+        general_raw = _fetch_naver(general_query, need, sort)
+        _parse_items(general_raw)
+
+    return results[:count]
