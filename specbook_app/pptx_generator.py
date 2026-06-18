@@ -109,11 +109,12 @@ _SLIDE4_SLOTS = [
     {"code": "METAL",   "img_l": 0.50, "txt_l": 1.55, "t": 3.92},
     {"code": "TEXTILE", "img_l": 5.10, "txt_l": 6.15, "t": 3.92},
 ]
-# 슬라이드 3 컬러 스와치 X 위치 (6개)
-_SWATCH_X = [0.50, 2.05, 3.60, 5.15, 6.70, 8.25]
-# 자재 수집 우선 카테고리 순서 (Color Story용)
-_PRIORITY_CODES = ["WALL", "FLOOR", "TILE", "CEIL", "PAINT", "FILM",
-                   "LIGHT", "FURN", "BATH", "ELEC", "MOLD", "DOOR", "WIN"]
+# 슬라이드 3 — 벽/바닥/타일 3개만, 슬라이드 내 기존 6개 X 위치
+_SWATCH_X_ORIG = [0.50, 2.05, 3.60, 5.15, 6.70, 8.25]
+# 3개 중앙 정렬 X (슬라이드 10", 콘텐츠 0.5~9.5" = 9", 스와치 W=1.32", gap=1.5")
+_SWATCH_X_NEW  = [1.52, 4.34, 7.16]
+# Color Story 대상: 벽 → 바닥 → 타일 순 고정
+_COLOR_CODES   = ["WALL", "FLOOR", "TILE"]
 
 
 def _auto_select_materials(rooms: list[dict]) -> dict[str, dict]:
@@ -146,13 +147,15 @@ def _auto_select_materials(rooms: list[dict]) -> dict[str, dict]:
 
 
 def _top_items_ordered(rooms: list[dict]) -> list[dict]:
-    """Color Story용: 우선순위 코드 순서로 상위 자재 최대 6개 반환."""
+    """Color Story용: 벽→바닥→타일 순서로 최대 3개 반환."""
     from collections import defaultdict
 
     code_tally: dict[str, dict] = defaultdict(dict)
     for room in rooms:
         for it in room.get("items", []):
             code = it.get("item_code", "").upper()
+            if code not in _COLOR_CODES:
+                continue
             key = it.get("product", "") or it.get("name", "")
             qty = it.get("qty", 1)
             if key not in code_tally[code]:
@@ -160,16 +163,37 @@ def _top_items_ordered(rooms: list[dict]) -> list[dict]:
             code_tally[code][key][0] += qty
 
     result = []
-    seen_codes = set()
-    for code in _PRIORITY_CODES:
-        if code in code_tally and code not in seen_codes:
+    for code in _COLOR_CODES:
+        if code in code_tally:
             products = code_tally[code]
             best_key = max(products, key=lambda k: products[k][0])
             result.append(products[best_key][1])
-            seen_codes.add(code)
-            if len(result) >= 6:
-                break
-    return result
+    return result  # 최대 3개
+
+
+def _dominant_hex(img_data: io.BytesIO | None) -> str:
+    """이미지에서 지배적인 색상을 추출하여 #RRGGBB 반환. 실패 시 빈 문자열."""
+    if not img_data:
+        return ""
+    try:
+        from PIL import Image
+        from collections import Counter
+        img_data.seek(0)
+        img = Image.open(img_data).convert("RGB").resize((80, 80))
+        pixels = list(img.getdata())
+        # 흰색(>230)·검정(<20) 제외 후 16단계 양자화
+        filtered = [
+            (r // 16 * 16, g // 16 * 16, b // 16 * 16)
+            for r, g, b in pixels
+            if not (r > 230 and g > 230 and b > 230)
+            and not (r < 20 and g < 20 and b < 20)
+        ]
+        if not filtered:
+            filtered = [(r // 16 * 16, g // 16 * 16, b // 16 * 16) for r, g, b in pixels]
+        r, g, b = Counter(filtered).most_common(1)[0][0]
+        return f"#{r:02X}{g:02X}{b:02X}"
+    except Exception:
+        return ""
 
 
 # ── 슬라이드 조작 ─────────────────────────────────────────────────────────────
@@ -264,54 +288,77 @@ def _update_cover(slide, project: dict):
 
 
 def _update_color_story(slide, top_items: list[dict]):
-    """슬라이드 3: Color Story — 상위 자재 이미지·정보로 컬러 스와치 업데이트."""
+    """슬라이드 3: Color Story — 벽/바닥/타일 3개 스와치, 중앙 정렬, 지배 색상 자동 추출."""
+    # 1단계: 기존 6개 스와치 관련 shape 모두 숨기기
+    for cx_orig in _SWATCH_X_ORIG:
+        for shape in slide.shapes:
+            l, t, w, h = shape.left, shape.top, shape.width, shape.height
+            if not _near(l, cx_orig, 0.20):
+                continue
+            if _near(t, 1.42, 0.20) and h > _emu(1.5):
+                _hide_shape(shape)
+            elif shape.has_text_frame and t > _emu(3.5):
+                _set_text(shape, "")
+
     if not top_items:
         return
 
-    # 이미지 미리 다운로드
+    # 이미지 다운로드 + 지배 색상 추출
     images = [_fetch_image(it.get("image_url", "")) for it in top_items]
+    hex_colors = [_dominant_hex(img) for img in images]
 
-    for si, cx in enumerate(_SWATCH_X):
+    # 2단계: 3개 스와치를 새 중앙 X 위치에 배치
+    for si, (cx_new, cx_orig) in enumerate(zip(_SWATCH_X_NEW, _SWATCH_X_ORIG)):
         if si >= len(top_items):
             break
-        item = top_items[si]
-        img_data = images[si]
+        item      = top_items[si]
+        img_data  = images[si]
+        hex_color = hex_colors[si]
 
         brand   = item.get("brand", "")
         product = item.get("product", "") or item.get("name", "")
-        spec    = item.get("spec", "") or item.get("size", "")
-        finish  = item.get("finish", "") or item.get("color", "") or item.get("material", "")
-        usage   = item.get("location", "") or item.get("item_code", "")
+        code    = ["WALL", "FLOOR", "TILE"][si]
+        usage   = item.get("location", "") or code
 
+        # 스와치 이미지 박스: 원래 첫 번째 스와치(cx_orig=0.50)의 크기 기준으로 새 위치에 삽입
+        # 이미지 박스 크기 (W=1.32", H=2.1")
+        box_w = _emu(1.32)
+        box_t = _emu(1.42)
+        box_h = _emu(2.10)
+        box_l = _emu(cx_new)
+
+        if img_data:
+            img_data.seek(0)
+            slide.shapes.add_picture(io.BytesIO(img_data.read()), box_l, box_t, box_w, box_h)
+        # 이미지 없으면 빈 박스 → 색상으로 채우기는 skip (투명)
+
+        # 텍스트 박스들 — 원래 해당 cx_orig 위치 shape을 이동 후 내용 업데이트
         for shape in slide.shapes:
-            l, t, w, h = shape.left, shape.top, shape.width, shape.height
-            if not _near(l, cx, 0.20):
-                continue
-
-            # 컬러 스와치 박스 (H > 1.5인치) → 이미지 삽입
-            if _near(t, 1.42, 0.20) and h > _emu(1.5):
-                if img_data:
-                    img_data.seek(0)
-                    _hide_shape(shape)
-                    slide.shapes.add_picture(io.BytesIO(img_data.read()), l, t, w, h)
-                continue
-
             if not shape.has_text_frame:
                 continue
-            cur = shape.text_frame.text.strip()
+            l = shape.left
+            t = shape.top
+            if not _near(l, cx_orig, 0.20):
+                continue
+            if t < _emu(3.5):
+                continue  # 스와치 박스 영역 건너뜀
 
-            # 브랜드명 (T≈3.62, 대문자 라벨)
+            # shape을 새 X 위치로 이동
+            shape.left = _emu(cx_new) + (shape.left - _emu(cx_orig))
+
+            cur = shape.text_frame.text.strip()
+            # 브랜드명 라벨 (T≈3.62)
             if _near(t, 3.62, 0.12):
                 _set_text(shape, (brand or product[:12]).upper(), font_size_pt=7)
             # 제품명 (T≈3.86)
             elif _near(t, 3.86, 0.12):
-                _set_text(shape, product[:20], font_size_pt=6.5)
-            # 규격/색상 (T≈4.07)
+                _set_text(shape, product[:22], font_size_pt=6.5)
+            # 색상 hex 코드 (T≈4.07) — 이미지 지배 색상
             elif _near(t, 4.07, 0.12):
-                _set_text(shape, (spec or finish)[:14], font_size_pt=6)
-            # 적용 위치/카테고리 (T≈4.30, 내용 있는 것만)
+                _set_text(shape, hex_color, font_size_pt=6)
+            # 적용 위치 (T≈4.30, 내용 있는 것만)
             elif _near(t, 4.30, 0.12) and cur:
-                _set_text(shape, usage[:16], font_size_pt=6)
+                _set_text(shape, usage[:18], font_size_pt=6)
 
 
 def _update_materials(slide, slot_items: dict[str, dict]):
