@@ -905,11 +905,15 @@ with tabs[-1]:
             for room in st.session_state.rooms:
                 all_items = [
                     {"item_code": it["item_code"], "product": it["name"],
+                     "brand": it.get("brand", "") or it.get("brand_name", ""),
                      "spec": it.get("size",""),
                      "finish": it.get("material","") or it.get("color",""),
                      "vendor": it.get("supplier",""), "qty": it.get("qty",1),
                      "note": it.get("memo",""), "price": it["price"],
-                     "image_url": it.get("image_url",""), "room": room["name"]}
+                     "image_url": it.get("image_url",""),
+                     "location": it.get("location",""),
+                     "color": it.get("color",""), "material": it.get("material",""),
+                     "room": room["name"]}
                     for items in room["specbook"].values()
                     for it in items
                 ]
@@ -927,7 +931,7 @@ with tabs[-1]:
                                       "items": all_items, "model_images": model_images})
 
             with st.spinner("PPT 생성 중..."):
-                pptx_bytes = generate_pptx(p, ppt_rooms, common_materials,
+                pptx_bytes = generate_pptx(p, ppt_rooms,
                                            logo_bytes=st.session_state.logo_bytes)
 
             st.download_button(

@@ -84,6 +84,94 @@ def _near(a: int, b: float, tol_in: float = 0.14) -> bool:
     return abs(a - _emu(b)) <= _emu(tol_in)
 
 
+# ── 자재 자동 선택 ────────────────────────────────────────────────────────────
+
+# item_code → 슬라이드 슬롯 매핑 (우선순위 순서)
+_CODE_TO_SLOT = {
+    "FLOOR": "FLOOR",
+    "WALL":  "WALL",
+    "TILE":  "TILE",
+    "CEIL":  "PANEL",
+    "PAINT": "PANEL",
+    "LIGHT": "METAL",
+    "BATH":  "METAL",
+    "ELEC":  "METAL",
+    "FILM":  "TEXTILE",
+    "MOLD":  "TEXTILE",
+    "FURN":  "TEXTILE",
+}
+# 슬라이드 4 슬롯 정의: code, 이미지박스X, 텍스트X, 행Y
+_SLIDE4_SLOTS = [
+    {"code": "FLOOR",   "img_l": 0.50, "txt_l": 1.55, "t": 1.32},
+    {"code": "WALL",    "img_l": 5.10, "txt_l": 6.15, "t": 1.32},
+    {"code": "PANEL",   "img_l": 0.50, "txt_l": 1.55, "t": 2.62},
+    {"code": "TILE",    "img_l": 5.10, "txt_l": 6.15, "t": 2.62},
+    {"code": "METAL",   "img_l": 0.50, "txt_l": 1.55, "t": 3.92},
+    {"code": "TEXTILE", "img_l": 5.10, "txt_l": 6.15, "t": 3.92},
+]
+# 슬라이드 3 컬러 스와치 X 위치 (6개)
+_SWATCH_X = [0.50, 2.05, 3.60, 5.15, 6.70, 8.25]
+# 자재 수집 우선 카테고리 순서 (Color Story용)
+_PRIORITY_CODES = ["WALL", "FLOOR", "TILE", "CEIL", "PAINT", "FILM",
+                   "LIGHT", "FURN", "BATH", "ELEC", "MOLD", "DOOR", "WIN"]
+
+
+def _auto_select_materials(rooms: list[dict]) -> dict[str, dict]:
+    """
+    모든 공간의 자재에서 item_code별로 qty 합산 후 슬롯별 최다 자재를 선택한다.
+    반환: {"FLOOR": item_dict, "WALL": item_dict, ...}
+    """
+    from collections import defaultdict
+
+    # code → {product_key: (total_qty, item)}
+    tally: dict[str, dict] = defaultdict(dict)
+    for room in rooms:
+        for it in room.get("items", []):
+            code = it.get("item_code", "").upper()
+            slot = _CODE_TO_SLOT.get(code)
+            if not slot:
+                continue
+            key = it.get("product", "") or it.get("name", "")
+            qty = it.get("qty", 1)
+            if key not in tally[slot]:
+                tally[slot][key] = [0, it]
+            tally[slot][key][0] += qty
+
+    result: dict[str, dict] = {}
+    for slot, products in tally.items():
+        # qty 합산이 가장 높은 자재 선택
+        best_key = max(products, key=lambda k: products[k][0])
+        result[slot] = products[best_key][1]
+    return result
+
+
+def _top_items_ordered(rooms: list[dict]) -> list[dict]:
+    """Color Story용: 우선순위 코드 순서로 상위 자재 최대 6개 반환."""
+    from collections import defaultdict
+
+    code_tally: dict[str, dict] = defaultdict(dict)
+    for room in rooms:
+        for it in room.get("items", []):
+            code = it.get("item_code", "").upper()
+            key = it.get("product", "") or it.get("name", "")
+            qty = it.get("qty", 1)
+            if key not in code_tally[code]:
+                code_tally[code][key] = [0, it]
+            code_tally[code][key][0] += qty
+
+    result = []
+    seen_codes = set()
+    for code in _PRIORITY_CODES:
+        if code in code_tally and code not in seen_codes:
+            products = code_tally[code]
+            best_key = max(products, key=lambda k: products[k][0])
+            result.append(products[best_key][1])
+            seen_codes.add(code)
+            if len(result) >= 6:
+                break
+    return result
+
+
 # ── 슬라이드 조작 ─────────────────────────────────────────────────────────────
 
 def _copy_slide(prs: Presentation, src_idx: int):
@@ -173,20 +261,113 @@ def _update_cover(slide, project: dict):
                 _set_text(shape, subtitle)
 
 
-def _update_materials(slide, common_materials: list[dict]):
-    """슬라이드 4: Materials & Finishes — 공통 자재 슬롯 업데이트."""
-    if not common_materials:
+def _update_color_story(slide, top_items: list[dict]):
+    """슬라이드 3: Color Story — 상위 자재 이미지·정보로 컬러 스와치 업데이트."""
+    if not top_items:
         return
-    SLOT_CODES = ["FLOOR", "WALL", "PANEL", "TILE", "METAL", "TEXTILE"]
-    for shape in slide.shapes:
-        if not shape.has_text_frame:
+
+    # 이미지 미리 다운로드
+    images = [_fetch_image(it.get("image_url", "")) for it in top_items]
+
+    for si, cx in enumerate(_SWATCH_X):
+        if si >= len(top_items):
+            break
+        item = top_items[si]
+        img_data = images[si]
+
+        brand   = item.get("brand", "")
+        product = item.get("product", "") or item.get("name", "")
+        spec    = item.get("spec", "") or item.get("size", "")
+        finish  = item.get("finish", "") or item.get("color", "") or item.get("material", "")
+        usage   = item.get("location", "") or item.get("item_code", "")
+
+        for shape in slide.shapes:
+            l, t, w, h = shape.left, shape.top, shape.width, shape.height
+            if not _near(l, cx, 0.20):
+                continue
+
+            # 컬러 스와치 박스 (H > 1.5인치) → 이미지 삽입
+            if _near(t, 1.42, 0.20) and h > _emu(1.5):
+                if img_data:
+                    img_data.seek(0)
+                    _hide_shape(shape)
+                    slide.shapes.add_picture(io.BytesIO(img_data.read()), l, t, w, h)
+                continue
+
+            if not shape.has_text_frame:
+                continue
+            cur = shape.text_frame.text.strip()
+
+            # 브랜드명 (T≈3.62, 대문자 라벨)
+            if _near(t, 3.62, 0.12):
+                _set_text(shape, (brand or product[:12]).upper(), font_size_pt=7)
+            # 제품명 (T≈3.86)
+            elif _near(t, 3.86, 0.12):
+                _set_text(shape, product[:20], font_size_pt=6.5)
+            # 규격/색상 (T≈4.07)
+            elif _near(t, 4.07, 0.12):
+                _set_text(shape, (spec or finish)[:14], font_size_pt=6)
+            # 적용 위치/카테고리 (T≈4.30, 내용 있는 것만)
+            elif _near(t, 4.30, 0.12) and cur:
+                _set_text(shape, usage[:16], font_size_pt=6)
+
+
+def _update_materials(slide, slot_items: dict[str, dict]):
+    """슬라이드 4: Materials & Finishes — 자동 선택 자재로 이미지+텍스트 업데이트."""
+    if not slot_items:
+        return
+
+    # 이미지 미리 다운로드
+    slot_images = {
+        code: _fetch_image(item.get("image_url", ""))
+        for code, item in slot_items.items()
+    }
+
+    for slot in _SLIDE4_SLOTS:
+        code  = slot["code"]
+        item  = slot_items.get(code)
+        if not item:
             continue
-        text = shape.text_frame.text.strip().upper()
-        for si, code in enumerate(SLOT_CODES):
-            if code == text and si < len(common_materials):
-                mat = common_materials[si]
-                _set_text(shape, mat.get("item_code", code))
-                break
+        img_data = slot_images.get(code)
+
+        il  = slot["img_l"]   # 이미지박스 X
+        tl  = slot["txt_l"]   # 텍스트 X
+        row_t = slot["t"]     # 행 Y
+
+        brand   = item.get("brand", "")
+        product = item.get("product", "") or item.get("name", "")
+        spec    = item.get("spec", "") or item.get("size", "")
+        finish  = item.get("finish", "") or item.get("material", "") or item.get("color", "")
+        usage   = item.get("location", "")
+
+        for shape in slide.shapes:
+            l, t, w, h = shape.left, shape.top, shape.width, shape.height
+
+            # 이미지 박스 (W≈0.9, H≈0.9, 이미지X, 행Y)
+            if _near(l, il, 0.15) and _near(t, row_t, 0.15) and \
+               _near(w / 914400, 0.9, 0.15) and _near(h / 914400, 0.9, 0.15):
+                if img_data:
+                    img_data.seek(0)
+                    _hide_shape(shape)
+                    slide.shapes.add_picture(io.BytesIO(img_data.read()), l, t, w, h)
+                continue
+
+            if not shape.has_text_frame:
+                continue
+
+            # 슬롯 코드 라벨 → 그대로 유지
+            if _near(l, tl, 0.15) and _near(t, row_t, 0.15):
+                pass  # 슬롯 코드(FLOOR 등) 유지
+            # 제품명 (T+0.28)
+            elif _near(l, tl, 0.15) and _near(t, row_t + 0.28, 0.15):
+                _set_text(shape, f"{brand} {product}".strip(), font_size_pt=7.5)
+            # 규격/마감 (T+0.55)
+            elif _near(l, tl, 0.15) and _near(t, row_t + 0.55, 0.15):
+                detail = " / ".join(filter(None, [spec, finish]))
+                _set_text(shape, detail, font_size_pt=6.5)
+            # 적용 위치 (T+0.74)
+            elif _near(l, tl, 0.15) and _near(t, row_t + 0.74, 0.15):
+                _set_text(shape, f"적용  {usage}" if usage else "", font_size_pt=6.5)
 
 
 def _update_spec_slide(slide, room_name: str, room_en: str, items: list[dict]):
@@ -346,9 +527,8 @@ def generate_pptx(
 ) -> bytes:
     """
     project: {company, name, location, area, period, designer, date}
-    rooms:   [{name, name_en, items:[{item_code, product, spec, finish,
+    rooms:   [{name, name_en, items:[{item_code, product, brand, spec, finish,
                                       vendor, qty, note, image_url, room}]}]
-    common_materials: [{item_code, product, spec, finish, vendor}] 최대 6개
     """
     prs = Presentation(TEMPLATE_PATH)
 
@@ -363,9 +543,11 @@ def generate_pptx(
         except Exception:
             pass
 
-    # 2. 공통 자재 수정
-    if common_materials:
-        _update_materials(prs.slides[IDX_MATERIALS], common_materials)
+    # 2. 벽/바닥/타일/천장 자재 자동 선택 → Color Story + Materials & Finishes 업데이트
+    slot_items = _auto_select_materials(rooms)
+    top_items  = _top_items_ordered(rooms)
+    _update_color_story(prs.slides[IDX_COLOR], top_items)
+    _update_materials(prs.slides[IDX_MATERIALS], slot_items)
 
     # 3. 각 방 스펙+모델링 슬라이드 복사 (prs 끝에 추가)
     room_slide_counts = []
