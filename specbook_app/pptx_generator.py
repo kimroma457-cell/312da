@@ -74,20 +74,24 @@ def _move_slide(prs: Presentation, old_idx: int, new_idx: int):
 
 # ── 텍스트 교체 ───────────────────────────────────────────────────────────────
 
-def _set_text(shape, text: str):
+def _set_text(shape, text: str, font_size_pt: float | None = None):
     """shape 텍스트를 교체한다 (서식은 첫 run 기준 유지)."""
     if not shape or not shape.has_text_frame:
         return
     tf = shape.text_frame
+    tf.word_wrap = True
     for para in tf.paragraphs:
         for run in para.runs:
             run.text = ""
     if tf.paragraphs:
         p = tf.paragraphs[0]
         if p.runs:
-            p.runs[0].text = str(text)
+            run = p.runs[0]
         else:
-            p.add_run().text = str(text)
+            run = p.add_run()
+        run.text = str(text)
+        if font_size_pt is not None:
+            run.font.size = Pt(font_size_pt)
 
 
 # ── 슬라이드 업데이트 함수 ────────────────────────────────────────────────────
@@ -152,23 +156,27 @@ def _update_spec_slide(slide, room_name: str, room_en: str, items: list[dict]):
             item = items[ri] if ri < len(items) else {}
 
             if _near(l, 1.38) and _near(t, rt + 0.05, 0.12):
-                _set_text(shape, item.get("item_code", "").upper())
+                _set_text(shape, item.get("item_code", "").upper(), font_size_pt=7)
                 break
             if _near(l, 1.38) and _near(t, rt + 0.24, 0.14):
                 product = item.get("product", "")
-                _set_text(shape, product[:27] + "…" if len(product) > 28 else product)
+                val = product[:27] + "…" if len(product) > 28 else product
+                _set_text(shape, val, font_size_pt=7.5)
                 break
             if _near(l, 1.38) and _near(t, rt + 0.50, 0.14):
                 spec = item.get("spec", "")
-                _set_text(shape, spec[:31] + "…" if len(spec) > 32 else spec)
+                val = spec[:31] + "…" if len(spec) > 32 else spec
+                _set_text(shape, val, font_size_pt=7)
                 break
             if _near(l, 4.45, 0.18) and _near(t, rt, 0.30):
                 finish = item.get("finish", "")
-                _set_text(shape, finish[:27] + "…" if len(finish) > 28 else finish)
+                val = finish[:27] + "…" if len(finish) > 28 else finish
+                _set_text(shape, val, font_size_pt=7.5)
                 break
             if _near(l, 8.80, 0.18) and _near(t, rt, 0.30):
                 vendor = item.get("vendor", "")
-                _set_text(shape, vendor[:7] + "…" if len(vendor) > 8 else vendor)
+                val = vendor[:7] + "…" if len(vendor) > 8 else vendor
+                _set_text(shape, val, font_size_pt=7.5)
                 break
 
 
@@ -187,6 +195,16 @@ def _update_ffande(slide, items: list[dict]):
     ROW_Y   = [1.75, 2.22, 2.69, 3.16, 3.63, 4.10, 4.57, 5.04]
     COL_X   = [0.50, 2.15, 3.05, 3.58, 5.98, 7.63, 8.60]
     COL_KEY = ["product", "room", "qty", "spec", "finish", "vendor", "note"]
+    # 컬럼별 (최대 글자수, 폰트pt)
+    COL_CFG = {
+        "product": (22, 7.5),
+        "room":    (6,  7.5),
+        "qty":     (4,  7.5),
+        "spec":    (14, 7.0),
+        "finish":  (14, 7.0),
+        "vendor":  (8,  7.0),
+        "note":    (12, 7.0),
+    }
 
     for shape in slide.shapes:
         if not shape.has_text_frame:
@@ -199,12 +217,15 @@ def _update_ffande(slide, items: list[dict]):
             item = items[ri]
             for cx, ckey in zip(COL_X, COL_KEY):
                 if _near(l, cx, 0.18) and _near(t, ry, 0.20):
+                    max_len, fpt = COL_CFG[ckey]
                     val = item.get(ckey, "")
                     if ckey == "qty":
                         val = str(val) if val else "1"
-                    elif ckey == "product":
-                        val = str(val)[:20]
-                    _set_text(shape, str(val))
+                    else:
+                        val = str(val)
+                    if len(val) > max_len:
+                        val = val[:max_len - 1] + "…"
+                    _set_text(shape, val, font_size_pt=fpt)
                     break
 
 
