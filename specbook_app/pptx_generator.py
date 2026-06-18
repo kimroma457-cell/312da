@@ -407,9 +407,10 @@ def _update_materials(slide, slot_items: dict[str, dict]):
             # 슬롯 코드 라벨 → 그대로 유지
             if _near(l, tl, 0.15) and _near(t, row_t, 0.15):
                 pass  # 슬롯 코드(FLOOR 등) 유지
-            # 제품명 (T+0.28)
+            # 제품명 (T+0.28) — 브랜드 포함
             elif _near(l, tl, 0.15) and _near(t, row_t + 0.28, 0.15):
-                _set_text(shape, product, font_size_pt=7.5)
+                label = f"{brand} {product}".strip() if brand else product
+                _set_text(shape, label, font_size_pt=7.5)
             # 규격/마감 (T+0.55)
             elif _near(l, tl, 0.15) and _near(t, row_t + 0.55, 0.15):
                 detail = " / ".join(filter(None, [spec, finish]))
@@ -481,7 +482,9 @@ def _update_spec_slide(slide, room_name: str, room_en: str, items: list[dict]):
                 _set_text(shape, item.get("item_code", "").upper(), font_size_pt=7)
                 break
             if _near(l, 1.38) and _near(t, rt + 0.24, 0.14):
-                _set_text(shape, item.get("product", ""), font_size_pt=6)
+                brand_v = item.get("brand", "")
+                prod_v  = item.get("product", "")
+                _set_text(shape, f"{brand_v} {prod_v}".strip() if brand_v else prod_v, font_size_pt=7)
                 break
             if _near(l, 1.38) and _near(t, rt + 0.50, 0.14):
                 _set_text(shape, item.get("spec", ""), font_size_pt=6.5)
@@ -564,8 +567,9 @@ def _update_ffande(slide, items: list[dict]):
                         _set_text(shape, "", font_size_pt=COL_PT[ckey])
                     else:
                         if ckey == "product":
-                            # 네이버 상품명에 브랜드가 이미 포함되어 있으므로 product만 표시
-                            val = item.get("product", "")
+                            brand_v = item.get("brand", "")
+                            prod_v  = item.get("product", "")
+                            val = f"{brand_v} {prod_v}".strip() if brand_v else prod_v
                         else:
                             val = item.get(ckey, "")
                         val = str(val) if val else ("1" if ckey == "qty" else "")
