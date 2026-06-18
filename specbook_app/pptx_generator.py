@@ -289,15 +289,27 @@ def _update_cover(slide, project: dict):
 
 def _update_color_story(slide, top_items: list[dict]):
     """슬라이드 3: Color Story — 벽/바닥/타일 3개 스와치, 중앙 정렬, 지배 색상 자동 추출."""
-    # 1단계: 기존 6개 스와치 관련 shape 모두 숨기기
+    # 1단계: 원본 6개 스와치 영역의 모든 shape 숨기기
+    # 각 스와치 그룹은 cx_orig ~ cx_orig+1.40" 범위, Y: 1.20~3.60"
+    SWATCH_Y_TOP = _emu(1.20)
+    SWATCH_Y_BOT = _emu(3.60)
+    swatch_ranges = [(_emu(cx - 0.05), _emu(cx + 1.40)) for cx in _SWATCH_X_ORIG]
+
+    for shape in slide.shapes:
+        l, t = shape.left, shape.top
+        # 스와치 Y 범위 안에 있는지 확인
+        if not (SWATCH_Y_TOP <= t <= SWATCH_Y_BOT):
+            continue
+        # 어떤 스와치 그룹 X 범위에 속하는지 확인
+        for sx_min, sx_max in swatch_ranges:
+            if sx_min <= l <= sx_max:
+                _hide_shape(shape)
+                break
+
+    # 텍스트 라벨도 초기화 (T > 3.5")
     for cx_orig in _SWATCH_X_ORIG:
         for shape in slide.shapes:
-            l, t, w, h = shape.left, shape.top, shape.width, shape.height
-            if not _near(l, cx_orig, 0.20):
-                continue
-            if _near(t, 1.42, 0.20) and h > _emu(1.5):
-                _hide_shape(shape)
-            elif shape.has_text_frame and t > _emu(3.5):
+            if shape.has_text_frame and _near(shape.left, cx_orig, 0.20) and shape.top > _emu(3.5):
                 _set_text(shape, "")
 
     if not top_items:
