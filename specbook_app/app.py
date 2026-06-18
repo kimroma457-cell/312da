@@ -598,11 +598,32 @@ for ri, (tab, room) in enumerate(zip(tabs[:-2], st.session_state.rooms)):
                                 unsafe_allow_html=True,
                             )
                         with c_act:
-                            is_common = item.get("is_common", False)
-                            if st.button("⭐" if is_common else "☆",
+                            item_url = item.get("source_url", "")
+                            fav_urls_right = {f["url"] for f in st.session_state.favorites}
+                            is_fav_right = item_url and item_url in fav_urls_right
+                            if st.button("⭐" if is_fav_right else "☆",
                                          key=f"cm_{ri}_{ck}_{ii}",
-                                         help="공통 자재(슬라이드4) 지정/해제"):
-                                item["is_common"] = not is_common; st.rerun()
+                                         help="즐겨찾기 등록/해제"):
+                                if is_fav_right:
+                                    st.session_state.favorites = [
+                                        f for f in st.session_state.favorites
+                                        if f["url"] != item_url
+                                    ]
+                                else:
+                                    st.session_state.favorites.append({
+                                        "url":           item_url,
+                                        "title":         item["name"],
+                                        "price":         item["price"],
+                                        "price_int":     item.get("price_int", 0),
+                                        "brand":         item.get("brand", ""),
+                                        "maker":         item.get("maker", ""),
+                                        "mall":          item.get("supplier", ""),
+                                        "image":         item.get("image_url", ""),
+                                        "cat":           ck,
+                                        "brand_name":    item.get("brand_name", ""),
+                                        "product_group": item.get("product_group", ""),
+                                    })
+                                st.rerun()
                             if st.button("🗑", key=f"del_{ri}_{ck}_{ii}"):
                                 room["specbook"][ck].pop(ii); st.rerun()
 
