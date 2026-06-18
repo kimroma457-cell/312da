@@ -203,42 +203,46 @@ def _spec_slide(prs, space_name: str, space_en: str, items: list[dict]):
             _text(slide, "+", Inches(0.5), row_top, Inches(0.70), ROW_H,
                   size=18, color=C_ICON_FG, align=PP_ALIGN.CENTER)
 
-        # 등급 뱃지
-        _rect(slide, Inches(1.38), row_top + Inches(0.02),
-              Inches(0.55), Inches(0.17), fill=badge_color)
-        _text(slide, tier,
-              Inches(1.38), row_top + Inches(0.01),
-              Inches(0.55), Inches(0.19),
-              size=6, bold=True, color=C_WHITE, align=PP_ALIGN.CENTER)
-
-        # 품목 코드
+        # 품목 코드 (뱃지 없이 텍스트만)
         _text(slide, item.get("item_code", "").upper(),
-              Inches(1.38), row_top + Inches(0.21),
+              Inches(1.38), row_top + Inches(0.05),
               Inches(1.5), Inches(0.18),
               size=7, bold=True, color=C_LABEL)
 
-        # 제품명
-        _text(slide, item.get("product", ""),
-              Inches(1.38), row_top + Inches(0.38),
+        # 제품명 — 한 줄, 넘치면 말줄임
+        product = item.get("product", "")
+        if len(product) > 28:
+            product = product[:27] + "…"
+        _text(slide, product,
+              Inches(1.38), row_top + Inches(0.24),
               Inches(2.9), Inches(0.28),
-              size=11, bold=True, color=C_DARK)
+              size=10, bold=True, color=C_DARK)
 
-        # 규격
-        _text(slide, item.get("spec", ""),
-              Inches(1.38), row_top + Inches(0.53),
-              Inches(2.9), Inches(0.20),
+        # 규격 — 한 줄
+        spec = item.get("spec", "")
+        if len(spec) > 35:
+            spec = spec[:34] + "…"
+        _text(slide, spec,
+              Inches(1.38), row_top + Inches(0.50),
+              Inches(2.9), Inches(0.18),
               size=7, color=C_HEAD)
 
-        # 재질 / 마감
-        _text(slide, item.get("finish", ""),
-              Inches(4.45), row_top + Inches(0.12),
-              Inches(3.6), Inches(0.26),
+        # 재질 / 마감 — 한 줄
+        finish = item.get("finish", "")
+        if len(finish) > 30:
+            finish = finish[:29] + "…"
+        _text(slide, finish,
+              Inches(4.45), row_top + Inches(0.18),
+              Inches(3.6), Inches(0.22),
               size=9, color=C_BODY)
 
-        # 비고
-        _text(slide, item.get("vendor", ""),
-              Inches(8.80), row_top + Inches(0.12),
-              Inches(0.70), Inches(0.26),
+        # 비고 — 한 줄
+        vendor = item.get("vendor", "")
+        if len(vendor) > 8:
+            vendor = vendor[:7] + "…"
+        _text(slide, vendor,
+              Inches(8.80), row_top + Inches(0.18),
+              Inches(0.70), Inches(0.22),
               size=8, color=C_HEAD)
 
         # 행 구분선
