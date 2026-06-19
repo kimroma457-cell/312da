@@ -164,6 +164,10 @@ def _active_room():
     rid = st.session_state.active_rid
     return next((r for r in st.session_state.rooms if r["id"] == rid), None)
 
+# p와 total_all은 전역에서 먼저 계산
+p = st.session_state.project
+total_all = sum(len(it) for r in st.session_state.rooms for it in r["specbook"].values())
+
 # ── Top Bar ───────────────────────────────────────────────────────────────────
 room_now = _active_room()
 room_label = f"&nbsp;·&nbsp;<span style='color:#8C8078;font-size:.74rem'>{room_now['name']}</span>" if room_now else ""
@@ -176,14 +180,13 @@ st.markdown(f"""
 with st.sidebar:
     # 프로젝트 정보
     with st.expander("📋 프로젝트 정보", expanded=False):
-        p = st.session_state.project
-        p["company"]  = st.text_input("회사명",    p["company"],  key="si_co")
-        p["name"]     = st.text_input("프로젝트명", p["name"],    key="si_pj")
-        p["location"] = st.text_input("위치",      p["location"], key="si_lo")
-        p["area"]     = st.text_input("면적",      p["area"],     key="si_ar")
-        p["period"]   = st.text_input("공사기간",  p["period"],   key="si_pe")
-        p["designer"] = st.text_input("담당자",    p["designer"], key="si_de")
-        p["date"]     = st.text_input("작성일",    p["date"],     key="si_da")
+        p["company"]  = st.text_input("회사명",    p.get("company",""),  key="si_co")
+        p["name"]     = st.text_input("프로젝트명", p.get("name",""),    key="si_pj")
+        p["location"] = st.text_input("위치",      p.get("location",""), key="si_lo")
+        p["area"]     = st.text_input("면적",      p.get("area",""),     key="si_ar")
+        p["period"]   = st.text_input("공사기간",  p.get("period",""),   key="si_pe")
+        p["designer"] = st.text_input("담당자",    p.get("designer",""), key="si_de")
+        p["date"]     = st.text_input("작성일",    p.get("date",""),     key="si_da")
 
     # 로고
     with st.expander("🖼 표지 로고", expanded=False):
@@ -201,37 +204,30 @@ with st.sidebar:
 
     # 공간 목록
     for room in st.session_state.rooms:
-        total = sum(len(v) for v in room["specbook"].values())
+        n_items = sum(len(v) for v in room["specbook"].values())
         is_active = room["id"] == st.session_state.active_rid
-        c1, c2 = st.columns([5, 1])
-        with c1:
-            if st.button(
-                f"{'▶ ' if is_active else ''}{room['name']}  ({total})",
-                key=f"sel_{room['id']}",
-                type="primary" if is_active else "secondary",
-                use_container_width=True,
-            ):
-                st.session_state.active_rid = room["id"]
-                st.session_state.view = "workspace"
-                st.rerun()
-        with c2:
-            if st.button("✕", key=f"del_{room['id']}"):
-                st.session_state.rooms = [r for r in st.session_state.rooms if r["id"] != room["id"]]
-                if st.session_state.active_rid == room["id"]:
-                    st.session_state.active_rid = st.session_state.rooms[0]["id"] if st.session_state.rooms else None
-                st.rerun()
+        label = f"{'▶ ' if is_active else ''}{room['name']}  ({n_items})"
+        if st.button(label, key=f"sel_{room['id']}",
+                     type="primary" if is_active else "secondary",
+                     use_container_width=True):
+            st.session_state.active_rid = room["id"]
+            st.session_state.view = "workspace"
+            st.rerun()
+        if st.button(f"✕ {room['name']} 삭제", key=f"del_{room['id']}",
+                     use_container_width=True):
+            st.session_state.rooms = [r for r in st.session_state.rooms if r["id"] != room["id"]]
+            if st.session_state.active_rid == room["id"]:
+                st.session_state.active_rid = st.session_state.rooms[0]["id"] if st.session_state.rooms else None
+            st.rerun()
 
     # 공간 추가
     with st.expander("＋ 공간 추가", expanded=not st.session_state.rooms):
-        cols = st.columns(2)
-        for idx, (ko, en, icon) in enumerate(ROOM_PRESETS):
-            with cols[idx % 2]:
-                if st.button(f"{icon} {ko}", key=f"pr_{ko}", use_container_width=True):
-                    _add_room(ko, en)
+        for ko, en, icon in ROOM_PRESETS:
+            if st.button(f"{icon} {ko}", key=f"pr_{ko}", use_container_width=True):
+                _add_room(ko, en)
         st.markdown("---")
-        ck1, ck2 = st.columns(2)
-        with ck1: cko = st.text_input("한글명", placeholder="홈짐", key="cko", label_visibility="collapsed")
-        with ck2: cen = st.text_input("영문명", placeholder="Home Gym", key="cen", label_visibility="collapsed")
+        cko = st.text_input("직접 입력 (한글)", placeholder="홈짐", key="cko")
+        cen = st.text_input("영문명", placeholder="Home Gym", key="cen")
         if st.button("추가", key="cadd", type="primary", use_container_width=True) and cko:
             _add_room(cko, cen or cko)
 
@@ -239,7 +235,6 @@ with st.sidebar:
     st.markdown("### FILE")
 
     # JSON 저장
-    total_all = sum(len(it) for r in st.session_state.rooms for it in r["specbook"].values())
     export_data = {
         "project": st.session_state.project,
         "favorites": st.session_state.favorites,
