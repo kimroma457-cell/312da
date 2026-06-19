@@ -20,7 +20,9 @@ st.markdown("""
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
 html,body,[class*="css"]{font-family:'Noto Sans KR',sans-serif;}
 .stApp{background:#F4F2EE;}
-#MainMenu,footer,header{visibility:hidden;}
+#MainMenu,footer{visibility:hidden;}
+/* 사이드바 토글 버튼은 유지 */
+header[data-testid="stHeader"]{background:transparent!important;height:0!important;}
 
 /* ── Top bar ── */
 .top-bar{background:#1A1816;padding:10px 28px;margin:-1rem -1rem 1.4rem -1rem;
