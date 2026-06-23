@@ -1,0 +1,20 @@
+android {
+    // ...기존 설정 유지...
+
+    buildTypes {
+        release {
+            // R8가 또 EXCEPTION_ACCESS_VIOLATION으로 크래시할 경우 아래 두 줄을 true → false로 변경
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            // R8 우회 시 사용 (크래시 재발 시에만 활성화):
+            // minifyEnabled false
+            // shrinkResources false
+        }
+        debug {
+            minifyEnabled false
+            shrinkResources false
+        }
+    }
+}
