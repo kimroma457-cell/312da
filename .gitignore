@@ -1,0 +1,3 @@
+.claude/worktrees/
+specbook_pptx/*.pptx
+**/__pycache__/
