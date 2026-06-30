@@ -569,7 +569,13 @@ with left_col:
             if do_search and kw.strip():
                 with st.spinner("검색 중..."):
                     try:
-                        results = search_products(kw.strip(), display=20)
+                        results = search_products(
+                        brand=s_brand or "",
+                        category=s_cat or "",
+                        product_group=s_sub or "",
+                        keyword=kw.strip(),
+                        count=20,
+                    )
                         st.session_state.search_results = results
                         st.session_state.search_done    = True
                     except Exception as e:
