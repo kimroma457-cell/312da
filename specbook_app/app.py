@@ -322,9 +322,9 @@ COLOR_PALETTES = [
     {"name": "어반 테라코타", "desc": "따뜻한 흙빛 테라코타",
      "primary": "#C17A5A", "secondary": "#3E2723", "accent": "#F0C4A0",
      "preview": ["#C17A5A", "#3E2723", "#F0C4A0"]},
-    {"name": "모브 로즈",    "desc": "부드러운 로즈와 베이지",
-     "primary": "#B07B8E", "secondary": "#3D2B33", "accent": "#E8D5C4",
-     "preview": ["#B07B8E", "#3D2B33", "#E8D5C4"]},
+    {"name": "직접 입력",    "desc": "원하는 색상을 직접 지정하세요",
+     "primary": "", "secondary": "", "accent": "",
+     "preview": ["#E5E7EB", "#D1D5DB", "#F3F4F6"], "custom": True},
 ]
 
 
@@ -438,64 +438,110 @@ def _render_setup():
                                 f'{pal["desc"]}</div>'
                                 f'</div>',
                                 unsafe_allow_html=True)
-                            btn_lbl = "✓ 선택됨" if is_sel else "선택"
+                            is_custom = pal.get("custom", False)
+                            btn_lbl = "✓ 선택됨" if is_sel else ("직접 입력" if is_custom else "선택")
                             if st.button(btn_lbl, key=f"pal_{pal['name']}",
                                          type="primary" if is_sel else "secondary",
                                          use_container_width=True):
                                 ss.sel_palette = pal["name"]
-                                proj["primary_color"]   = pal["primary"]
-                                proj["secondary_color"] = pal["secondary"]
-                                proj["accent_color"]    = pal["accent"]
+                                if not is_custom:
+                                    proj["primary_color"]   = pal["primary"]
+                                    proj["secondary_color"] = pal["secondary"]
+                                    proj["accent_color"]    = pal["accent"]
+                                else:
+                                    # 직접 입력: 기본값 유지
+                                    if not proj.get("primary_color"):
+                                        proj["primary_color"]   = "#C9A87C"
+                                        proj["secondary_color"] = "#1C1C1E"
+                                        proj["accent_color"]    = "#E8C97A"
                                 st.rerun()
 
-                # 선택된 팔레트 미리보기
+                # 선택된 팔레트 미리보기 / 직접 입력 피커
                 if sel_pal:
                     pal = next(p for p in COLOR_PALETTES if p["name"] == sel_pal)
                     st.markdown('<div style="height:12px;"></div>', unsafe_allow_html=True)
-                    st.markdown(
-                        f'<div style="display:flex;gap:12px;align-items:center;'
-                        f'padding:14px 18px;background:#F8F7F4;border-radius:12px;'
-                        f'border:1.5px solid #EDE9E3;">'
-                        f'<div style="display:flex;gap:6px;">'
-                        f'<div style="display:flex;flex-direction:column;gap:3px;align-items:center;">'
-                        f'<div style="width:32px;height:32px;background:{pal["primary"]};'
-                        f'border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.15);"></div>'
-                        f'<span style="font-size:.58rem;color:#9CA3AF;">주색</span></div>'
-                        f'<div style="display:flex;flex-direction:column;gap:3px;align-items:center;">'
-                        f'<div style="width:32px;height:32px;background:{pal["secondary"]};'
-                        f'border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.15);"></div>'
-                        f'<span style="font-size:.58rem;color:#9CA3AF;">보조</span></div>'
-                        f'<div style="display:flex;flex-direction:column;gap:3px;align-items:center;">'
-                        f'<div style="width:32px;height:32px;background:{pal["accent"]};'
-                        f'border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.15);"></div>'
-                        f'<span style="font-size:.58rem;color:#9CA3AF;">강조</span></div>'
-                        f'</div>'
-                        f'<div style="flex:1;">'
-                        f'<div style="font-size:.80rem;font-weight:700;color:#1C1C1E;">'
-                        f'{pal["name"]} 선택됨</div>'
-                        f'<div style="font-size:.68rem;color:#9CA3AF;margin-top:2px;">'
-                        f'{pal["desc"]}</div>'
-                        f'</div></div>',
-                        unsafe_allow_html=True)
 
-                    # 커스텀 색상 조정 (선택 후 미세 조정)
-                    with st.expander("🎨 색상 직접 조정"):
+                    if pal.get("custom"):
+                        # 직접 입력 — 컬러피커 바로 표시
+                        st.markdown(
+                            '<div style="padding:18px;background:#F8F7F4;border-radius:14px;'
+                            'border:1.5px solid #EDE9E3;">'
+                            '<div style="font-size:.70rem;font-weight:700;color:#9CA3AF;'
+                            'letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px;">'
+                            '색상 직접 지정</div>',
+                            unsafe_allow_html=True)
                         ca, cb, cc = st.columns(3)
                         with ca:
-                            st.caption("주 색상")
-                            c1 = st.color_picker("주색", value=proj.get("primary_color","#C9A87C"),
+                            st.caption("🟤 주 색상")
+                            c1 = st.color_picker("주색",
+                                                 value=proj.get("primary_color","#C9A87C"),
                                                  label_visibility="collapsed", key="cp1")
                             proj["primary_color"] = c1
+                            st.markdown(
+                                f'<div style="height:4px;background:{c1};'
+                                f'border-radius:4px;margin-top:4px;"></div>',
+                                unsafe_allow_html=True)
                         with cb:
-                            st.caption("보조 색상")
-                            c2 = st.color_picker("보조", value=proj.get("secondary_color","#1C1C1E"),
+                            st.caption("⚫ 보조 색상")
+                            c2 = st.color_picker("보조",
+                                                 value=proj.get("secondary_color","#1C1C1E"),
                                                  label_visibility="collapsed", key="cp2")
                             proj["secondary_color"] = c2
+                            st.markdown(
+                                f'<div style="height:4px;background:{c2};'
+                                f'border-radius:4px;margin-top:4px;"></div>',
+                                unsafe_allow_html=True)
                         with cc:
-                            st.caption("강조 색상")
-                            c3 = st.color_picker("강조", value=proj.get("accent_color","#E8C97A"),
+                            st.caption("🟡 강조 색상")
+                            c3 = st.color_picker("강조",
+                                                 value=proj.get("accent_color","#E8C97A"),
                                                  label_visibility="collapsed", key="cp3")
                             proj["accent_color"] = c3
+                            st.markdown(
+                                f'<div style="height:4px;background:{c3};'
+                                f'border-radius:4px;margin-top:4px;"></div>',
+                                unsafe_allow_html=True)
+                        st.markdown('</div>', unsafe_allow_html=True)
+
+                    else:
+                        # 선택된 팔레트 요약
+                        p1 = proj.get("primary_color","#C9A87C")
+                        p2 = proj.get("secondary_color","#1C1C1E")
+                        p3 = proj.get("accent_color","#E8C97A")
+                        st.markdown(
+                            f'<div style="display:flex;gap:12px;align-items:center;'
+                            f'padding:14px 18px;background:#F8F7F4;border-radius:12px;'
+                            f'border:1.5px solid #EDE9E3;">'
+                            f'<div style="display:flex;gap:6px;">'
+                            + "".join(
+                                f'<div style="display:flex;flex-direction:column;gap:3px;align-items:center;">'
+                                f'<div style="width:32px;height:32px;background:{c};border-radius:8px;'
+                                f'box-shadow:0 2px 6px rgba(0,0,0,.15);"></div>'
+                                f'<span style="font-size:.58rem;color:#9CA3AF;">{lbl}</span></div>'
+                                for c, lbl in [(p1,"주색"),(p2,"보조"),(p3,"강조")]
+                            ) +
+                            f'</div><div style="flex:1;">'
+                            f'<div style="font-size:.80rem;font-weight:700;color:#1C1C1E;">'
+                            f'{pal["name"]} 선택됨</div>'
+                            f'<div style="font-size:.68rem;color:#9CA3AF;margin-top:2px;">'
+                            f'{pal["desc"]}</div></div></div>',
+                            unsafe_allow_html=True)
+
+                        # 미세 조정
+                        with st.expander("🎨 색상 미세 조정"):
+                            ca, cb, cc = st.columns(3)
+                            with ca:
+                                st.caption("주 색상")
+                                c1 = st.color_picker("주색", value=p1, label_visibility="collapsed", key="cp1")
+                                proj["primary_color"] = c1
+                            with cb:
+                                st.caption("보조 색상")
+                                c2 = st.color_picker("보조", value=p2, label_visibility="collapsed", key="cp2")
+                                proj["secondary_color"] = c2
+                            with cc:
+                                st.caption("강조 색상")
+                                c3 = st.color_picker("강조", value=p3, label_visibility="collapsed", key="cp3")
+                                proj["accent_color"] = c3
 
             elif info["type"] == "confirm":
                 # ── 최종 확인 단계 ─────────────────────────────────────
