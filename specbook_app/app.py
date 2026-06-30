@@ -1,7 +1,7 @@
 """
 인테리어 스펙북 v10 — Clean / Spacious Design
 """
-import re, uuid, json, copy as _copy
+import re, uuid, json, copy as _copy, base64
 import streamlit as st
 from datetime import datetime, date
 from brands import BRAND_CATALOG, CATEGORY_META
@@ -280,6 +280,26 @@ def _total_price():
 
 def _sec(title):
     st.markdown(f'<p class="sec-label">{title}</p>', unsafe_allow_html=True)
+
+def _to_json_safe(obj):
+    """Encode bytes → base64 string so json.dumps won't fail."""
+    if isinstance(obj, bytes):
+        return "__b64__:" + base64.b64encode(obj).decode("ascii")
+    if isinstance(obj, dict):
+        return {k: _to_json_safe(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [_to_json_safe(v) for v in obj]
+    return obj
+
+def _from_json_safe(obj):
+    """Decode base64 strings back to bytes after json.loads."""
+    if isinstance(obj, str) and obj.startswith("__b64__:"):
+        return base64.b64decode(obj[8:])
+    if isinstance(obj, dict):
+        return {k: _from_json_safe(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [_from_json_safe(v) for v in obj]
+    return obj
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -1017,7 +1037,7 @@ def _render_materials(ti: int):
 
     # JSON 내보내기
     st.markdown('<div style="height:10px;"></div>', unsafe_allow_html=True)
-    j_data = json.dumps({"project": ss.project, "rooms": ss.rooms}, ensure_ascii=False, indent=2)
+    j_data = json.dumps(_to_json_safe({"project": ss.project, "rooms": ss.rooms}), ensure_ascii=False, indent=2)
     jc1, jc2 = st.columns(2)
     with jc1:
         st.download_button("💾 JSON 저장", data=j_data,
@@ -1029,7 +1049,7 @@ def _render_materials(ti: int):
         if up and ss.get("_last_json") != up.name:
             ss._last_json = up.name
             try:
-                d = json.loads(up.read())
+                d = _from_json_safe(json.loads(up.read()))
                 if "project" in d: ss.project.update(d["project"])
                 if "rooms" in d:   ss.rooms = d["rooms"]
                 st.rerun()
