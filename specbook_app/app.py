@@ -510,7 +510,7 @@ with left_col:
                 '<div style="font-size:.68rem;font-weight:700;color:#8A8480;'
                 'letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;">'
                 '② 업체 / 브랜드</div>', unsafe_allow_html=True)
-            brands = list(BRAND_CATALOG[s_cat].keys())
+            brands = [b["name"] for b in BRAND_CATALOG[s_cat]]
             rows_br = [brands[i:i+3] for i in range(0, len(brands), 3)]
             for row in rows_br:
                 cols = st.columns(len(row))
@@ -526,8 +526,10 @@ with left_col:
                             st.rerun()
 
         # ③ 제품군
-        if s_brand and s_cat in BRAND_CATALOG and s_brand in BRAND_CATALOG[s_cat]:
-            subs = BRAND_CATALOG[s_cat][s_brand]
+        brand_entry = next((b for b in BRAND_CATALOG.get(s_cat, [])
+                            if b["name"] == s_brand), None) if s_brand else None
+        if brand_entry:
+            subs = brand_entry["groups"]
             st.markdown('<div style="height:12px;"></div>', unsafe_allow_html=True)
             st.markdown(
                 '<div style="font-size:.68rem;font-weight:700;color:#8A8480;'
