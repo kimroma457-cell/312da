@@ -22,187 +22,263 @@ CAT_KEYS = list(BRAND_CATALOG.keys())
 # ══════════════════════════════════════════════════════════════════════════════
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&family=Inter:wght@300;400;500;600;700;900&family=DM+Serif+Display:ital@0;1&display=swap');
 
-/* ── Reset & Base ── */
+/* ══ Reset & Base ══ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; }
-html, body, [class*="css"] { font-family: 'Noto Sans KR', 'Inter', sans-serif; }
+html, body, [class*="css"] {
+  font-family: 'Noto Sans KR', 'Inter', sans-serif;
+}
 #MainMenu, footer, [data-testid="stHeader"], [data-testid="stSidebar"] { display: none !important; }
 
-/* ── App Background — warm off-white ── */
+/* ══ App Background ══ */
 .stApp {
-  background: linear-gradient(160deg, #FAFAF8 0%, #F5F2ED 50%, #F0EDE8 100%) !important;
+  background: #F7F4EF !important;
   min-height: 100vh;
+  position: relative;
 }
 
-/* ── 버튼 리셋 — Streamlit override ── */
+/* ══ 배경 장식 — 큰 원형 그레인 ══ */
+.stApp::before {
+  content: '';
+  position: fixed;
+  top: -30vw; right: -20vw;
+  width: 70vw; height: 70vw;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(201,168,124,.13) 0%, transparent 65%);
+  pointer-events: none; z-index: 0;
+}
+.stApp::after {
+  content: '';
+  position: fixed;
+  bottom: -25vw; left: -15vw;
+  width: 55vw; height: 55vw;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(232,201,122,.09) 0%, transparent 65%);
+  pointer-events: none; z-index: 0;
+}
+
+/* ══ 버튼 ══ */
 .stButton > button {
   font-family: 'Noto Sans KR', sans-serif !important;
-  border-radius: 10px !important;
-  font-size: .82rem !important;
-  font-weight: 500 !important;
-  padding: 9px 18px !important;
+  border-radius: 12px !important;
+  font-size: .80rem !important;
+  font-weight: 600 !important;
+  padding: 10px 20px !important;
   background: #FFFFFF !important;
   color: #374151 !important;
-  border: 1.5px solid #E5E1DB !important;
-  box-shadow: 0 1px 3px rgba(0,0,0,.06) !important;
-  transition: all .18s ease !important;
+  border: 1.5px solid #E8E3DC !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,.05), 0 1px 2px rgba(0,0,0,.04) !important;
+  transition: all .20s cubic-bezier(.25,.8,.25,1) !important;
   white-space: nowrap !important;
+  letter-spacing: .01em !important;
 }
 .stButton > button:hover {
-  background: #FBF8F4 !important;
+  background: #FDFBF8 !important;
   border-color: #C9A87C !important;
   color: #1C1C1E !important;
-  box-shadow: 0 3px 10px rgba(201,168,124,.20) !important;
+  box-shadow: 0 4px 16px rgba(201,168,124,.22) !important;
   transform: translateY(-1px) !important;
 }
-/* Primary — selected state */
 div[data-testid="stButton"] > button[kind="primary"] {
   background: #1C1C1E !important;
   color: #E8C97A !important;
-  border-color: #1C1C1E !important;
-  box-shadow: 0 4px 14px rgba(28,28,30,.25) !important;
+  border-color: transparent !important;
+  box-shadow: 0 4px 20px rgba(28,28,30,.30) !important;
   font-weight: 700 !important;
+  letter-spacing: .02em !important;
 }
 div[data-testid="stButton"] > button[kind="primary"]:hover {
-  background: #2D2D30 !important;
-  transform: translateY(-1px) !important;
+  background: #2C2C2E !important;
+  box-shadow: 0 8px 28px rgba(28,28,30,.35) !important;
+  transform: translateY(-2px) !important;
 }
 
-/* ── 입력창 ── */
+/* ══ 입력창 ══ */
 .stTextInput input, .stTextArea textarea, .stDateInput input {
   font-family: 'Noto Sans KR', sans-serif !important;
   background: #FFFFFF !important;
-  border: 1.5px solid #E5E1DB !important;
-  border-radius: 12px !important;
+  border: 1.5px solid #E8E3DC !important;
+  border-radius: 14px !important;
   color: #1C1C1E !important;
   font-size: .88rem !important;
-  padding: 12px 16px !important;
-  box-shadow: 0 1px 4px rgba(0,0,0,.04) !important;
-  transition: border-color .18s, box-shadow .18s !important;
+  padding: 14px 18px !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,.04) !important;
+  transition: border-color .20s, box-shadow .20s !important;
 }
 .stTextInput input:focus, .stTextArea textarea:focus {
   border-color: #C9A87C !important;
-  box-shadow: 0 0 0 3px rgba(201,168,124,.15) !important;
+  box-shadow: 0 0 0 3px rgba(201,168,124,.14) !important;
   outline: none !important;
 }
 [data-testid="stTextInputRootElement"] input {
   background: #FFFFFF !important; color: #1C1C1E !important;
 }
 
-/* ── 탭 ── */
+/* ══ 탭 ══ */
 .stTabs [data-baseweb="tab-list"] {
-  background: rgba(0,0,0,.05);
-  padding: 4px; border-radius: 12px; gap: 3px; border-bottom: none !important;
+  background: rgba(28,28,30,.06);
+  padding: 4px; border-radius: 14px; gap: 3px; border-bottom: none !important;
 }
 .stTabs [data-baseweb="tab"] {
-  border-radius: 9px; font-size: .78rem; font-weight: 600;
-  padding: 8px 20px; color: #9CA3AF !important;
+  border-radius: 10px; font-size: .76rem; font-weight: 600;
+  padding: 8px 22px; color: #9CA3AF !important;
   background: transparent !important; border: none !important;
-  transition: all .18s !important;
+  transition: all .20s !important; letter-spacing: .01em !important;
 }
 .stTabs [aria-selected="true"] {
   background: #FFFFFF !important; color: #1C1C1E !important;
-  box-shadow: 0 2px 8px rgba(0,0,0,.10) !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,.09) !important;
 }
 .stTabs [data-baseweb="tab-panel"] { padding-top: 20px !important; }
 
-/* ── 폼 ── */
+/* ══ 폼 ══ */
 [data-testid="stForm"] {
   background: #FFFFFF;
   border: 1.5px solid #EDE9E3;
-  border-radius: 16px;
+  border-radius: 18px;
   padding: 24px;
-  box-shadow: 0 2px 12px rgba(0,0,0,.05);
+  box-shadow: 0 2px 16px rgba(0,0,0,.05);
 }
 
-/* ── selectbox ── */
+/* ══ selectbox ══ */
 [data-baseweb="select"] > div {
-  background: #FFFFFF !important; border: 1.5px solid #E5E1DB !important;
-  border-radius: 12px !important; color: #1C1C1E !important;
+  background: #FFFFFF !important; border: 1.5px solid #E8E3DC !important;
+  border-radius: 14px !important; color: #1C1C1E !important;
 }
 
-/* ── download 버튼 ── */
+/* ══ download 버튼 ══ */
 [data-testid="stDownloadButton"] > button {
   font-family: 'Noto Sans KR', sans-serif !important;
-  border-radius: 10px !important; font-size: .80rem !important;
-  font-weight: 500 !important; padding: 8px 16px !important;
+  border-radius: 12px !important; font-size: .78rem !important;
+  font-weight: 600 !important; padding: 9px 16px !important;
   background: #FFFFFF !important; color: #374151 !important;
-  border: 1.5px solid #E5E1DB !important;
-  box-shadow: 0 1px 3px rgba(0,0,0,.06) !important;
+  border: 1.5px solid #E8E3DC !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,.05) !important;
 }
 
-/* ── expander ── */
+/* ══ expander ══ */
 details {
   background: #FFFFFF !important;
   border: 1.5px solid #EDE9E3 !important;
-  border-radius: 12px !important;
+  border-radius: 14px !important;
   box-shadow: 0 1px 4px rgba(0,0,0,.04) !important;
 }
-details summary { font-size: .78rem !important; color: #9CA3AF !important; }
+details summary { font-size: .78rem !important; color: #9CA3AF !important; font-weight: 500 !important; }
 
-/* ── 카드 컴포넌트 ── */
+/* ══ 카드 컴포넌트 ══ */
 .spec-card {
   background: #FFFFFF;
-  border-radius: 16px;
+  border-radius: 18px;
   border: 1.5px solid #EDE9E3;
-  box-shadow: 0 2px 12px rgba(0,0,0,.06);
+  box-shadow: 0 2px 14px rgba(0,0,0,.06);
   padding: 20px;
   margin-bottom: 12px;
 }
-.spec-card:hover { box-shadow: 0 6px 24px rgba(0,0,0,.10); }
+.spec-card:hover { box-shadow: 0 8px 28px rgba(0,0,0,.10); }
 
-/* ── 네비게이션 바 ── */
-.nav-bar {
-  background: rgba(255,255,255,.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(0,0,0,.06);
-  padding: 14px 28px;
-  border-radius: 0 0 16px 16px;
-  margin-bottom: 28px;
-  display: flex; align-items: center; justify-content: space-between;
-}
-
-/* ── 스텝 인디케이터 ── */
+/* ══ 스텝 검색 인디케이터 ══ */
 .step-pill {
   display: inline-flex; align-items: center; gap: 6px;
-  padding: 6px 14px; border-radius: 99px; font-size: .72rem; font-weight: 600;
+  padding: 5px 13px; border-radius: 99px; font-size: .70rem; font-weight: 700;
+  letter-spacing: .02em;
 }
-.step-done  { background: #FEF3C7; color: #92400E; }
+.step-done  { background: rgba(201,168,124,.15); color: #92510E; }
 .step-now   { background: #1C1C1E; color: #E8C97A; }
-.step-next  { background: #F3F4F6; color: #D1D5DB; }
+.step-next  { background: #F3F4F6; color: #C9D1DC; }
 
-/* ── 검색결과 구분선 ── */
-.result-divider { border: none; border-top: 1px solid #F3F4F6; margin: 8px 0; }
-
-/* ── 가격 텍스트 ── */
+/* ══ 가격·섹션 레이블 ══ */
 .price-text { color: #B45309; font-weight: 700; }
-
-/* ── 섹션 레이블 ── */
 .sec-label {
-  font-size: .64rem; font-weight: 700; color: #9CA3AF;
-  letter-spacing: .10em; text-transform: uppercase; margin: 0 0 10px;
+  font-size: .62rem; font-weight: 700; color: #B0B7C3;
+  letter-spacing: .12em; text-transform: uppercase; margin: 0 0 10px;
 }
 
-/* ── 프로그레스바 ── */
+/* ══ 프로그레스바 ══ */
+[data-testid="stProgressBar"] { height: 3px !important; border-radius: 99px !important; background: rgba(0,0,0,.06) !important; }
 [data-testid="stProgressBar"] > div {
-  background: linear-gradient(90deg, #C9A87C, #E8C97A) !important;
+  background: linear-gradient(90deg, #C9A87C 0%, #E8C97A 100%) !important;
   border-radius: 99px !important;
 }
 
-/* ── spinner ── */
+/* ══ Spinner ══ */
 .stSpinner > div { border-top-color: #C9A87C !important; }
 
-/* ── file uploader ── */
+/* ══ File uploader ══ */
 [data-testid="stFileUploader"] {
-  background: #FAFAFA !important;
-  border: 1.5px dashed #E5E1DB !important;
-  border-radius: 12px !important;
+  background: #FDFBF8 !important;
+  border: 1.5px dashed #DDD7CE !important;
+  border-radius: 14px !important;
+}
+[data-testid="stFileUploader"]:hover {
+  border-color: #C9A87C !important;
 }
 
-/* ── info/warning ── */
-[data-testid="stAlert"] { border-radius: 12px !important; }
+/* ══ Alert ══ */
+[data-testid="stAlert"] { border-radius: 14px !important; }
+
+/* ══ 위자드 전용 — 대형 스텝 번호 데코 ══ */
+.wiz-step-num {
+  font-family: 'Inter', sans-serif;
+  font-size: 7rem;
+  font-weight: 900;
+  color: rgba(201,168,124,.10);
+  line-height: 1;
+  letter-spacing: -.04em;
+  position: absolute;
+  top: -18px; right: 20px;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ══ 골드 밑줄 강조 ══ */
+.gold-underline {
+  display: inline-block;
+  position: relative;
+}
+.gold-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -3px; left: 0;
+  width: 100%; height: 2px;
+  background: linear-gradient(90deg, #C9A87C, #E8C97A);
+  border-radius: 2px;
+}
+
+/* ══ 위자드 카드 ══ */
+.wiz-card {
+  background: #FFFFFF;
+  border-radius: 28px;
+  padding: 48px 44px 40px;
+  box-shadow: 0 12px 60px rgba(0,0,0,.09), 0 2px 8px rgba(0,0,0,.05);
+  border: 1px solid rgba(255,255,255,.9);
+  position: relative;
+  overflow: hidden;
+}
+.wiz-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #C9A87C 0%, #E8C97A 50%, #C9A87C 100%);
+}
+
+/* ══ 닷 스텝 인디케이터 ══ */
+.dot-steps {
+  display: flex; align-items: center; gap: 6px; margin-bottom: 36px;
+}
+.dot-done {
+  width: 24px; height: 5px; border-radius: 99px;
+  background: linear-gradient(90deg, #C9A87C, #E8C97A);
+}
+.dot-now {
+  width: 32px; height: 5px; border-radius: 99px;
+  background: #1C1C1E;
+}
+.dot-next {
+  width: 8px; height: 5px; border-radius: 99px;
+  background: #E8E3DC;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -355,314 +431,330 @@ def _render_setup():
     info = WIZARD[step]
     TOTAL = len(WIZARD)
 
-    _, C, _ = st.columns([1, 2.2, 1])
-    with C:
-        st.markdown('<div style="height:48px;"></div>', unsafe_allow_html=True)
-
-        # 앱 로고
+    # ── 상단 여백 + 브랜드 헤더 ──────────────────────────────────────────────
+    st.markdown('<div style="height:40px;"></div>', unsafe_allow_html=True)
+    _, hdr, _ = st.columns([1, 3, 1])
+    with hdr:
         st.markdown(
-            '<div style="text-align:center;margin-bottom:40px;">'
-            '<div style="display:inline-flex;align-items:center;gap:10px;">'
-            '<div style="width:36px;height:36px;background:#1C1C1E;border-radius:10px;'
-            'display:flex;align-items:center;justify-content:center;font-size:1.1rem;">🏠</div>'
-            '<span style="font-size:1.05rem;font-weight:700;color:#1C1C1E;letter-spacing:.04em;">'
-            'INTERIOR SPEC BOOK</span></div></div>',
+            '<div style="display:flex;align-items:center;justify-content:space-between;'
+            'margin-bottom:40px;">'
+            '<div style="display:flex;align-items:center;gap:12px;">'
+            '<div style="width:38px;height:38px;background:#1C1C1E;border-radius:12px;'
+            'display:flex;align-items:center;justify-content:center;font-size:1rem;'
+            'box-shadow:0 4px 12px rgba(0,0,0,.20);">🏠</div>'
+            '<div>'
+            '<div style="font-size:.60rem;font-weight:700;color:#C9A87C;'
+            'letter-spacing:.14em;text-transform:uppercase;">Interior</div>'
+            '<div style="font-size:.88rem;font-weight:800;color:#1C1C1E;'
+            'letter-spacing:.06em;margin-top:-1px;">SPEC BOOK</div>'
+            '</div></div>'
+            '<div style="font-size:.70rem;color:#B0B7C3;font-weight:500;">'
+            '스펙북 자동화 시스템</div>'
+            '</div>',
             unsafe_allow_html=True)
 
-        # 카드 시작
-        with st.container():
-            st.markdown(
-                '<div style="background:#FFFFFF;border-radius:24px;padding:40px 40px 32px;'
-                'box-shadow:0 8px 40px rgba(0,0,0,.10);border:1.5px solid #EDE9E3;">',
-                unsafe_allow_html=True)
+    # ── 메인 카드 ─────────────────────────────────────────────────────────────
+    _, C, _ = st.columns([1, 3, 1])
+    with C:
+        # 닷 스텝 인디케이터
+        dots = ""
+        for i in range(TOTAL):
+            if i < step:
+                dots += '<div class="dot-done"></div>'
+            elif i == step:
+                dots += '<div class="dot-now"></div>'
+            else:
+                dots += '<div class="dot-next"></div>'
 
-            # STEP 표시 + 진행바
-            st.markdown(
-                f'<div style="font-size:.68rem;font-weight:700;color:#C9A87C;'
-                f'letter-spacing:.10em;text-transform:uppercase;margin-bottom:12px;">'
-                f'STEP {step+1} / {TOTAL}</div>',
-                unsafe_allow_html=True)
-            st.progress((step + 1) / TOTAL)
-            st.markdown('<div style="height:20px;"></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="wiz-card">', unsafe_allow_html=True)
+        st.markdown(
+            f'<div class="dot-steps">{dots}</div>'
+            f'<div style="font-size:.62rem;font-weight:700;color:#C9A87C;'
+            f'letter-spacing:.14em;text-transform:uppercase;margin-bottom:14px;">'
+            f'STEP {step+1} &nbsp;/&nbsp; {TOTAL}</div>'
+            f'<div class="wiz-step-num">0{step+1}</div>',
+            unsafe_allow_html=True)
 
-            # 질문 텍스트
-            st.markdown(
-                f'<h2 style="font-size:1.50rem;font-weight:700;color:#1C1C1E;'
-                f'line-height:1.3;margin-bottom:6px;">{info["q"]}</h2>'
-                f'<p style="font-size:.82rem;color:#9CA3AF;margin-bottom:24px;">{info["sub"]}</p>',
-                unsafe_allow_html=True)
+        # 질문 헤딩
+        st.markdown(
+            f'<h2 style="font-size:1.70rem;font-weight:800;color:#1C1C1E;'
+            f'line-height:1.25;margin-bottom:8px;letter-spacing:-.02em;">'
+            f'{info["q"]}</h2>'
+            f'<p style="font-size:.82rem;color:#A8ADB8;margin-bottom:30px;'
+            f'font-weight:400;line-height:1.5;">{info["sub"]}</p>',
+            unsafe_allow_html=True)
 
-            # ── 입력 위젯 ────────────────────────────────────────────────
-            if info["type"] == "text":
-                val = st.text_input("답변", value=proj.get(info["key"],""),
-                                    label_visibility="collapsed",
-                                    placeholder=info["ph"],
-                                    key=f"wiz_{info['key']}")
-                proj[info["key"]] = val
+        # ── 입력 위젯 ────────────────────────────────────────────────
+        if info["type"] == "text":
+            val = st.text_input("답변", value=proj.get(info["key"],""),
+                                label_visibility="collapsed",
+                                placeholder=info["ph"],
+                                key=f"wiz_{info['key']}")
+            proj[info["key"]] = val
 
-            elif info["type"] == "dates":
-                dc1, dc2 = st.columns(2)
-                with dc1:
-                    st.caption("착공일")
-                    s_str = proj.get("start_date","")
-                    s_def = date.fromisoformat(s_str) if s_str else date.today()
-                    sd = st.date_input("착공일", value=s_def,
-                                       label_visibility="collapsed", key="wiz_s")
-                    proj["start_date"] = sd.isoformat()
-                with dc2:
-                    st.caption("준공일")
-                    e_str = proj.get("end_date","")
-                    e_def = date.fromisoformat(e_str) if e_str else date.today()
-                    ed = st.date_input("준공일", value=e_def,
-                                       label_visibility="collapsed", key="wiz_e")
-                    proj["end_date"] = ed.isoformat()
+        elif info["type"] == "dates":
+            dc1, dc2 = st.columns(2)
+            with dc1:
+                st.caption("착공일")
+                s_str = proj.get("start_date","")
+                s_def = date.fromisoformat(s_str) if s_str else date.today()
+                sd = st.date_input("착공일", value=s_def,
+                                   label_visibility="collapsed", key="wiz_s")
+                proj["start_date"] = sd.isoformat()
+            with dc2:
+                st.caption("준공일")
+                e_str = proj.get("end_date","")
+                e_def = date.fromisoformat(e_str) if e_str else date.today()
+                ed = st.date_input("준공일", value=e_def,
+                                   label_visibility="collapsed", key="wiz_e")
+                proj["end_date"] = ed.isoformat()
 
-            elif info["type"] == "logo":
-                val = st.text_input("회사명", value=proj.get("company",""),
-                                    label_visibility="collapsed",
-                                    placeholder=info["ph"], key="wiz_company")
-                proj["company"] = val
-                st.markdown('<div style="height:8px;"></div>', unsafe_allow_html=True)
-                logo_file = st.file_uploader("로고 이미지 업로드 (선택)",
-                                             type=["png","jpg","jpeg"], key="wiz_logo")
-                if logo_file:
-                    ss.logo_bytes = logo_file.read()
-                if ss.logo_bytes:
-                    lc, _ = st.columns([1, 3])
-                    with lc:
-                        st.image(ss.logo_bytes, use_container_width=True)
+        elif info["type"] == "logo":
+            val = st.text_input("회사명", value=proj.get("company",""),
+                                label_visibility="collapsed",
+                                placeholder=info["ph"], key="wiz_company")
+            proj["company"] = val
+            st.markdown('<div style="height:8px;"></div>', unsafe_allow_html=True)
+            logo_file = st.file_uploader("로고 이미지 업로드 (선택)",
+                                         type=["png","jpg","jpeg"], key="wiz_logo")
+            if logo_file:
+                ss.logo_bytes = logo_file.read()
+            if ss.logo_bytes:
+                lc, _ = st.columns([1, 3])
+                with lc:
+                    st.image(ss.logo_bytes, use_container_width=True)
 
-            elif info["type"] == "colors":
-                # 팔레트 카드 선택 UI
-                sel_pal = ss.get("sel_palette", None)
+        elif info["type"] == "colors":
+            # 팔레트 카드 선택 UI
+            sel_pal = ss.get("sel_palette", None)
 
-                for row_palettes in [COLOR_PALETTES[:3], COLOR_PALETTES[3:]]:
-                    cols = st.columns(3)
-                    for col, pal in zip(cols, row_palettes):
-                        with col:
-                            is_sel = (sel_pal == pal["name"])
-                            border = "#1C1C1E" if is_sel else "#EDE9E3"
-                            shadow = "0 4px 16px rgba(0,0,0,.15)" if is_sel else "0 1px 4px rgba(0,0,0,.06)"
-                            # 색상 스와치 3개
-                            swatches = "".join(
-                                f'<div style="flex:1;height:36px;background:{c};'
-                                f'border-radius:6px;"></div>'
-                                for c in pal["preview"])
-                            st.markdown(
-                                f'<div style="border:2px solid {border};border-radius:14px;'
-                                f'padding:14px;background:#FAFAFA;box-shadow:{shadow};'
-                                f'margin-bottom:8px;">'
-                                f'<div style="display:flex;gap:5px;margin-bottom:10px;">{swatches}</div>'
-                                f'<div style="font-size:.78rem;font-weight:700;color:#1C1C1E;">'
-                                f'{pal["name"]}</div>'
-                                f'<div style="font-size:.66rem;color:#9CA3AF;margin-top:2px;">'
-                                f'{pal["desc"]}</div>'
-                                f'</div>',
-                                unsafe_allow_html=True)
-                            is_custom = pal.get("custom", False)
-                            btn_lbl = "✓ 선택됨" if is_sel else ("직접 입력" if is_custom else "선택")
-                            if st.button(btn_lbl, key=f"pal_{pal['name']}",
-                                         type="primary" if is_sel else "secondary",
-                                         use_container_width=True):
-                                ss.sel_palette = pal["name"]
-                                if not is_custom:
-                                    proj["primary_color"]   = pal["primary"]
-                                    proj["secondary_color"] = pal["secondary"]
-                                    proj["accent_color"]    = pal["accent"]
-                                else:
-                                    # 직접 입력: 기본값 유지
-                                    if not proj.get("primary_color"):
-                                        proj["primary_color"]   = "#C9A87C"
-                                        proj["secondary_color"] = "#1C1C1E"
-                                        proj["accent_color"]    = "#E8C97A"
-                                st.rerun()
-
-                # 선택된 팔레트 미리보기 / 직접 입력 피커
-                if sel_pal:
-                    pal = next(p for p in COLOR_PALETTES if p["name"] == sel_pal)
-                    st.markdown('<div style="height:12px;"></div>', unsafe_allow_html=True)
-
-                    if pal.get("custom"):
-                        # 직접 입력 — 컬러피커 바로 표시
+            for row_palettes in [COLOR_PALETTES[:3], COLOR_PALETTES[3:]]:
+                cols = st.columns(3)
+                for col, pal in zip(cols, row_palettes):
+                    with col:
+                        is_sel = (sel_pal == pal["name"])
+                        is_custom = pal.get("custom", False)
+                        border = "#1C1C1E" if is_sel else "transparent"
+                        bg = "#FEFEFE" if is_sel else "#F8F5F0"
+                        shadow = "0 6px 24px rgba(0,0,0,.14)" if is_sel else "none"
+                        bars = "".join(
+                            f'<div style="flex:1;height:52px;background:{c};"></div>'
+                            for c in pal["preview"])
+                        dot = "●" if is_sel else ""
                         st.markdown(
-                            '<div style="padding:18px;background:#F8F7F4;border-radius:14px;'
-                            'border:1.5px solid #EDE9E3;">'
-                            '<div style="font-size:.70rem;font-weight:700;color:#9CA3AF;'
-                            'letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px;">'
-                            '색상 직접 지정</div>',
+                            f'<div style="border:2px solid {border};border-radius:18px;'
+                            f'background:{bg};box-shadow:{shadow};'
+                            f'overflow:hidden;margin-bottom:8px;">'
+                            f'<div style="display:flex;">{bars}</div>'
+                            f'<div style="padding:12px 14px 10px;">'
+                            f'<div style="display:flex;align-items:center;justify-content:space-between;">'
+                            f'<div style="font-size:.76rem;font-weight:800;color:#1C1C1E;">{pal["name"]}</div>'
+                            f'<div style="font-size:.64rem;color:#C9A87C;font-weight:700;">{dot}</div>'
+                            f'</div>'
+                            f'<div style="font-size:.62rem;color:#A8ADB8;margin-top:2px;">{pal["desc"]}</div>'
+                            f'</div></div>',
                             unsafe_allow_html=True)
-                        ca, cb, cc = st.columns(3)
-                        with ca:
-                            st.caption("🟤 주 색상")
-                            c1 = st.color_picker("주색",
-                                                 value=proj.get("primary_color","#C9A87C"),
-                                                 label_visibility="collapsed", key="cp1")
-                            proj["primary_color"] = c1
-                            st.markdown(
-                                f'<div style="height:4px;background:{c1};border-radius:4px;margin-top:4px;"></div>'
-                                f'<div style="font-size:.68rem;font-weight:700;color:#374151;'
-                                f'font-family:monospace;margin-top:5px;text-align:center;">{c1.upper()}</div>',
-                                unsafe_allow_html=True)
-                        with cb:
-                            st.caption("⚫ 보조 색상")
-                            c2 = st.color_picker("보조",
-                                                 value=proj.get("secondary_color","#1C1C1E"),
-                                                 label_visibility="collapsed", key="cp2")
-                            proj["secondary_color"] = c2
-                            st.markdown(
-                                f'<div style="height:4px;background:{c2};border-radius:4px;margin-top:4px;"></div>'
-                                f'<div style="font-size:.68rem;font-weight:700;color:#374151;'
-                                f'font-family:monospace;margin-top:5px;text-align:center;">{c2.upper()}</div>',
-                                unsafe_allow_html=True)
-                        with cc:
-                            st.caption("🟡 강조 색상")
-                            c3 = st.color_picker("강조",
-                                                 value=proj.get("accent_color","#E8C97A"),
-                                                 label_visibility="collapsed", key="cp3")
-                            proj["accent_color"] = c3
-                            st.markdown(
-                                f'<div style="height:4px;background:{c3};border-radius:4px;margin-top:4px;"></div>'
-                                f'<div style="font-size:.68rem;font-weight:700;color:#374151;'
-                                f'font-family:monospace;margin-top:5px;text-align:center;">{c3.upper()}</div>',
-                                unsafe_allow_html=True)
-                        st.markdown('</div>', unsafe_allow_html=True)
+                        btn_lbl = "✓ 선택됨" if is_sel else ("✏ 직접 입력" if is_custom else "선택")
+                        if st.button(btn_lbl, key=f"pal_{pal['name']}",
+                                     type="primary" if is_sel else "secondary",
+                                     use_container_width=True):
+                            ss.sel_palette = pal["name"]
+                            if not is_custom:
+                                proj["primary_color"]   = pal["primary"]
+                                proj["secondary_color"] = pal["secondary"]
+                                proj["accent_color"]    = pal["accent"]
+                            else:
+                                if not proj.get("primary_color"):
+                                    proj["primary_color"]   = "#C9A87C"
+                                    proj["secondary_color"] = "#1C1C1E"
+                                    proj["accent_color"]    = "#E8C97A"
+                            st.rerun()
 
-                    else:
-                        # 선택된 팔레트 요약
-                        p1 = proj.get("primary_color","#C9A87C")
-                        p2 = proj.get("secondary_color","#1C1C1E")
-                        p3 = proj.get("accent_color","#E8C97A")
-                        st.markdown(
-                            f'<div style="display:flex;gap:12px;align-items:center;'
-                            f'padding:14px 18px;background:#F8F7F4;border-radius:12px;'
-                            f'border:1.5px solid #EDE9E3;">'
-                            f'<div style="display:flex;gap:6px;">'
-                            + "".join(
-                                f'<div style="display:flex;flex-direction:column;gap:3px;align-items:center;">'
-                                f'<div style="width:32px;height:32px;background:{c};border-radius:8px;'
-                                f'box-shadow:0 2px 6px rgba(0,0,0,.15);"></div>'
-                                f'<span style="font-size:.58rem;color:#9CA3AF;">{lbl}</span>'
-                                f'<span style="font-size:.55rem;color:#AEAFB4;font-family:monospace;">{c.upper()}</span>'
-                                f'</div>'
-                                for c, lbl in [(p1,"주색"),(p2,"보조"),(p3,"강조")]
-                            ) +
-                            f'</div><div style="flex:1;">'
-                            f'<div style="font-size:.80rem;font-weight:700;color:#1C1C1E;">'
-                            f'{pal["name"]} 선택됨</div>'
-                            f'<div style="font-size:.68rem;color:#9CA3AF;margin-top:2px;">'
-                            f'{pal["desc"]}</div></div></div>',
-                            unsafe_allow_html=True)
+            if sel_pal:
+                pal = next(p for p in COLOR_PALETTES if p["name"] == sel_pal)
+                st.markdown('<div style="height:12px;"></div>', unsafe_allow_html=True)
 
-                        # 미세 조정
-                        with st.expander("🎨 색상 미세 조정"):
-                            ca, cb, cc = st.columns(3)
-                            with ca:
-                                st.caption("주 색상")
-                                c1 = st.color_picker("주색", value=p1, label_visibility="collapsed", key="cp1")
-                                proj["primary_color"] = c1
-                                st.markdown(f'<div style="font-size:.68rem;font-weight:700;color:#374151;font-family:monospace;margin-top:3px;">{c1.upper()}</div>', unsafe_allow_html=True)
-                            with cb:
-                                st.caption("보조 색상")
-                                c2 = st.color_picker("보조", value=p2, label_visibility="collapsed", key="cp2")
-                                proj["secondary_color"] = c2
-                                st.markdown(f'<div style="font-size:.68rem;font-weight:700;color:#374151;font-family:monospace;margin-top:3px;">{c2.upper()}</div>', unsafe_allow_html=True)
-                            with cc:
-                                st.caption("강조 색상")
-                                c3 = st.color_picker("강조", value=p3, label_visibility="collapsed", key="cp3")
-                                proj["accent_color"] = c3
-                                st.markdown(f'<div style="font-size:.68rem;font-weight:700;color:#374151;font-family:monospace;margin-top:3px;">{c3.upper()}</div>', unsafe_allow_html=True)
-
-            elif info["type"] == "confirm":
-                # ── 최종 확인 단계 ─────────────────────────────────────
-                def _row(icon, label, value, empty_msg="미입력"):
-                    v = value or f'<span style="color:#D1D5DB;">{empty_msg}</span>'
+                if pal.get("custom"):
                     st.markdown(
-                        f'<div style="display:flex;align-items:flex-start;gap:14px;'
-                        f'padding:14px 16px;background:#F8F7F4;border-radius:12px;'
-                        f'margin-bottom:8px;">'
-                        f'<div style="font-size:1.1rem;margin-top:1px;">{icon}</div>'
-                        f'<div style="flex:1;">'
-                        f'<div style="font-size:.66rem;font-weight:700;color:#9CA3AF;'
-                        f'letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px;">{label}</div>'
-                        f'<div style="font-size:.88rem;font-weight:600;color:#1C1C1E;">{v}</div>'
+                        '<div style="padding:18px;background:#F8F5F0;border-radius:16px;'
+                        'border:1.5px solid #EDE9E3;">'
+                        '<div style="font-size:.62rem;font-weight:700;color:#B0B7C3;'
+                        'letter-spacing:.12em;text-transform:uppercase;margin-bottom:14px;">'
+                        '색상 직접 지정</div>',
+                        unsafe_allow_html=True)
+                    ca, cb, cc = st.columns(3)
+                    with ca:
+                        st.caption("🟤 주 색상")
+                        c1 = st.color_picker("주색", value=proj.get("primary_color","#C9A87C"),
+                                             label_visibility="collapsed", key="cp1")
+                        proj["primary_color"] = c1
+                        st.markdown(
+                            f'<div style="height:4px;background:{c1};border-radius:4px;margin-top:4px;"></div>'
+                            f'<div style="font-size:.68rem;font-weight:700;color:#374151;'
+                            f'font-family:monospace;margin-top:5px;text-align:center;">{c1.upper()}</div>',
+                            unsafe_allow_html=True)
+                    with cb:
+                        st.caption("⚫ 보조 색상")
+                        c2 = st.color_picker("보조", value=proj.get("secondary_color","#1C1C1E"),
+                                             label_visibility="collapsed", key="cp2")
+                        proj["secondary_color"] = c2
+                        st.markdown(
+                            f'<div style="height:4px;background:{c2};border-radius:4px;margin-top:4px;"></div>'
+                            f'<div style="font-size:.68rem;font-weight:700;color:#374151;'
+                            f'font-family:monospace;margin-top:5px;text-align:center;">{c2.upper()}</div>',
+                            unsafe_allow_html=True)
+                    with cc:
+                        st.caption("🟡 강조 색상")
+                        c3 = st.color_picker("강조", value=proj.get("accent_color","#E8C97A"),
+                                             label_visibility="collapsed", key="cp3")
+                        proj["accent_color"] = c3
+                        st.markdown(
+                            f'<div style="height:4px;background:{c3};border-radius:4px;margin-top:4px;"></div>'
+                            f'<div style="font-size:.68rem;font-weight:700;color:#374151;'
+                            f'font-family:monospace;margin-top:5px;text-align:center;">{c3.upper()}</div>',
+                            unsafe_allow_html=True)
+                    st.markdown('</div>', unsafe_allow_html=True)
+
+                else:
+                    p1 = proj.get("primary_color","#C9A87C")
+                    p2 = proj.get("secondary_color","#1C1C1E")
+                    p3 = proj.get("accent_color","#E8C97A")
+                    st.markdown(
+                        f'<div style="display:flex;gap:12px;align-items:center;'
+                        f'padding:14px 18px;background:#F8F5F0;border-radius:16px;'
+                        f'border:1.5px solid #EDE9E3;">'
+                        f'<div style="display:flex;gap:8px;">'
+                        + "".join(
+                            f'<div style="display:flex;flex-direction:column;gap:4px;align-items:center;">'
+                            f'<div style="width:36px;height:36px;background:{c};border-radius:10px;'
+                            f'box-shadow:0 2px 8px rgba(0,0,0,.18);"></div>'
+                            f'<span style="font-size:.56rem;color:#A8ADB8;">{lbl}</span>'
+                            f'<span style="font-size:.54rem;color:#C4C9D4;font-family:monospace;">{c.upper()}</span>'
+                            f'</div>'
+                            for c, lbl in [(p1,"주색"),(p2,"보조"),(p3,"강조")]
+                        ) +
+                        f'</div><div style="flex:1;">'
+                        f'<div style="font-size:.80rem;font-weight:800;color:#1C1C1E;">{pal["name"]} 선택됨</div>'
+                        f'<div style="font-size:.66rem;color:#A8ADB8;margin-top:3px;">{pal["desc"]}</div>'
                         f'</div></div>',
                         unsafe_allow_html=True)
 
-                _row("🏗", "현장명",  proj.get("name",""))
-                _row("📍", "주소",    proj.get("address",""))
+                    with st.expander("🎨 색상 미세 조정"):
+                        ca, cb, cc = st.columns(3)
+                        with ca:
+                            st.caption("주 색상")
+                            c1 = st.color_picker("주색", value=p1, label_visibility="collapsed", key="cp1")
+                            proj["primary_color"] = c1
+                            st.markdown(f'<div style="font-size:.68rem;font-weight:700;color:#374151;font-family:monospace;margin-top:3px;">{c1.upper()}</div>', unsafe_allow_html=True)
+                        with cb:
+                            st.caption("보조 색상")
+                            c2 = st.color_picker("보조", value=p2, label_visibility="collapsed", key="cp2")
+                            proj["secondary_color"] = c2
+                            st.markdown(f'<div style="font-size:.68rem;font-weight:700;color:#374151;font-family:monospace;margin-top:3px;">{c2.upper()}</div>', unsafe_allow_html=True)
+                        with cc:
+                            st.caption("강조 색상")
+                            c3 = st.color_picker("강조", value=p3, label_visibility="collapsed", key="cp3")
+                            proj["accent_color"] = c3
+                            st.markdown(f'<div style="font-size:.68rem;font-weight:700;color:#374151;font-family:monospace;margin-top:3px;">{c3.upper()}</div>', unsafe_allow_html=True)
 
-                s = proj.get("start_date",""); e = proj.get("end_date","")
-                date_val = f"{s} ~ {e}" if s or e else ""
-                _row("📅", "공사 기간", date_val)
-                _row("🏢", "회사명",  proj.get("company",""))
-
-                # 색상 행
-                p1 = proj.get("primary_color","#C9A87C")
-                p2 = proj.get("secondary_color","#1C1C1E")
-                p3 = proj.get("accent_color","#E8C97A")
-                pal_name = ss.get("sel_palette","커스텀")
+        elif info["type"] == "confirm":
+            def _row(icon, label, value, empty_msg="미입력"):
+                v = value or f'<span style="color:#D4D4D8;">{empty_msg}</span>'
                 st.markdown(
-                    f'<div style="display:flex;align-items:center;gap:14px;'
-                    f'padding:14px 16px;background:#F8F7F4;border-radius:12px;margin-bottom:8px;">'
-                    f'<div style="font-size:1.1rem;">🎨</div>'
+                    f'<div style="display:flex;align-items:flex-start;gap:16px;'
+                    f'padding:16px 18px;background:#F8F5F0;border-radius:16px;'
+                    f'margin-bottom:8px;border-left:3px solid #E8C97A;">'
+                    f'<div style="font-size:1.1rem;margin-top:2px;opacity:.8;">{icon}</div>'
                     f'<div style="flex:1;">'
-                    f'<div style="font-size:.66rem;font-weight:700;color:#9CA3AF;'
-                    f'letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;">색상 테마</div>'
-                    f'<div style="display:flex;gap:14px;align-items:flex-start;">'
-                    + "".join(
-                        f'<div style="display:flex;align-items:center;gap:7px;">'
-                        f'<div style="width:24px;height:24px;background:{c};border-radius:7px;'
-                        f'box-shadow:0 1px 4px rgba(0,0,0,.18);flex-shrink:0;"></div>'
-                        f'<div>'
-                        f'<div style="font-size:.60rem;color:#9CA3AF;margin-bottom:1px;">{lbl}</div>'
-                        f'<div style="font-size:.68rem;font-weight:700;color:#374151;'
-                        f'font-family:monospace;">{c.upper()}</div>'
-                        f'</div></div>'
-                        for c, lbl in [(p1,"주조색"),(p2,"보조색"),(p3,"강조색")]
-                    ) +
-                    f'</div></div></div>',
+                    f'<div style="font-size:.60rem;font-weight:700;color:#B0B7C3;'
+                    f'letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px;">{label}</div>'
+                    f'<div style="font-size:.90rem;font-weight:600;color:#1C1C1E;line-height:1.4;">{v}</div>'
+                    f'</div></div>',
                     unsafe_allow_html=True)
 
-                # 로고 미리보기
-                if ss.logo_bytes:
-                    lc, _ = st.columns([1, 4])
-                    with lc:
-                        st.image(ss.logo_bytes, use_container_width=True)
+            _row("🏗", "현장명",  proj.get("name",""))
+            _row("📍", "주소",    proj.get("address",""))
+            s = proj.get("start_date",""); e = proj.get("end_date","")
+            _row("📅", "공사 기간", f"{s} ~ {e}" if s or e else "")
+            _row("🏢", "회사명",  proj.get("company",""))
 
-                st.markdown(
-                    '<div style="background:linear-gradient(135deg,#1C1C1E,#2D2D30);'
-                    'border-radius:12px;padding:14px 18px;margin-top:4px;">'
-                    '<div style="font-size:.76rem;color:#E8C97A;font-weight:600;">✦ 모든 정보가 맞다면 시작하기를 눌러주세요.</div>'
-                    '</div>',
-                    unsafe_allow_html=True)
+            p1 = proj.get("primary_color","#C9A87C")
+            p2 = proj.get("secondary_color","#1C1C1E")
+            p3 = proj.get("accent_color","#E8C97A")
+            pal_name = ss.get("sel_palette","커스텀")
+            st.markdown(
+                f'<div style="display:flex;align-items:center;gap:14px;'
+                f'padding:16px 18px;background:#F8F5F0;border-radius:16px;'
+                f'margin-bottom:8px;border-left:3px solid #E8C97A;">'
+                f'<div style="font-size:1.1rem;opacity:.8;">🎨</div>'
+                f'<div style="flex:1;">'
+                f'<div style="font-size:.60rem;font-weight:700;color:#B0B7C3;'
+                f'letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px;">색상 테마</div>'
+                f'<div style="display:flex;gap:14px;align-items:flex-start;">'
+                + "".join(
+                    f'<div style="display:flex;align-items:center;gap:8px;">'
+                    f'<div style="width:28px;height:28px;background:{c};border-radius:8px;'
+                    f'box-shadow:0 2px 6px rgba(0,0,0,.18);flex-shrink:0;"></div>'
+                    f'<div>'
+                    f'<div style="font-size:.60rem;color:#A8ADB8;margin-bottom:1px;">{lbl}</div>'
+                    f'<div style="font-size:.68rem;font-weight:700;color:#374151;font-family:monospace;">{c.upper()}</div>'
+                    f'</div></div>'
+                    for c, lbl in [(p1,"주조색"),(p2,"보조색"),(p3,"강조색")]
+                ) +
+                f'</div></div></div>',
+                unsafe_allow_html=True)
+
+            # 로고 미리보기
+            if ss.logo_bytes:
+                lc, _ = st.columns([1, 4])
+                with lc:
+                    st.image(ss.logo_bytes, use_container_width=True)
+
+            st.markdown(
+                '<div style="background:linear-gradient(135deg,#1C1C1E 0%,#2C2C2E 100%);'
+                'border-radius:18px;padding:20px 22px;margin-top:12px;'
+                'display:flex;align-items:center;gap:14px;">'
+                '<div style="width:36px;height:36px;background:rgba(232,201,122,.15);'
+                'border-radius:10px;display:flex;align-items:center;justify-content:center;'
+                'font-size:.9rem;flex-shrink:0;">✦</div>'
+                '<div>'
+                '<div style="font-size:.76rem;color:#E8C97A;font-weight:700;'
+                'letter-spacing:.02em;">모든 정보가 확인되셨나요?</div>'
+                '<div style="font-size:.70rem;color:rgba(255,255,255,.45);margin-top:3px;">'
+                '아래 시작하기 버튼을 눌러 워크스페이스로 이동하세요</div>'
+                '</div></div>',
+                unsafe_allow_html=True)
 
             # ── 버튼 행 ──────────────────────────────────────────────────
-            st.markdown('<div style="height:28px;"></div>', unsafe_allow_html=True)
-            n1, n2 = st.columns([1, 1])
-            with n1:
-                if step > 0:
-                    if st.button("← 이전 단계", use_container_width=True, key="wiz_prev"):
+            st.markdown('<div style="height:32px;"></div>', unsafe_allow_html=True)
+            is_last = (step == TOTAL - 1)
+
+            if step > 0:
+                n1, n2 = st.columns([1, 2])
+                with n1:
+                    if st.button("← 이전", use_container_width=True, key="wiz_prev"):
                         ss.setup_step -= 1; st.rerun()
-            with n2:
-                is_last = (step == TOTAL - 1)
-                next_lbl = "시작하기 →" if is_last else "다음 단계 →"
-                if st.button(next_lbl, type="primary", use_container_width=True, key="wiz_next"):
-                    if is_last: ss.page = "workspace"; ss.setup_step = 0
+                with n2:
+                    next_lbl = "🚀  워크스페이스 시작하기" if is_last else "다음 단계 →"
+                    if st.button(next_lbl, type="primary", use_container_width=True, key="wiz_next"):
+                        if is_last: ss.page = "workspace"; ss.setup_step = 0
+                        else: ss.setup_step += 1
+                        st.rerun()
+            else:
+                if st.button("다음 단계 →", type="primary", use_container_width=True, key="wiz_next"):
+                    ss.setup_step += 1; st.rerun()
+
+            # 건너뛰기 링크 스타일
+            st.markdown('<div style="height:6px;"></div>', unsafe_allow_html=True)
+            sk_c1, sk_c2, sk_c3 = st.columns([2, 1, 2])
+            with sk_c2:
+                if st.button("건너뛰기", key="wiz_skip", use_container_width=True):
+                    if is_last: ss.page = "workspace"
                     else: ss.setup_step += 1
                     st.rerun()
 
-            st.markdown('</div>', unsafe_allow_html=True)  # 카드 닫기
+            st.markdown('</div>', unsafe_allow_html=True)  # wiz-card 닫기
 
-        # 건너뛰기
-        _, sc, _ = st.columns([1, 2.2, 1])
-        with sc:
-            st.markdown('<div style="text-align:center;margin-top:14px;">', unsafe_allow_html=True)
-            if st.button("건너뛰기", key="wiz_skip"):
-                if step == TOTAL - 1: ss.page = "workspace"
-                else: ss.setup_step += 1
-                st.rerun()
-            st.markdown('</div>', unsafe_allow_html=True)
-        st.markdown('<div style="height:60px;"></div>', unsafe_allow_html=True)
         st.markdown('<div style="height:60px;"></div>', unsafe_allow_html=True)
 
 
