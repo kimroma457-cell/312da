@@ -211,7 +211,8 @@ details summary { font-size: .78rem !important; color: #9CA3AF !important; }
 # SESSION INIT
 # ══════════════════════════════════════════════════════════════════════════════
 def _new_room(name="거실"):
-    return {"id": str(uuid.uuid4()), "name": name, "materials": []}
+    return {"id": str(uuid.uuid4()), "name": name, "materials": [],
+            "modeling_views": [{}, {}, {}, {}]}
 
 def _init():
     ss = st.session_state
@@ -762,6 +763,9 @@ def _render_workspace():
             with L: _render_search(ti)
             with R: _render_materials(ti)
 
+            # 모델링 이미지 (PPT 5p VIEW 01~04)
+            _render_modeling_views(ti)
+
 
 # ══════════════════════════════════════════════════════════════════════════════
 # SEARCH PANEL
@@ -1106,6 +1110,63 @@ def _render_materials(ti: int):
         st.markdown(
             '<hr style="border:none;border-top:1px solid #F3F4F6;margin:12px 0;">',
             unsafe_allow_html=True)
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# MODELING VIEWS PANEL  (PPT 5p — VIEW 01~04)
+# ══════════════════════════════════════════════════════════════════════════════
+def _render_modeling_views(ti: int):
+    if "modeling_views" not in ss.rooms[ti]:
+        ss.rooms[ti]["modeling_views"] = [{}, {}, {}, {}]
+    views = ss.rooms[ti]["modeling_views"]
+    while len(views) < 4:
+        views.append({})
+
+    st.markdown(
+        '<div style="display:flex;align-items:center;gap:10px;margin:28px 0 14px;">'
+        '<div style="width:3px;height:18px;background:#C9A87C;border-radius:2px;"></div>'
+        '<span style="font-size:.88rem;font-weight:700;color:#1C1C1E;">모델링 이미지</span>'
+        '<span style="font-size:.70rem;color:#9CA3AF;margin-left:4px;">'
+        '최대 4장 · PPT VIEW 01~04 자동 연동</span>'
+        '</div>', unsafe_allow_html=True)
+
+    cols = st.columns(4, gap="small")
+    for vi, col in enumerate(cols):
+        view = views[vi]
+        with col:
+            st.markdown(
+                f'<div style="font-size:.66rem;font-weight:700;color:#C9A87C;'
+                f'letter-spacing:.08em;text-align:center;margin-bottom:6px;">'
+                f'VIEW 0{vi+1}</div>',
+                unsafe_allow_html=True)
+
+            if view.get("image"):
+                st.image(view["image"], use_container_width=True)
+                if st.button("✕ 삭제", key=f"delv_{ti}_{vi}", use_container_width=True):
+                    views[vi]["image"] = None
+                    ss.rooms[ti]["modeling_views"] = views
+                    st.rerun()
+            else:
+                img_file = st.file_uploader(
+                    f"VIEW 0{vi+1}", type=["png","jpg","jpeg","webp"],
+                    key=f"vimg_{ti}_{vi}", label_visibility="collapsed")
+                if img_file is not None:
+                    views[vi]["image"] = img_file.read()
+                    ss.rooms[ti]["modeling_views"] = views
+                    st.rerun()
+
+            itm = st.text_input("품목", value=view.get("품목", ""),
+                                key=f"vitm_{ti}_{vi}",
+                                placeholder="품목 (예: 포세린 타일)",
+                                label_visibility="collapsed")
+            fin = st.text_input("재질마감", value=view.get("재질마감", ""),
+                                key=f"vfin_{ti}_{vi}",
+                                placeholder="재질마감 (예: 무광)",
+                                label_visibility="collapsed")
+            views[vi]["품목"] = itm
+            views[vi]["재질마감"] = fin
+
+    ss.rooms[ti]["modeling_views"] = views
 
 
 # ── UI 유틸 ──────────────────────────────────────────────────────────────────
