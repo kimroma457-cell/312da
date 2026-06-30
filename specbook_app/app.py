@@ -1,6 +1,9 @@
 """
-인테리어 스펙북 생성기 v6
-구조: 사이드바(공간/프로젝트/PPT) + 메인(스텝검색 + 추가자재)
+인테리어 스펙북 생성기 v7
+- 색상/대비 전면 개선
+- 공간명 입력창 배경 수정
+- 스텝바 가독성 개선
+- 우측 자재 패널 구조 개선
 """
 import re, uuid, json, copy as _copy, io
 import streamlit as st
@@ -14,97 +17,231 @@ st.set_page_config(page_title="INTERIOR SPEC BOOK", page_icon="🏠",
 
 CAT_KEYS = list(BRAND_CATALOG.keys())
 
-# ── CSS ──────────────────────────────────────────────────────────────────────
+# ── 색상 팔레트 ──────────────────────────────────────────────────────────────
+# Dark  : #1C1A17  (헤더바, 사이드바 배경)
+# Gold  : #C9A87C  (강조, 활성 버튼 배경)
+# Cream : #F7F4EF  (앱 배경)
+# White : #FFFFFF  (카드, 입력창)
+# Gray1 : #4A4540  (본문 텍스트)
+# Gray2 : #8A8480  (보조 텍스트)
+# Gray3 : #D4D0CA  (테두리)
+# ─────────────────────────────────────────────────────────────────────────────
+
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
-html,body,[class*="css"]{font-family:'Noto Sans KR',sans-serif;}
-.stApp{background:#F4F2EE;}
-#MainMenu,footer{visibility:hidden;}
-[data-testid="stHeader"]{display:none!important;}
 
-/* 사이드바 다크 */
-[data-testid="stSidebar"]{background:#1A1816!important;min-width:220px!important;max-width:260px!important;}
-[data-testid="stSidebar"] *{color:#C8C0B8!important;}
-[data-testid="stSidebar"] input,[data-testid="stSidebar"] textarea{
-  background:#2A2520!important;border:1px solid #3A3530!important;color:#F0EAE2!important;border-radius:6px!important;}
-[data-testid="stSidebar"] .stButton>button{
-  width:100%!important;background:#2A2520!important;color:#C8A97E!important;
-  border:1px solid #3A3530!important;border-radius:7px!important;font-size:.76rem!important;
-  font-weight:600!important;margin-bottom:2px!important;transition:.12s!important;}
-[data-testid="stSidebar"] .stButton>button:hover{background:#3A3530!important;border-color:#C8A97E!important;}
-[data-testid="stSidebar"] .stButton>button[kind="primary"]{
-  background:#C8A97E!important;color:#1A1816!important;border-color:#C8A97E!important;}
-[data-testid="stSidebar"] .stButton>button[kind="primary"]:hover{background:#B8997E!important;}
-[data-testid="stSidebar"] hr{border-color:#3A3530!important;margin:8px 0!important;}
-[data-testid="stSidebar"] label{color:#8A8280!important;font-size:.72rem!important;}
-[data-testid="stSidebarContent"]{padding:12px 12px 20px!important;}
+html, body, [class*="css"] {
+  font-family: 'Noto Sans KR', sans-serif;
+}
 
-/* 사이드바 섹션 레이블 */
-.sb-label{color:#6A6260!important;font-size:.64rem!important;font-weight:700!important;
-  letter-spacing:.08em!important;text-transform:uppercase!important;
-  margin:14px 0 5px!important;padding:0!important;}
+/* ── 앱 배경 ── */
+.stApp { background: #F7F4EF !important; }
+#MainMenu, footer { visibility: hidden; }
+[data-testid="stHeader"] { display: none !important; }
 
-/* 공간 버튼 - 활성 */
-.space-active button{background:#C8A97E!important;color:#1A1816!important;border-color:#C8A97E!important;}
+/* ── 사이드바 ── */
+[data-testid="stSidebar"] {
+  background: #1C1A17 !important;
+  min-width: 220px !important;
+  max-width: 250px !important;
+}
+[data-testid="stSidebarContent"] { padding: 14px 14px 24px !important; }
 
-/* 일반 버튼 */
-.stButton>button{
-  border-radius:8px!important;font-size:.76rem!important;font-weight:600!important;
-  background:#fff!important;color:#4A4540!important;border:1.5px solid #DDD8D2!important;
-  transition:.12s!important;white-space:nowrap!important;}
-.stButton>button:hover{background:#FDF8F2!important;border-color:#C8A97E!important;color:#1A1816!important;}
-div[data-testid="stButton"]>button[kind="primary"]{
-  background:#1A1816!important;color:#C8A97E!important;border-color:#1A1816!important;}
-div[data-testid="stButton"]>button[kind="primary"]:hover{background:#C8A97E!important;color:#1A1816!important;}
+/* 사이드바 기본 텍스트 */
+[data-testid="stSidebar"] p,
+[data-testid="stSidebar"] span,
+[data-testid="stSidebar"] div,
+[data-testid="stSidebar"] label {
+  color: #C8C0B4 !important;
+}
 
-/* 카드 */
-.mat-card{background:#fff;border:1.5px solid #E8E4DE;border-radius:10px;
-  padding:10px;margin-bottom:8px;}
-.mat-card-title{font-size:.82rem;font-weight:700;color:#1A1816;line-height:1.3;}
-.mat-card-sub{font-size:.70rem;color:#8A8280;margin-top:2px;}
-.mat-price{font-size:.80rem;font-weight:700;color:#C8A97E;margin-top:3px;}
+/* 사이드바 입력창 */
+[data-testid="stSidebar"] input,
+[data-testid="stSidebar"] textarea {
+  background: #2A2724 !important;
+  border: 1px solid #3C3830 !important;
+  color: #F0EAE0 !important;
+  border-radius: 7px !important;
+}
+[data-testid="stSidebar"] input:focus,
+[data-testid="stSidebar"] textarea:focus {
+  border-color: #C9A87C !important;
+  box-shadow: 0 0 0 2px rgba(201,168,124,0.15) !important;
+}
 
-/* 스텝바 */
-.step-bar{display:flex;gap:4px;margin-bottom:12px;}
-.step-item{flex:1;text-align:center;padding:7px 4px;border-radius:8px;
-  font-size:.72rem;font-weight:600;background:#EDEAE5;color:#8A8280;cursor:default;}
-.step-active{background:#1A1816;color:#C8A97E;}
+/* 사이드바 일반 버튼 */
+[data-testid="stSidebar"] .stButton > button {
+  width: 100% !important;
+  background: #2A2724 !important;
+  color: #C8C0B4 !important;
+  border: 1px solid #3C3830 !important;
+  border-radius: 8px !important;
+  font-size: .76rem !important;
+  font-weight: 600 !important;
+  padding: 7px 10px !important;
+  margin-bottom: 3px !important;
+  transition: all .15s !important;
+}
+[data-testid="stSidebar"] .stButton > button:hover {
+  background: #3C3830 !important;
+  border-color: #C9A87C !important;
+  color: #F0EAE0 !important;
+}
 
-/* 섹션 타이틀 */
-.sec-title{font-size:.70rem;font-weight:700;color:#8A8280;letter-spacing:.06em;
-  text-transform:uppercase;margin:14px 0 7px;}
+/* 사이드바 primary 버튼 (공간 활성, PPT) */
+[data-testid="stSidebar"] .stButton > button[kind="primary"] {
+  background: #C9A87C !important;
+  color: #1C1A17 !important;
+  border-color: #C9A87C !important;
+  font-weight: 700 !important;
+}
+[data-testid="stSidebar"] .stButton > button[kind="primary"]:hover {
+  background: #B8976B !important;
+  border-color: #B8976B !important;
+}
 
-/* 검색결과 행 */
-.result-row{display:flex;gap:10px;align-items:flex-start;padding:10px;
-  border-bottom:1px solid #F0ECE8;}
-.result-row:hover{background:#FDFAF7;}
-.result-info{flex:1;min-width:0;}
-.result-name{font-size:.78rem;font-weight:600;color:#1A1816;line-height:1.35;}
-.result-brand{font-size:.68rem;color:#8A8280;margin-top:2px;}
-.result-price{font-size:.76rem;font-weight:700;color:#C8A97E;margin-top:3px;}
+/* 사이드바 download 버튼 */
+[data-testid="stSidebar"] [data-testid="stDownloadButton"] > button {
+  background: #2A2724 !important;
+  color: #C9A87C !important;
+  border: 1px solid #3C3830 !important;
+  border-radius: 8px !important;
+  width: 100% !important;
+  font-size: .76rem !important;
+  font-weight: 600 !important;
+}
+[data-testid="stSidebar"] [data-testid="stDownloadButton"] > button:hover {
+  background: #3C3830 !important;
+  border-color: #C9A87C !important;
+}
 
-/* 헤더바 */
-.top-header{background:#1A1816;color:#C8A97E;padding:12px 20px;
-  font-size:.88rem;font-weight:700;letter-spacing:.04em;
-  border-radius:10px;margin-bottom:14px;}
+/* 사이드바 expander */
+[data-testid="stSidebar"] [data-testid="stExpander"] {
+  background: #242120 !important;
+  border: 1px solid #3C3830 !important;
+  border-radius: 8px !important;
+  margin-bottom: 6px !important;
+}
+[data-testid="stSidebar"] [data-testid="stExpander"] summary {
+  color: #C8C0B4 !important;
+  font-size: .78rem !important;
+  font-weight: 600 !important;
+}
 
-/* 서브탭 */
-.stTabs [data-baseweb="tab-list"]{background:#EDEAE5;padding:3px;border-radius:8px;gap:2px;}
-.stTabs [data-baseweb="tab"]{border-radius:6px;font-size:.73rem;font-weight:600;
-  padding:5px 14px;color:#6B6059!important;}
-.stTabs [aria-selected="true"]{background:#fff!important;color:#1A1816!important;}
+/* 사이드바 file uploader */
+[data-testid="stSidebar"] [data-testid="stFileUploader"] {
+  background: #242120 !important;
+  border: 1px dashed #3C3830 !important;
+  border-radius: 8px !important;
+  padding: 8px !important;
+}
+[data-testid="stSidebar"] [data-testid="stFileUploader"] * {
+  font-size: .72rem !important;
+}
 
-/* 입력창 */
-.stTextInput input,.stTextArea textarea{border-radius:8px!important;
-  border:1.5px solid #DDD8D2!important;font-size:.80rem!important;}
+/* 사이드바 hr */
+[data-testid="stSidebar"] hr {
+  border-color: #3C3830 !important;
+  margin: 10px 0 !important;
+}
 
-/* 숫자 입력 */
-.stNumberInput input{border-radius:8px!important;font-size:.80rem!important;}
+/* ── 메인 영역 버튼 ── */
+.stButton > button {
+  border-radius: 8px !important;
+  font-size: .76rem !important;
+  font-weight: 600 !important;
+  background: #FFFFFF !important;
+  color: #4A4540 !important;
+  border: 1.5px solid #D4D0CA !important;
+  padding: 6px 12px !important;
+  transition: all .15s !important;
+}
+.stButton > button:hover {
+  background: #FDF9F4 !important;
+  border-color: #C9A87C !important;
+  color: #1C1A17 !important;
+}
 
-/* 메트릭 */
-[data-testid="stMetric"]{background:#fff;border-radius:10px;padding:10px 14px;
-  border:1px solid #E8E4DE;}
+/* 메인 primary 버튼 (카테고리/브랜드 선택됨) */
+div[data-testid="stButton"] > button[kind="primary"] {
+  background: #1C1A17 !important;
+  color: #C9A87C !important;
+  border-color: #1C1A17 !important;
+}
+div[data-testid="stButton"] > button[kind="primary"]:hover {
+  background: #C9A87C !important;
+  color: #1C1A17 !important;
+}
+
+/* ── 입력창 (메인) ── */
+.stTextInput input, .stTextArea textarea {
+  background: #FFFFFF !important;
+  border: 1.5px solid #D4D0CA !important;
+  border-radius: 8px !important;
+  color: #1C1A17 !important;
+  font-size: .80rem !important;
+}
+.stTextInput input:focus, .stTextArea textarea:focus {
+  border-color: #C9A87C !important;
+  box-shadow: 0 0 0 2px rgba(201,168,124,0.12) !important;
+}
+/* 레이블 제거된 입력창 배경 강제 흰색 */
+[data-testid="stTextInputRootElement"] input {
+  background: #FFFFFF !important;
+  color: #1C1A17 !important;
+}
+
+/* selectbox */
+.stSelectbox select, [data-baseweb="select"] {
+  background: #FFFFFF !important;
+  border: 1.5px solid #D4D0CA !important;
+  border-radius: 8px !important;
+  color: #1C1A17 !important;
+}
+
+/* ── 탭 (서브탭) ── */
+.stTabs [data-baseweb="tab-list"] {
+  background: #EDE9E3;
+  padding: 4px;
+  border-radius: 10px;
+  gap: 3px;
+}
+.stTabs [data-baseweb="tab"] {
+  border-radius: 7px;
+  font-size: .74rem;
+  font-weight: 600;
+  padding: 6px 16px;
+  color: #6B6059 !important;
+  background: transparent !important;
+  border: none !important;
+}
+.stTabs [aria-selected="true"] {
+  background: #FFFFFF !important;
+  color: #1C1A17 !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08) !important;
+}
+.stTabs [data-baseweb="tab-panel"] {
+  padding-top: 12px !important;
+}
+
+/* ── form ── */
+[data-testid="stForm"] {
+  background: #FFFFFF;
+  border: 1.5px solid #E8E4DE;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+/* ── expander (메인) ── */
+[data-testid="stExpander"] {
+  background: #FFFFFF;
+  border: 1px solid #E8E4DE !important;
+  border-radius: 8px;
+}
+
+/* ── 스피너 ── */
+.stSpinner > div { border-top-color: #C9A87C !important; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -126,7 +263,6 @@ def _init():
         st.session_state.logo_bytes = None
     if "favorites" not in st.session_state:
         st.session_state.favorites = []
-    # 검색 상태
     for k, v in [("sel_cat", None), ("sel_brand", None), ("sel_sub", None),
                  ("search_results", []), ("search_done", False),
                  ("search_keyword", "")]:
@@ -135,18 +271,16 @@ def _init():
 
 _init()
 
-p = st.session_state.project
+p     = st.session_state.project
 rooms = st.session_state.rooms
-cur_idx = st.session_state.current_room_idx
-if cur_idx >= len(rooms):
-    cur_idx = 0
-    st.session_state.current_room_idx = 0
-room = rooms[cur_idx]
+cur_idx = min(st.session_state.current_room_idx, len(rooms) - 1)
+st.session_state.current_room_idx = cur_idx
+room  = rooms[cur_idx]
 
 # ── 헬퍼 ─────────────────────────────────────────────────────────────────────
 def _fmt_price(v):
     try: return f"{int(v):,}원"
-    except: return str(v)
+    except: return str(v) if v else "-"
 
 def _total_price():
     total = 0
@@ -160,9 +294,8 @@ def _total_items():
     return sum(len(r["materials"]) for r in rooms)
 
 def _reset_search():
-    st.session_state.sel_cat = None
-    st.session_state.sel_brand = None
-    st.session_state.sel_sub = None
+    for k in ("sel_cat", "sel_brand", "sel_sub"):
+        st.session_state[k] = None
     st.session_state.search_results = []
     st.session_state.search_done = False
     st.session_state.search_keyword = ""
@@ -170,15 +303,15 @@ def _reset_search():
 # ── 사이드바 ──────────────────────────────────────────────────────────────────
 with st.sidebar:
     # 프로젝트 정보
-    with st.expander("📋 프로젝트 정보", expanded=False):
+    with st.expander("📋 프로젝트 정보"):
         p["name"]     = st.text_input("프로젝트명", p["name"], key="p_name")
-        p["client"]   = st.text_input("의뢰인", p.get("client",""), key="p_client")
-        p["designer"] = st.text_input("디자이너", p.get("designer",""), key="p_designer")
-        p["date"]     = st.text_input("날짜", p.get("date",""), key="p_date")
-        p["address"]  = st.text_input("현장주소", p.get("address",""), key="p_addr")
+        p["client"]   = st.text_input("의뢰인", p.get("client", ""), key="p_client")
+        p["designer"] = st.text_input("디자이너", p.get("designer", ""), key="p_designer")
+        p["date"]     = st.text_input("날짜", p.get("date", ""), key="p_date")
+        p["address"]  = st.text_input("현장주소", p.get("address", ""), key="p_addr")
 
     # 표지 로고
-    with st.expander("🖼 표지 로고", expanded=False):
+    with st.expander("🖼 표지 로고"):
         logo_file = st.file_uploader("로고 이미지", type=["png","jpg","jpeg"],
                                      key="logo_up", label_visibility="collapsed")
         if logo_file:
@@ -186,22 +319,26 @@ with st.sidebar:
         if st.session_state.logo_bytes:
             st.image(st.session_state.logo_bytes, use_container_width=True)
 
-    st.markdown('<div class="sb-label">SPACES</div>', unsafe_allow_html=True)
+    # SPACES 레이블
+    st.markdown(
+        '<p style="font-size:.60rem;font-weight:700;letter-spacing:.12em;'
+        'color:#6A6258!important;text-transform:uppercase;margin:12px 0 6px;">SPACES</p>',
+        unsafe_allow_html=True)
 
     # 공간 목록
     for i, r in enumerate(rooms):
         active = (i == cur_idx)
-        col_a, col_b = st.columns([7, 3])
-        with col_a:
-            btn_style = "primary" if active else "secondary"
-            if st.button(f"{'▶ ' if active else ''}{r['name']}", key=f"room_sel_{i}",
-                         type=btn_style if active else "secondary",
+        ca, cb = st.columns([76, 24])
+        with ca:
+            label = f"▶ {r['name']}" if active else r["name"]
+            if st.button(label, key=f"room_sel_{i}",
+                         type="primary" if active else "secondary",
                          use_container_width=True):
                 if not active:
                     st.session_state.current_room_idx = i
                     _reset_search()
                     st.rerun()
-        with col_b:
+        with cb:
             if st.button("×", key=f"room_del_{i}", use_container_width=True):
                 if len(rooms) > 1:
                     rooms.pop(i)
@@ -216,17 +353,19 @@ with st.sidebar:
         st.rerun()
 
     st.markdown("---")
-    st.markdown('<div class="sb-label">FILE</div>', unsafe_allow_html=True)
 
-    # JSON 저장
-    json_data = json.dumps(
-        {"project": p, "rooms": rooms}, ensure_ascii=False, indent=2)
+    # FILE 레이블
+    st.markdown(
+        '<p style="font-size:.60rem;font-weight:700;letter-spacing:.12em;'
+        'color:#6A6258!important;text-transform:uppercase;margin:0 0 6px;">FILE</p>',
+        unsafe_allow_html=True)
+
+    json_data = json.dumps({"project": p, "rooms": rooms}, ensure_ascii=False, indent=2)
     st.download_button("💾 JSON 저장", data=json_data,
                        file_name="specbook.json", mime="application/json",
                        use_container_width=True)
 
-    # JSON 업로드
-    uploaded = st.file_uploader("Upload", type=["json"],
+    uploaded = st.file_uploader("JSON 불러오기", type=["json"],
                                 key="json_up", label_visibility="visible")
     if uploaded and st.session_state.get("_last_json") != uploaded.name:
         st.session_state._last_json = uploaded.name
@@ -241,150 +380,188 @@ with st.sidebar:
         except Exception as e:
             st.error(f"JSON 오류: {e}")
 
-    st.markdown('<div style="font-size:.62rem;color:#6A6260;margin-top:4px;">200MB per file • JSON</div>',
-                unsafe_allow_html=True)
-
     st.markdown("---")
-    st.markdown('<div class="sb-label">EXPORT</div>', unsafe_allow_html=True)
 
+    # EXPORT 레이블
     st.markdown(
-        f'<div style="font-size:.70rem;color:#8A8280;margin-bottom:8px;">'
-        f'공간 {len(rooms)}개 · 자재 {_total_items()}개 · {_fmt_price(_total_price())}</div>',
+        '<p style="font-size:.60rem;font-weight:700;letter-spacing:.12em;'
+        'color:#6A6258!important;text-transform:uppercase;margin:0 0 6px;">EXPORT</p>',
+        unsafe_allow_html=True)
+    st.markdown(
+        f'<p style="font-size:.70rem;color:#8A8480!important;margin-bottom:8px;">'
+        f'공간 {len(rooms)}개 &nbsp;·&nbsp; 자재 {_total_items()}개 &nbsp;·&nbsp; '
+        f'{_fmt_price(_total_price())}</p>',
         unsafe_allow_html=True)
 
-    if st.button("✦ PPT 스펙북 생성", type="primary", use_container_width=True):
+    if st.button("✦ PPT 스펙북 생성", type="primary", use_container_width=True,
+                 key="ppt_gen"):
         with st.spinner("PPT 생성 중..."):
             try:
-                buf = generate_pptx(p, rooms,
-                                    logo_bytes=st.session_state.logo_bytes)
-                st.download_button("⬇ 다운로드", data=buf,
-                                   file_name=f"specbook_{p['name']}.pptx",
-                                   mime="application/vnd.openxmlformats-officedocument.presentationml.presentation",
-                                   use_container_width=True)
+                buf = generate_pptx(p, rooms, logo_bytes=st.session_state.logo_bytes)
+                st.download_button(
+                    "⬇ 다운로드", data=buf,
+                    file_name=f"specbook_{p['name']}.pptx",
+                    mime="application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                    use_container_width=True, key="ppt_dl")
             except Exception as e:
                 st.error(f"PPT 오류: {e}")
 
-# ── 메인 ─────────────────────────────────────────────────────────────────────
-# 헤더
+# ── 메인 콘텐츠 ───────────────────────────────────────────────────────────────
+
+# 헤더바
 st.markdown(
-    f'<div class="top-header">INTERIOR SPEC BOOK &nbsp;•&nbsp; {room["name"]}</div>',
+    f'<div style="background:#1C1A17;color:#C9A87C;padding:13px 20px;'
+    f'font-size:.90rem;font-weight:700;letter-spacing:.05em;border-radius:10px;'
+    f'margin-bottom:16px;">INTERIOR SPEC BOOK &nbsp;·&nbsp; {room["name"]}</div>',
     unsafe_allow_html=True)
 
-# 공간명 행
-c1, c2 = st.columns([8, 2])
-with c1:
-    new_name = st.text_input("", room["name"], label_visibility="collapsed",
-                              key=f"rname_{room['id']}", placeholder="공간명")
+# 공간명 + 자재 수
+nm_col, cnt_col = st.columns([8, 2])
+with nm_col:
+    new_name = st.text_input("공간명", room["name"],
+                             label_visibility="collapsed",
+                             key=f"rname_{room['id']}",
+                             placeholder="공간명을 입력하세요")
     if new_name != room["name"]:
         room["name"] = new_name
-with c2:
-    mat_count = len(room["materials"])
+with cnt_col:
+    mat_cnt = len(room["materials"])
     st.markdown(
-        f'<div style="text-align:right;padding-top:8px;font-size:.78rem;'
-        f'color:#8A8280;">{mat_count}개 자재</div>',
+        f'<div style="text-align:right;padding-top:10px;'
+        f'font-size:.78rem;color:#8A8480;">{mat_cnt}개 자재</div>',
         unsafe_allow_html=True)
 
-# ── 2열: 검색(좌) + 추가한 자재(우) ─────────────────────────────────────────
-left_col, right_col = st.columns([58, 42], gap="medium")
+st.markdown('<div style="height:4px;"></div>', unsafe_allow_html=True)
 
-# ════════════════════════════════════════════════════════════
+# ── 2열 레이아웃 ──────────────────────────────────────────────────────────────
+left_col, right_col = st.columns([57, 43], gap="large")
+
+# ════════════════════════════════════════════════════════════════════
 # 왼쪽: 검색 영역
-# ════════════════════════════════════════════════════════════
+# ════════════════════════════════════════════════════════════════════
 with left_col:
     s_cat   = st.session_state.sel_cat
     s_brand = st.session_state.sel_brand
     s_sub   = st.session_state.sel_sub
 
-    # 스텝 표시
-    step_num = 1
-    if s_cat:   step_num = 2
-    if s_brand: step_num = 3
-    if s_sub:   step_num = 4
+    # 스텝바 — 현재 단계 강조
+    step_now = 1
+    if s_cat:   step_now = 2
+    if s_brand: step_now = 3
+    if s_sub:   step_now = 4
 
-    steps_html = ""
-    for i, label in enumerate(["① 카테고리", "② 업체", "③ 제품군", "④ 검색결과"], 1):
-        cls = "step-active" if i == step_num else "step-item"
-        # override: if already selected, show as completed style
-        if i < step_num:
-            steps_html += f'<div class="step-item" style="color:#C8A97E;background:#2A2520;">{label}</div>'
-        else:
-            steps_html += f'<div class="{cls}">{label}</div>'
-    st.markdown(f'<div class="step-bar">{steps_html}</div>', unsafe_allow_html=True)
+    steps = [("① 카테고리", 1), ("② 업체", 2), ("③ 제품군", 3), ("④ 검색결과", 4)]
+    html_steps = ""
+    for label, n in steps:
+        if n < step_now:   # 완료
+            style = ("background:#EDE1CE;color:#8A6840;border:1.5px solid #D4BC96;"
+                     "border-radius:8px;padding:7px 0;text-align:center;"
+                     "font-size:.72rem;font-weight:600;flex:1;")
+        elif n == step_now:  # 현재
+            style = ("background:#1C1A17;color:#C9A87C;border:1.5px solid #1C1A17;"
+                     "border-radius:8px;padding:7px 0;text-align:center;"
+                     "font-size:.72rem;font-weight:700;flex:1;")
+        else:  # 미완
+            style = ("background:#F0EDE8;color:#B0A898;border:1.5px solid #E0DCD6;"
+                     "border-radius:8px;padding:7px 0;text-align:center;"
+                     "font-size:.72rem;font-weight:500;flex:1;")
+        html_steps += f'<div style="{style}">{label}</div>'
+    st.markdown(
+        f'<div style="display:flex;gap:5px;margin-bottom:14px;">{html_steps}</div>',
+        unsafe_allow_html=True)
 
     # 서브탭
-    sub_tab1, sub_tab2, sub_tab3 = st.tabs(["🔍 카테고리 검색", f"⭐ 즐겨찾기 ({len(st.session_state.favorites)})", "✏ 직접 입력"])
+    tab_search, tab_fav, tab_manual = st.tabs([
+        "🔍 카테고리 검색",
+        f"⭐ 즐겨찾기 ({len(st.session_state.favorites)})",
+        "✏ 직접 입력"])
 
-    # ── 탭1: 카테고리 검색 ────────────────────────────────────
-    with sub_tab1:
+    # ── 카테고리 검색 탭 ─────────────────────────────────────────────
+    with tab_search:
+
         # ① 카테고리
-        st.markdown('<div class="sec-title">① 카테고리 선택</div>', unsafe_allow_html=True)
-        n_cols = 4
-        rows_cat = [CAT_KEYS[i:i+n_cols] for i in range(0, len(CAT_KEYS), n_cols)]
+        st.markdown(
+            '<div style="font-size:.68rem;font-weight:700;color:#8A8480;'
+            'letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;">'
+            '① 카테고리 선택</div>', unsafe_allow_html=True)
+
+        rows_cat = [CAT_KEYS[i:i+4] for i in range(0, len(CAT_KEYS), 4)]
         for row in rows_cat:
             cols = st.columns(len(row))
             for col, ck in zip(cols, row):
-                meta = CATEGORY_META.get(ck, {})
-                icon = meta.get("icon", "")
+                meta  = CATEGORY_META.get(ck, {})
+                icon  = meta.get("icon", "")
                 label = f"{icon} {ck}" if icon else ck
-                is_sel = (s_cat == ck)
                 with col:
-                    btn_type = "primary" if is_sel else "secondary"
-                    if st.button(label, key=f"cat_{ck}", type=btn_type,
+                    if st.button(label, key=f"cat_{ck}",
+                                 type="primary" if s_cat == ck else "secondary",
                                  use_container_width=True):
-                        st.session_state.sel_cat = ck
+                        st.session_state.sel_cat   = ck
                         st.session_state.sel_brand = None
-                        st.session_state.sel_sub = None
+                        st.session_state.sel_sub   = None
                         st.session_state.search_results = []
-                        st.session_state.search_done = False
+                        st.session_state.search_done    = False
                         st.rerun()
 
-        # ② 업체/브랜드 (카테고리 선택 후)
+        # ② 업체
         if s_cat and s_cat in BRAND_CATALOG:
+            st.markdown('<div style="height:12px;"></div>', unsafe_allow_html=True)
+            st.markdown(
+                '<div style="font-size:.68rem;font-weight:700;color:#8A8480;'
+                'letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;">'
+                '② 업체 / 브랜드</div>', unsafe_allow_html=True)
             brands = list(BRAND_CATALOG[s_cat].keys())
-            st.markdown('<div class="sec-title">② 업체 / 브랜드</div>', unsafe_allow_html=True)
             rows_br = [brands[i:i+3] for i in range(0, len(brands), 3)]
             for row in rows_br:
                 cols = st.columns(len(row))
                 for col, bk in zip(cols, row):
-                    is_sel = (s_brand == bk)
                     with col:
-                        if st.button(bk, key=f"br_{bk}", type="primary" if is_sel else "secondary",
+                        if st.button(bk, key=f"br_{bk}",
+                                     type="primary" if s_brand == bk else "secondary",
                                      use_container_width=True):
                             st.session_state.sel_brand = bk
-                            st.session_state.sel_sub = None
+                            st.session_state.sel_sub   = None
                             st.session_state.search_results = []
-                            st.session_state.search_done = False
+                            st.session_state.search_done    = False
                             st.rerun()
 
-        # ③ 제품군 (브랜드 선택 후)
+        # ③ 제품군
         if s_brand and s_cat in BRAND_CATALOG and s_brand in BRAND_CATALOG[s_cat]:
             subs = BRAND_CATALOG[s_cat][s_brand]
-            st.markdown('<div class="sec-title">③ 제품군</div>', unsafe_allow_html=True)
+            st.markdown('<div style="height:12px;"></div>', unsafe_allow_html=True)
+            st.markdown(
+                '<div style="font-size:.68rem;font-weight:700;color:#8A8480;'
+                'letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;">'
+                '③ 제품군</div>', unsafe_allow_html=True)
             rows_sub = [subs[i:i+4] for i in range(0, len(subs), 4)]
             for row in rows_sub:
                 cols = st.columns(len(row))
                 for col, sk in zip(cols, row):
-                    is_sel = (s_sub == sk)
                     with col:
-                        if st.button(sk, key=f"sub_{sk}", type="primary" if is_sel else "secondary",
+                        if st.button(sk, key=f"sub_{sk}",
+                                     type="primary" if s_sub == sk else "secondary",
                                      use_container_width=True):
                             st.session_state.sel_sub = sk
                             st.session_state.search_results = []
-                            st.session_state.search_done = False
-                            kw = f"{s_brand} {sk}"
-                            st.session_state.search_keyword = kw
+                            st.session_state.search_done    = False
+                            st.session_state.search_keyword = f"{s_brand} {sk}"
                             st.rerun()
 
         # ④ 검색
         if s_sub:
-            st.markdown('<div class="sec-title">④ 검색</div>', unsafe_allow_html=True)
-            kw_c, btn_c = st.columns([7, 3])
-            with kw_c:
-                kw = st.text_input("", value=st.session_state.search_keyword,
+            st.markdown('<div style="height:12px;"></div>', unsafe_allow_html=True)
+            st.markdown(
+                '<div style="font-size:.68rem;font-weight:700;color:#8A8480;'
+                'letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;">'
+                '④ 검색</div>', unsafe_allow_html=True)
+
+            kc, bc = st.columns([7, 3])
+            with kc:
+                kw = st.text_input("검색어", value=st.session_state.search_keyword,
                                    label_visibility="collapsed",
-                                   key="kw_input", placeholder="검색어 입력")
+                                   key="kw_input", placeholder="검색어를 입력하세요")
                 st.session_state.search_keyword = kw
-            with btn_c:
+            with bc:
                 do_search = st.button("🔍 검색", key="do_search", use_container_width=True)
 
             if do_search and kw.strip():
@@ -392,69 +569,77 @@ with left_col:
                     try:
                         results = search_products(kw.strip(), display=20)
                         st.session_state.search_results = results
-                        st.session_state.search_done = True
+                        st.session_state.search_done    = True
                     except Exception as e:
                         st.error(f"검색 오류: {e}")
                         st.session_state.search_results = []
-                        st.session_state.search_done = True
+                        st.session_state.search_done    = True
 
             results = st.session_state.search_results
             if st.session_state.search_done:
                 if not results:
                     st.info("검색 결과가 없습니다.")
                 else:
-                    st.markdown(f'<div style="font-size:.70rem;color:#8A8280;margin-bottom:6px;">{len(results)}개 결과</div>',
-                                unsafe_allow_html=True)
+                    st.markdown(
+                        f'<div style="font-size:.68rem;color:#8A8480;margin:4px 0 10px;">'
+                        f'{len(results)}개 결과</div>', unsafe_allow_html=True)
+
                     for item in results:
-                        img_url  = item.get("image", "")
-                        name     = re.sub(r"<[^>]+>", "", item.get("title", ""))
-                        brand    = item.get("brand", item.get("mallName", ""))
-                        price    = item.get("lprice", "")
-                        prod_id  = item.get("productId", item.get("id", str(uuid.uuid4())))
+                        img_url = item.get("image", "")
+                        name    = re.sub(r"<[^>]+>", "", item.get("title", ""))
+                        brand   = item.get("brand", item.get("mallName", ""))
+                        price   = item.get("lprice", "")
+                        pid     = item.get("productId", item.get("id", str(uuid.uuid4())))
 
-                        rc1, rc2, rc3 = st.columns([2, 6, 2])
-                        with rc1:
-                            if img_url:
-                                try: st.image(img_url, use_container_width=True)
-                                except: st.markdown("🖼")
-                            else:
-                                st.markdown("🖼")
-                        with rc2:
-                            st.markdown(
-                                f'<div class="result-name">{name}</div>'
-                                f'<div class="result-brand">{brand} · {s_cat}</div>'
-                                f'<div class="result-price">{_fmt_price(price)}</div>',
-                                unsafe_allow_html=True)
-                        with rc3:
-                            if st.button("＋ 추가", key=f"add_{prod_id}_{room['id']}",
-                                         use_container_width=True):
-                                # 중복 체크
-                                existing = next(
-                                    (m for m in room["materials"] if m.get("product_id") == prod_id), None)
-                                if existing:
-                                    existing["qty"] = existing.get("qty", 1) + 1
+                        with st.container():
+                            rc1, rc2, rc3 = st.columns([2, 6, 2])
+                            with rc1:
+                                if img_url:
+                                    try: st.image(img_url, use_container_width=True)
+                                    except: st.markdown("🖼")
                                 else:
-                                    room["materials"].append({
-                                        "product_id": prod_id,
-                                        "name": name,
-                                        "brand": brand,
-                                        "category": s_cat,
-                                        "sub_category": s_sub or "",
-                                        "price": price,
-                                        "image": img_url,
-                                        "qty": 1,
-                                        "spec": "",
-                                        "finish": "",
-                                        "memo": "",
-                                    })
-                                st.rerun()
-                        st.markdown('<hr style="margin:4px 0;border-color:#F0ECE8;">', unsafe_allow_html=True)
+                                    st.markdown("🖼")
+                            with rc2:
+                                st.markdown(
+                                    f'<div style="font-size:.78rem;font-weight:600;'
+                                    f'color:#1C1A17;line-height:1.4;">{name}</div>'
+                                    f'<div style="font-size:.68rem;color:#8A8480;margin-top:2px;">'
+                                    f'{brand}{"  ·  " + s_cat if s_cat else ""}</div>'
+                                    f'<div style="font-size:.76rem;font-weight:700;'
+                                    f'color:#C9A87C;margin-top:3px;">{_fmt_price(price)}</div>',
+                                    unsafe_allow_html=True)
+                            with rc3:
+                                if st.button("＋ 추가", key=f"add_{pid}_{room['id']}",
+                                             use_container_width=True):
+                                    existing = next(
+                                        (m for m in room["materials"]
+                                         if m.get("product_id") == pid), None)
+                                    if existing:
+                                        existing["qty"] = existing.get("qty", 1) + 1
+                                    else:
+                                        room["materials"].append({
+                                            "product_id": pid,
+                                            "name": name,
+                                            "brand": brand,
+                                            "category": s_cat or "",
+                                            "sub_category": s_sub or "",
+                                            "price": price,
+                                            "image": img_url,
+                                            "qty": 1,
+                                            "spec": "",
+                                            "finish": "",
+                                            "memo": "",
+                                        })
+                                    st.rerun()
+                        st.markdown(
+                            '<div style="border-bottom:1px solid #EDE9E3;margin:6px 0;"></div>',
+                            unsafe_allow_html=True)
 
-    # ── 탭2: 즐겨찾기 ─────────────────────────────────────────
-    with sub_tab2:
+    # ── 즐겨찾기 탭 ───────────────────────────────────────────────
+    with tab_fav:
         favs = st.session_state.favorites
         if not favs:
-            st.info("즐겨찾기한 자재가 없습니다. 검색 후 ☆ 버튼으로 추가하세요.")
+            st.info("즐겨찾기 항목이 없습니다. 자재 카드의 ☆ 버튼으로 추가하세요.")
         else:
             for fi, fav in enumerate(favs):
                 fc1, fc2, fc3 = st.columns([2, 6, 2])
@@ -466,135 +651,157 @@ with left_col:
                         st.markdown("🖼")
                 with fc2:
                     st.markdown(
-                        f'<div class="result-name">{fav["name"]}</div>'
-                        f'<div class="result-brand">{fav.get("brand","")} · {fav.get("category","")}</div>'
-                        f'<div class="result-price">{_fmt_price(fav.get("price",""))}</div>',
+                        f'<div style="font-size:.78rem;font-weight:600;color:#1C1A17;">'
+                        f'{fav["name"]}</div>'
+                        f'<div style="font-size:.68rem;color:#8A8480;margin-top:2px;">'
+                        f'{fav.get("brand","")} · {fav.get("category","")}</div>'
+                        f'<div style="font-size:.76rem;font-weight:700;color:#C9A87C;margin-top:3px;">'
+                        f'{_fmt_price(fav.get("price",""))}</div>',
                         unsafe_allow_html=True)
                 with fc3:
-                    if st.button("＋", key=f"fav_add_{fi}", use_container_width=True):
+                    if st.button("＋ 추가", key=f"fav_add_{fi}", use_container_width=True):
                         pid = fav.get("product_id", str(uuid.uuid4()))
-                        existing = next((m for m in room["materials"]
-                                         if m.get("product_id") == pid), None)
-                        if existing:
-                            existing["qty"] = existing.get("qty", 1) + 1
+                        ex  = next((m for m in room["materials"]
+                                    if m.get("product_id") == pid), None)
+                        if ex:
+                            ex["qty"] = ex.get("qty", 1) + 1
                         else:
                             room["materials"].append(_copy.deepcopy(fav))
                         st.rerun()
-                st.markdown('<hr style="margin:4px 0;border-color:#F0ECE8;">', unsafe_allow_html=True)
+                st.markdown(
+                    '<div style="border-bottom:1px solid #EDE9E3;margin:6px 0;"></div>',
+                    unsafe_allow_html=True)
 
-    # ── 탭3: 직접 입력 ───────────────────────────────────────
-    with sub_tab3:
-        st.markdown('<div class="sec-title">자재 직접 입력</div>', unsafe_allow_html=True)
+    # ── 직접 입력 탭 ──────────────────────────────────────────────
+    with tab_manual:
         with st.form("manual_form", clear_on_submit=True):
+            st.markdown(
+                '<div style="font-size:.76rem;font-weight:700;color:#1C1A17;'
+                'margin-bottom:10px;">자재 직접 입력</div>', unsafe_allow_html=True)
             m_name  = st.text_input("자재명 *", placeholder="예) LX 디아망 실크벽지")
             m_brand = st.text_input("브랜드", placeholder="예) LX하우시스")
             m_cat   = st.selectbox("카테고리", CAT_KEYS)
             m_spec  = st.text_input("규격", placeholder="예) 1,000mm × 10m")
             m_price = st.text_input("단가 (원)", placeholder="예) 55000")
-            m_memo  = st.text_area("메모", height=60)
+            m_memo  = st.text_area("메모", height=68)
             if st.form_submit_button("＋ 자재 추가", use_container_width=True):
                 if m_name.strip():
                     room["materials"].append({
                         "product_id": str(uuid.uuid4()),
-                        "name": m_name.strip(),
-                        "brand": m_brand.strip(),
-                        "category": m_cat,
+                        "name":         m_name.strip(),
+                        "brand":        m_brand.strip(),
+                        "category":     m_cat,
                         "sub_category": "",
-                        "price": m_price.strip(),
-                        "image": "",
-                        "qty": 1,
-                        "spec": m_spec.strip(),
-                        "finish": "",
-                        "memo": m_memo.strip(),
+                        "price":        m_price.strip(),
+                        "image":        "",
+                        "qty":          1,
+                        "spec":         m_spec.strip(),
+                        "finish":       "",
+                        "memo":         m_memo.strip(),
                     })
                     st.rerun()
                 else:
                     st.warning("자재명을 입력하세요.")
 
-# ════════════════════════════════════════════════════════════
+# ════════════════════════════════════════════════════════════════════
 # 오른쪽: 추가한 자재
-# ════════════════════════════════════════════════════════════
+# ════════════════════════════════════════════════════════════════════
 with right_col:
     mats = room["materials"]
     room_total = sum(
         int(m.get("price", 0)) * m.get("qty", 1)
-        for m in mats if str(m.get("price","")).isdigit()
+        for m in mats
+        if str(m.get("price", "")).isdigit()
     )
 
-    rc1h, rc2h = st.columns([6, 4])
-    with rc1h:
-        st.markdown('<div style="font-weight:700;font-size:.82rem;color:#1A1816;padding-top:6px;">추가한 자재</div>',
-                    unsafe_allow_html=True)
-    with rc2h:
+    # 패널 헤더
+    rh1, rh2 = st.columns([6, 4])
+    with rh1:
         st.markdown(
-            f'<div style="text-align:right;font-size:.78rem;color:#C8A97E;font-weight:700;padding-top:6px;">'
-            f'{_fmt_price(room_total)}</div>',
+            '<div style="font-size:.82rem;font-weight:700;color:#1C1A17;'
+            'padding-top:2px;">추가한 자재</div>',
             unsafe_allow_html=True)
+    with rh2:
+        st.markdown(
+            f'<div style="text-align:right;font-size:.80rem;font-weight:700;'
+            f'color:#C9A87C;padding-top:2px;">{_fmt_price(room_total)}</div>',
+            unsafe_allow_html=True)
+
+    st.markdown('<div style="height:10px;"></div>', unsafe_allow_html=True)
 
     if not mats:
         st.markdown(
-            '<div style="text-align:center;padding:30px 10px;color:#B0A898;font-size:.78rem;">'
-            '자재를 검색하여 추가하세요.</div>',
+            '<div style="text-align:center;padding:40px 16px;background:#FFFFFF;'
+            'border:1.5px dashed #D4D0CA;border-radius:12px;color:#B0A898;font-size:.78rem;">'
+            '자재를 검색하여<br>추가해보세요.</div>',
             unsafe_allow_html=True)
     else:
+        # 카테고리 색상 매핑 (이미지 없을 때 스와치)
+        cat_colors = {
+            "벽": "#E8C4A0", "바닥": "#B8A898", "천장": "#D8D4CE",
+            "타일": "#A8B8C8", "조명": "#F0D878", "문/도어": "#C8A870",
+            "창호": "#98B8A0", "가구/목공": "#C8B080", "전기": "#E8D4A0",
+            "설비": "#A8C8D8", "도장": "#D8C4B8", "필름": "#C8D4E8",
+            "몰딩/걸레받이": "#D4C8B4",
+        }
+
         for mi, mat in enumerate(mats):
+            img_url  = mat.get("image", "")
+            name     = mat.get("name", "")
+            brand    = mat.get("brand", "")
+            cat      = mat.get("category", "")
+            price    = mat.get("price", "")
+            qty      = mat.get("qty", 1)
+            pid      = mat.get("product_id", str(mi))
+            swatch   = cat_colors.get(cat, "#C8C0B0")
+            is_fav   = any(f.get("product_id") == pid for f in st.session_state.favorites)
+
             with st.container():
-                img_url = mat.get("image", "")
-                name    = mat.get("name", "")
-                brand   = mat.get("brand", "")
-                cat     = mat.get("category", "")
-                price   = mat.get("price", "")
-                qty     = mat.get("qty", 1)
-                pid     = mat.get("product_id", str(mi))
-
-                # 색상 스와치 (카테고리별)
-                cat_colors = {
-                    "벽": "#E8C4A0", "바닥": "#B8A898", "천장": "#D8D4CE",
-                    "타일": "#A8B8C8", "조명": "#F0D878", "문/도어": "#C8A870",
-                }
-                swatch = cat_colors.get(cat, "#C8C0B8")
-
-                ma1, ma2 = st.columns([3, 7])
-                with ma1:
+                # 카드 상단: 이미지 + 정보
+                ic, tc = st.columns([3, 7])
+                with ic:
                     if img_url:
                         try:
                             st.image(img_url, use_container_width=True)
                         except:
                             st.markdown(
-                                f'<div style="width:100%;aspect-ratio:1;background:{swatch};'
-                                f'border-radius:6px;"></div>',
+                                f'<div style="background:{swatch};border-radius:8px;'
+                                f'aspect-ratio:1;min-height:60px;"></div>',
                                 unsafe_allow_html=True)
                     else:
                         st.markdown(
-                            f'<div style="width:100%;aspect-ratio:1;background:{swatch};'
-                            f'border-radius:6px;"></div>',
+                            f'<div style="background:{swatch};border-radius:8px;'
+                            f'aspect-ratio:1;min-height:60px;"></div>',
                             unsafe_allow_html=True)
-                with ma2:
+                with tc:
                     st.markdown(
-                        f'<div class="mat-card-title">{name}</div>'
-                        f'<div class="mat-price">{_fmt_price(price)}</div>'
-                        f'<div class="mat-card-sub">{brand}{"  ·  " + cat if cat else ""}</div>',
+                        f'<div style="font-size:.78rem;font-weight:700;color:#1C1A17;'
+                        f'line-height:1.35;">{name}</div>'
+                        f'<div style="font-size:.72rem;font-weight:700;color:#C9A87C;'
+                        f'margin-top:3px;">{_fmt_price(price)}</div>'
+                        f'<div style="font-size:.66rem;color:#8A8480;margin-top:2px;">'
+                        f'{brand}{"  ·  " + cat if cat else ""}</div>',
                         unsafe_allow_html=True)
 
-                # 수량 + 버튼 행
-                qc1, qc2, qc3, qc4, qc5 = st.columns([1, 1, 1, 1, 1])
-                with qc1:
-                    if st.button("−", key=f"qty_m_{pid}_{mi}", use_container_width=True):
+                # 버튼 행: − qty + | ☆ | ×
+                b1, b2, b3, b4, b5 = st.columns([1, 1.2, 1, 1, 1])
+                with b1:
+                    if st.button("−", key=f"qm_{pid}_{mi}", use_container_width=True):
                         if mat["qty"] > 1:
                             mat["qty"] -= 1
                         st.rerun()
-                with qc2:
+                with b2:
                     st.markdown(
-                        f'<div style="text-align:center;padding:5px 0;font-size:.80rem;font-weight:700;">{qty}</div>',
+                        f'<div style="text-align:center;padding:6px 0;font-size:.82rem;'
+                        f'font-weight:700;color:#1C1A17;">{qty}</div>',
                         unsafe_allow_html=True)
-                with qc3:
-                    if st.button("＋", key=f"qty_p_{pid}_{mi}", use_container_width=True):
+                with b3:
+                    if st.button("＋", key=f"qp_{pid}_{mi}", use_container_width=True):
                         mat["qty"] = mat.get("qty", 1) + 1
                         st.rerun()
-                with qc4:
-                    is_fav = any(f.get("product_id") == pid for f in st.session_state.favorites)
-                    fav_icon = "★" if is_fav else "☆"
-                    if st.button(fav_icon, key=f"fav_{pid}_{mi}", use_container_width=True):
+                with b4:
+                    fav_lbl = "★" if is_fav else "☆"
+                    if st.button(fav_lbl, key=f"fav_{pid}_{mi}", use_container_width=True):
                         if is_fav:
                             st.session_state.favorites = [
                                 f for f in st.session_state.favorites
@@ -602,18 +809,20 @@ with right_col:
                         else:
                             st.session_state.favorites.append(_copy.deepcopy(mat))
                         st.rerun()
-                with qc5:
+                with b5:
                     if st.button("×", key=f"del_{pid}_{mi}", use_container_width=True):
                         room["materials"].pop(mi)
                         st.rerun()
 
-                # 스펙/피니시 입력
-                with st.expander("상세 정보", expanded=False):
-                    mat["spec"]   = st.text_input("규격", mat.get("spec",""),
+                # 상세 정보 (접기)
+                with st.expander("상세 정보"):
+                    mat["spec"]   = st.text_input("규격", mat.get("spec", ""),
                                                   key=f"spec_{pid}_{mi}")
-                    mat["finish"] = st.text_input("마감", mat.get("finish",""),
+                    mat["finish"] = st.text_input("마감", mat.get("finish", ""),
                                                   key=f"fin_{pid}_{mi}")
-                    mat["memo"]   = st.text_area("메모", mat.get("memo",""),
+                    mat["memo"]   = st.text_area("메모", mat.get("memo", ""),
                                                  key=f"memo_{pid}_{mi}", height=60)
 
-                st.markdown('<hr style="margin:6px 0;border-color:#F0ECE8;">', unsafe_allow_html=True)
+            st.markdown(
+                '<div style="border-bottom:1.5px solid #EDE9E3;margin:10px 0;"></div>',
+                unsafe_allow_html=True)
