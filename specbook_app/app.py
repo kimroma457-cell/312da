@@ -287,148 +287,305 @@ def _sec(title):
 WIZARD = [
     {"q": "현장명이 무엇인가요?",
      "sub": "프로젝트를 식별할 현장명을 입력해주세요.",
-     "key": "name",   "type": "text",   "ph": "예) 강남 오피스 리노베이션"},
+     "key": "name",    "type": "text",    "ph": "예) 강남 오피스 리노베이션"},
     {"q": "현장 주소를 알려주세요.",
      "sub": "정확한 주소를 입력하면 PPT에 자동으로 포함됩니다.",
-     "key": "address","type": "text",   "ph": "예) 서울시 강남구 테헤란로 123"},
+     "key": "address", "type": "text",    "ph": "예) 서울시 강남구 테헤란로 123"},
     {"q": "공사 일정을 선택해주세요.",
      "sub": "착공일과 준공일을 선택하세요.",
-     "key": "dates",  "type": "dates",  "ph": ""},
+     "key": "dates",   "type": "dates",   "ph": ""},
     {"q": "회사 정보를 입력해주세요.",
      "sub": "회사명 또는 로고 이미지를 등록하세요.",
-     "key": "company","type": "logo",   "ph": "예) (주)인테리어디자인"},
-    {"q": "브랜드 색상을 설정해주세요.",
-     "sub": "PPT 전반에 사용될 색상을 선택하세요.",
-     "key": "colors", "type": "colors", "ph": ""},
+     "key": "company", "type": "logo",    "ph": "예) (주)인테리어디자인"},
+    {"q": "색상 테마를 선택해주세요.",
+     "sub": "스펙북 전반에 적용될 브랜드 컬러 팔레트를 선택하세요.",
+     "key": "colors",  "type": "colors",  "ph": ""},
+    {"q": "입력 정보를 확인해주세요.",
+     "sub": "모든 정보가 정확한지 확인 후 시작하세요.",
+     "key": "confirm", "type": "confirm", "ph": ""},
 ]
+
+# 인테리어 큐레이션 컬러 팔레트
+COLOR_PALETTES = [
+    {"name": "모던 클래식",   "desc": "따뜻한 골드와 깊은 블랙",
+     "primary": "#C9A87C", "secondary": "#1C1C1E", "accent": "#E8C97A",
+     "preview": ["#C9A87C", "#1C1C1E", "#E8C97A"]},
+    {"name": "스칸디나비안",  "desc": "자연에서 온 세이지 그린",
+     "primary": "#8FA68E", "secondary": "#2C3E35", "accent": "#D4C5B0",
+     "preview": ["#8FA68E", "#2C3E35", "#D4C5B0"]},
+    {"name": "미니멀 화이트", "desc": "순수한 흰색과 차콜",
+     "primary": "#9E9E9E", "secondary": "#212121", "accent": "#F0F0F0",
+     "preview": ["#9E9E9E", "#212121", "#F0F0F0"]},
+    {"name": "딥 네이비",    "desc": "고급스러운 네이비 블루",
+     "primary": "#4A6FA5", "secondary": "#1B2A4A", "accent": "#C9A87C",
+     "preview": ["#4A6FA5", "#1B2A4A", "#C9A87C"]},
+    {"name": "어반 테라코타", "desc": "따뜻한 흙빛 테라코타",
+     "primary": "#C17A5A", "secondary": "#3E2723", "accent": "#F0C4A0",
+     "preview": ["#C17A5A", "#3E2723", "#F0C4A0"]},
+    {"name": "모브 로즈",    "desc": "부드러운 로즈와 베이지",
+     "primary": "#B07B8E", "secondary": "#3D2B33", "accent": "#E8D5C4",
+     "preview": ["#B07B8E", "#3D2B33", "#E8D5C4"]},
+]
+
 
 def _render_setup():
     proj = ss.project
     step = ss.setup_step
     info = WIZARD[step]
+    TOTAL = len(WIZARD)
 
-    # 전체 화면 중앙 정렬
     _, C, _ = st.columns([1, 2.2, 1])
     with C:
-        st.markdown('<div style="height: 48px;"></div>', unsafe_allow_html=True)
+        st.markdown('<div style="height:48px;"></div>', unsafe_allow_html=True)
 
-        # 로고 + 앱명
+        # 앱 로고
         st.markdown(
-            '<div style="text-align:center; margin-bottom:48px;">'
+            '<div style="text-align:center;margin-bottom:40px;">'
             '<div style="display:inline-flex;align-items:center;gap:10px;">'
             '<div style="width:36px;height:36px;background:#1C1C1E;border-radius:10px;'
             'display:flex;align-items:center;justify-content:center;font-size:1.1rem;">🏠</div>'
             '<span style="font-size:1.05rem;font-weight:700;color:#1C1C1E;letter-spacing:.04em;">'
-            'INTERIOR SPEC BOOK</span>'
-            '</div></div>',
+            'INTERIOR SPEC BOOK</span></div></div>',
             unsafe_allow_html=True)
 
-        # 카드
-        st.markdown(
-            '<div style="background:#FFFFFF;border-radius:24px;padding:40px 40px 32px;'
-            'box-shadow:0 8px 40px rgba(0,0,0,.10);border:1.5px solid #EDE9E3;">',
-            unsafe_allow_html=True)
+        # 카드 시작
+        with st.container():
+            st.markdown(
+                '<div style="background:#FFFFFF;border-radius:24px;padding:40px 40px 32px;'
+                'box-shadow:0 8px 40px rgba(0,0,0,.10);border:1.5px solid #EDE9E3;">',
+                unsafe_allow_html=True)
 
-        # 단계 표시
-        st.markdown(
-            f'<div style="font-size:.70rem;font-weight:600;color:#C9A87C;'
-            f'letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px;">'
-            f'STEP {step+1} / {len(WIZARD)}</div>',
-            unsafe_allow_html=True)
+            # STEP 표시 + 진행바
+            st.markdown(
+                f'<div style="font-size:.68rem;font-weight:700;color:#C9A87C;'
+                f'letter-spacing:.10em;text-transform:uppercase;margin-bottom:12px;">'
+                f'STEP {step+1} / {TOTAL}</div>',
+                unsafe_allow_html=True)
+            st.progress((step + 1) / TOTAL)
+            st.markdown('<div style="height:20px;"></div>', unsafe_allow_html=True)
 
-        # 진행 바
-        st.progress((step + 1) / len(WIZARD))
-        st.markdown('<div style="height:24px;"></div>', unsafe_allow_html=True)
+            # 질문 텍스트
+            st.markdown(
+                f'<h2 style="font-size:1.50rem;font-weight:700;color:#1C1C1E;'
+                f'line-height:1.3;margin-bottom:6px;">{info["q"]}</h2>'
+                f'<p style="font-size:.82rem;color:#9CA3AF;margin-bottom:24px;">{info["sub"]}</p>',
+                unsafe_allow_html=True)
 
-        # 질문
-        st.markdown(
-            f'<h2 style="font-size:1.55rem;font-weight:700;color:#1C1C1E;'
-            f'line-height:1.3;margin-bottom:8px;">{info["q"]}</h2>'
-            f'<p style="font-size:.85rem;color:#9CA3AF;margin-bottom:28px;">{info["sub"]}</p>',
-            unsafe_allow_html=True)
+            # ── 입력 위젯 ────────────────────────────────────────────────
+            if info["type"] == "text":
+                val = st.text_input("답변", value=proj.get(info["key"],""),
+                                    label_visibility="collapsed",
+                                    placeholder=info["ph"],
+                                    key=f"wiz_{info['key']}")
+                proj[info["key"]] = val
 
-        # 입력
-        if info["type"] == "text":
-            val = st.text_input("답변", value=proj.get(info["key"],""),
-                                label_visibility="collapsed",
-                                placeholder=info["ph"],
-                                key=f"wiz_{info['key']}")
-            proj[info["key"]] = val
+            elif info["type"] == "dates":
+                dc1, dc2 = st.columns(2)
+                with dc1:
+                    st.caption("착공일")
+                    s_str = proj.get("start_date","")
+                    s_def = date.fromisoformat(s_str) if s_str else date.today()
+                    sd = st.date_input("착공일", value=s_def,
+                                       label_visibility="collapsed", key="wiz_s")
+                    proj["start_date"] = sd.isoformat()
+                with dc2:
+                    st.caption("준공일")
+                    e_str = proj.get("end_date","")
+                    e_def = date.fromisoformat(e_str) if e_str else date.today()
+                    ed = st.date_input("준공일", value=e_def,
+                                       label_visibility="collapsed", key="wiz_e")
+                    proj["end_date"] = ed.isoformat()
 
-        elif info["type"] == "dates":
-            dc1, dc2 = st.columns(2)
-            with dc1:
-                st.caption("착공일")
-                s_str = proj.get("start_date","")
-                s_def = date.fromisoformat(s_str) if s_str else date.today()
-                sd = st.date_input("착공일", value=s_def, label_visibility="collapsed", key="wiz_s")
-                proj["start_date"] = sd.isoformat()
-            with dc2:
-                st.caption("준공일")
-                e_str = proj.get("end_date","")
-                e_def = date.fromisoformat(e_str) if e_str else date.today()
-                ed = st.date_input("준공일", value=e_def, label_visibility="collapsed", key="wiz_e")
-                proj["end_date"] = ed.isoformat()
+            elif info["type"] == "logo":
+                val = st.text_input("회사명", value=proj.get("company",""),
+                                    label_visibility="collapsed",
+                                    placeholder=info["ph"], key="wiz_company")
+                proj["company"] = val
+                st.markdown('<div style="height:8px;"></div>', unsafe_allow_html=True)
+                logo_file = st.file_uploader("로고 이미지 업로드 (선택)",
+                                             type=["png","jpg","jpeg"], key="wiz_logo")
+                if logo_file:
+                    ss.logo_bytes = logo_file.read()
+                if ss.logo_bytes:
+                    lc, _ = st.columns([1, 3])
+                    with lc:
+                        st.image(ss.logo_bytes, use_container_width=True)
 
-        elif info["type"] == "logo":
-            val = st.text_input("회사명", value=proj.get("company",""),
-                                label_visibility="collapsed",
-                                placeholder=info["ph"], key="wiz_company")
-            proj["company"] = val
-            st.markdown('<div style="height:8px;"></div>', unsafe_allow_html=True)
-            logo_file = st.file_uploader("로고 이미지 업로드 (선택)", type=["png","jpg","jpeg"],
-                                         key="wiz_logo")
-            if logo_file:
-                ss.logo_bytes = logo_file.read()
-            if ss.logo_bytes:
-                lc, _ = st.columns([1, 2])
-                with lc:
-                    st.image(ss.logo_bytes, use_container_width=True)
+            elif info["type"] == "colors":
+                # 팔레트 카드 선택 UI
+                sel_pal = ss.get("sel_palette", None)
 
-        elif info["type"] == "colors":
-            cc1, cc2, cc3 = st.columns(3)
-            labels = [("주 색상", "primary_color", "#C9A87C"),
-                      ("보조 색상", "secondary_color", "#1C1C1E"),
-                      ("강조 색상", "accent_color", "#E8C97A")]
-            for col, (lbl, key, default) in zip([cc1, cc2, cc3], labels):
-                with col:
-                    st.caption(lbl)
-                    c = st.color_picker(lbl, value=proj.get(key, default),
-                                        label_visibility="collapsed",
-                                        key=f"wiz_{key}")
-                    proj[key] = c
+                for row_palettes in [COLOR_PALETTES[:3], COLOR_PALETTES[3:]]:
+                    cols = st.columns(3)
+                    for col, pal in zip(cols, row_palettes):
+                        with col:
+                            is_sel = (sel_pal == pal["name"])
+                            border = "#1C1C1E" if is_sel else "#EDE9E3"
+                            shadow = "0 4px 16px rgba(0,0,0,.15)" if is_sel else "0 1px 4px rgba(0,0,0,.06)"
+                            # 색상 스와치 3개
+                            swatches = "".join(
+                                f'<div style="flex:1;height:36px;background:{c};'
+                                f'border-radius:6px;"></div>'
+                                for c in pal["preview"])
+                            st.markdown(
+                                f'<div style="border:2px solid {border};border-radius:14px;'
+                                f'padding:14px;background:#FAFAFA;box-shadow:{shadow};'
+                                f'margin-bottom:8px;">'
+                                f'<div style="display:flex;gap:5px;margin-bottom:10px;">{swatches}</div>'
+                                f'<div style="font-size:.78rem;font-weight:700;color:#1C1C1E;">'
+                                f'{pal["name"]}</div>'
+                                f'<div style="font-size:.66rem;color:#9CA3AF;margin-top:2px;">'
+                                f'{pal["desc"]}</div>'
+                                f'</div>',
+                                unsafe_allow_html=True)
+                            btn_lbl = "✓ 선택됨" if is_sel else "선택"
+                            if st.button(btn_lbl, key=f"pal_{pal['name']}",
+                                         type="primary" if is_sel else "secondary",
+                                         use_container_width=True):
+                                ss.sel_palette = pal["name"]
+                                proj["primary_color"]   = pal["primary"]
+                                proj["secondary_color"] = pal["secondary"]
+                                proj["accent_color"]    = pal["accent"]
+                                st.rerun()
+
+                # 선택된 팔레트 미리보기
+                if sel_pal:
+                    pal = next(p for p in COLOR_PALETTES if p["name"] == sel_pal)
+                    st.markdown('<div style="height:12px;"></div>', unsafe_allow_html=True)
                     st.markdown(
-                        f'<div style="width:100%;height:6px;background:{c};'
-                        f'border-radius:4px;margin-top:4px;"></div>',
+                        f'<div style="display:flex;gap:12px;align-items:center;'
+                        f'padding:14px 18px;background:#F8F7F4;border-radius:12px;'
+                        f'border:1.5px solid #EDE9E3;">'
+                        f'<div style="display:flex;gap:6px;">'
+                        f'<div style="display:flex;flex-direction:column;gap:3px;align-items:center;">'
+                        f'<div style="width:32px;height:32px;background:{pal["primary"]};'
+                        f'border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.15);"></div>'
+                        f'<span style="font-size:.58rem;color:#9CA3AF;">주색</span></div>'
+                        f'<div style="display:flex;flex-direction:column;gap:3px;align-items:center;">'
+                        f'<div style="width:32px;height:32px;background:{pal["secondary"]};'
+                        f'border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.15);"></div>'
+                        f'<span style="font-size:.58rem;color:#9CA3AF;">보조</span></div>'
+                        f'<div style="display:flex;flex-direction:column;gap:3px;align-items:center;">'
+                        f'<div style="width:32px;height:32px;background:{pal["accent"]};'
+                        f'border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.15);"></div>'
+                        f'<span style="font-size:.58rem;color:#9CA3AF;">강조</span></div>'
+                        f'</div>'
+                        f'<div style="flex:1;">'
+                        f'<div style="font-size:.80rem;font-weight:700;color:#1C1C1E;">'
+                        f'{pal["name"]} 선택됨</div>'
+                        f'<div style="font-size:.68rem;color:#9CA3AF;margin-top:2px;">'
+                        f'{pal["desc"]}</div>'
+                        f'</div></div>',
                         unsafe_allow_html=True)
 
-        st.markdown('<div style="height:32px;"></div>', unsafe_allow_html=True)
+                    # 커스텀 색상 조정 (선택 후 미세 조정)
+                    with st.expander("🎨 색상 직접 조정"):
+                        ca, cb, cc = st.columns(3)
+                        with ca:
+                            st.caption("주 색상")
+                            c1 = st.color_picker("주색", value=proj.get("primary_color","#C9A87C"),
+                                                 label_visibility="collapsed", key="cp1")
+                            proj["primary_color"] = c1
+                        with cb:
+                            st.caption("보조 색상")
+                            c2 = st.color_picker("보조", value=proj.get("secondary_color","#1C1C1E"),
+                                                 label_visibility="collapsed", key="cp2")
+                            proj["secondary_color"] = c2
+                        with cc:
+                            st.caption("강조 색상")
+                            c3 = st.color_picker("강조", value=proj.get("accent_color","#E8C97A"),
+                                                 label_visibility="collapsed", key="cp3")
+                            proj["accent_color"] = c3
 
-        # 버튼 행
-        n1, n2 = st.columns([1, 1])
-        with n1:
-            if step > 0:
-                if st.button("← 이전 단계", use_container_width=True, key="wiz_prev"):
-                    ss.setup_step -= 1; st.rerun()
-            else:
-                st.empty()
-        with n2:
-            is_last = (step == len(WIZARD) - 1)
-            label   = "완료 →" if is_last else "다음 단계 →"
-            if st.button(label, type="primary", use_container_width=True, key="wiz_next"):
-                if is_last: ss.page = "workspace"; ss.setup_step = 0
-                else: ss.setup_step += 1
-                st.rerun()
+            elif info["type"] == "confirm":
+                # ── 최종 확인 단계 ─────────────────────────────────────
+                def _row(icon, label, value, empty_msg="미입력"):
+                    v = value or f'<span style="color:#D1D5DB;">{empty_msg}</span>'
+                    st.markdown(
+                        f'<div style="display:flex;align-items:flex-start;gap:14px;'
+                        f'padding:14px 16px;background:#F8F7F4;border-radius:12px;'
+                        f'margin-bottom:8px;">'
+                        f'<div style="font-size:1.1rem;margin-top:1px;">{icon}</div>'
+                        f'<div style="flex:1;">'
+                        f'<div style="font-size:.66rem;font-weight:700;color:#9CA3AF;'
+                        f'letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px;">{label}</div>'
+                        f'<div style="font-size:.88rem;font-weight:600;color:#1C1C1E;">{v}</div>'
+                        f'</div></div>',
+                        unsafe_allow_html=True)
 
-        st.markdown('</div>', unsafe_allow_html=True)  # 카드 끝
+                _row("🏗", "현장명",  proj.get("name",""))
+                _row("📍", "주소",    proj.get("address",""))
+
+                s = proj.get("start_date",""); e = proj.get("end_date","")
+                date_val = f"{s} ~ {e}" if s or e else ""
+                _row("📅", "공사 기간", date_val)
+                _row("🏢", "회사명",  proj.get("company",""))
+
+                # 색상 행
+                p1 = proj.get("primary_color","#C9A87C")
+                p2 = proj.get("secondary_color","#1C1C1E")
+                p3 = proj.get("accent_color","#E8C97A")
+                pal_name = ss.get("sel_palette","커스텀")
+                st.markdown(
+                    f'<div style="display:flex;align-items:center;gap:14px;'
+                    f'padding:14px 16px;background:#F8F7F4;border-radius:12px;margin-bottom:8px;">'
+                    f'<div style="font-size:1.1rem;">🎨</div>'
+                    f'<div style="flex:1;">'
+                    f'<div style="font-size:.66rem;font-weight:700;color:#9CA3AF;'
+                    f'letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;">색상 테마</div>'
+                    f'<div style="display:flex;gap:8px;align-items:center;">'
+                    f'<div style="display:flex;gap:5px;">'
+                    f'<div style="width:22px;height:22px;background:{p1};border-radius:6px;'
+                    f'box-shadow:0 1px 4px rgba(0,0,0,.15);"></div>'
+                    f'<div style="width:22px;height:22px;background:{p2};border-radius:6px;'
+                    f'box-shadow:0 1px 4px rgba(0,0,0,.15);"></div>'
+                    f'<div style="width:22px;height:22px;background:{p3};border-radius:6px;'
+                    f'box-shadow:0 1px 4px rgba(0,0,0,.15);"></div>'
+                    f'</div>'
+                    f'<span style="font-size:.80rem;font-weight:600;color:#1C1C1E;">{pal_name}</span>'
+                    f'</div></div></div>',
+                    unsafe_allow_html=True)
+
+                # 로고 미리보기
+                if ss.logo_bytes:
+                    lc, _ = st.columns([1, 4])
+                    with lc:
+                        st.image(ss.logo_bytes, use_container_width=True)
+
+                st.markdown(
+                    '<div style="background:linear-gradient(135deg,#1C1C1E,#2D2D30);'
+                    'border-radius:12px;padding:14px 18px;margin-top:4px;">'
+                    '<div style="font-size:.76rem;color:#E8C97A;font-weight:600;">✦ 모든 정보가 맞다면 시작하기를 눌러주세요.</div>'
+                    '</div>',
+                    unsafe_allow_html=True)
+
+            # ── 버튼 행 ──────────────────────────────────────────────────
+            st.markdown('<div style="height:28px;"></div>', unsafe_allow_html=True)
+            n1, n2 = st.columns([1, 1])
+            with n1:
+                if step > 0:
+                    if st.button("← 이전 단계", use_container_width=True, key="wiz_prev"):
+                        ss.setup_step -= 1; st.rerun()
+            with n2:
+                is_last = (step == TOTAL - 1)
+                next_lbl = "시작하기 →" if is_last else "다음 단계 →"
+                if st.button(next_lbl, type="primary", use_container_width=True, key="wiz_next"):
+                    if is_last: ss.page = "workspace"; ss.setup_step = 0
+                    else: ss.setup_step += 1
+                    st.rerun()
+
+            st.markdown('</div>', unsafe_allow_html=True)  # 카드 닫기
 
         # 건너뛰기
-        st.markdown('<div style="text-align:center;margin-top:16px;">', unsafe_allow_html=True)
-        if st.button("건너뛰기", key="wiz_skip"):
-            if step == len(WIZARD) - 1: ss.page = "workspace"
-            else: ss.setup_step += 1
-            st.rerun()
-        st.markdown('</div>', unsafe_allow_html=True)
+        _, sc, _ = st.columns([1, 2.2, 1])
+        with sc:
+            st.markdown('<div style="text-align:center;margin-top:14px;">', unsafe_allow_html=True)
+            if st.button("건너뛰기", key="wiz_skip"):
+                if step == TOTAL - 1: ss.page = "workspace"
+                else: ss.setup_step += 1
+                st.rerun()
+            st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown('<div style="height:60px;"></div>', unsafe_allow_html=True)
         st.markdown('<div style="height:60px;"></div>', unsafe_allow_html=True)
 
 
