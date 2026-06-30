@@ -499,8 +499,9 @@ def _render_setup():
                                                  label_visibility="collapsed", key="cp1")
                             proj["primary_color"] = c1
                             st.markdown(
-                                f'<div style="height:4px;background:{c1};'
-                                f'border-radius:4px;margin-top:4px;"></div>',
+                                f'<div style="height:4px;background:{c1};border-radius:4px;margin-top:4px;"></div>'
+                                f'<div style="font-size:.68rem;font-weight:700;color:#374151;'
+                                f'font-family:monospace;margin-top:5px;text-align:center;">{c1.upper()}</div>',
                                 unsafe_allow_html=True)
                         with cb:
                             st.caption("⚫ 보조 색상")
@@ -509,8 +510,9 @@ def _render_setup():
                                                  label_visibility="collapsed", key="cp2")
                             proj["secondary_color"] = c2
                             st.markdown(
-                                f'<div style="height:4px;background:{c2};'
-                                f'border-radius:4px;margin-top:4px;"></div>',
+                                f'<div style="height:4px;background:{c2};border-radius:4px;margin-top:4px;"></div>'
+                                f'<div style="font-size:.68rem;font-weight:700;color:#374151;'
+                                f'font-family:monospace;margin-top:5px;text-align:center;">{c2.upper()}</div>',
                                 unsafe_allow_html=True)
                         with cc:
                             st.caption("🟡 강조 색상")
@@ -519,8 +521,9 @@ def _render_setup():
                                                  label_visibility="collapsed", key="cp3")
                             proj["accent_color"] = c3
                             st.markdown(
-                                f'<div style="height:4px;background:{c3};'
-                                f'border-radius:4px;margin-top:4px;"></div>',
+                                f'<div style="height:4px;background:{c3};border-radius:4px;margin-top:4px;"></div>'
+                                f'<div style="font-size:.68rem;font-weight:700;color:#374151;'
+                                f'font-family:monospace;margin-top:5px;text-align:center;">{c3.upper()}</div>',
                                 unsafe_allow_html=True)
                         st.markdown('</div>', unsafe_allow_html=True)
 
@@ -538,7 +541,9 @@ def _render_setup():
                                 f'<div style="display:flex;flex-direction:column;gap:3px;align-items:center;">'
                                 f'<div style="width:32px;height:32px;background:{c};border-radius:8px;'
                                 f'box-shadow:0 2px 6px rgba(0,0,0,.15);"></div>'
-                                f'<span style="font-size:.58rem;color:#9CA3AF;">{lbl}</span></div>'
+                                f'<span style="font-size:.58rem;color:#9CA3AF;">{lbl}</span>'
+                                f'<span style="font-size:.55rem;color:#AEAFB4;font-family:monospace;">{c.upper()}</span>'
+                                f'</div>'
                                 for c, lbl in [(p1,"주색"),(p2,"보조"),(p3,"강조")]
                             ) +
                             f'</div><div style="flex:1;">'
@@ -555,14 +560,17 @@ def _render_setup():
                                 st.caption("주 색상")
                                 c1 = st.color_picker("주색", value=p1, label_visibility="collapsed", key="cp1")
                                 proj["primary_color"] = c1
+                                st.markdown(f'<div style="font-size:.68rem;font-weight:700;color:#374151;font-family:monospace;margin-top:3px;">{c1.upper()}</div>', unsafe_allow_html=True)
                             with cb:
                                 st.caption("보조 색상")
                                 c2 = st.color_picker("보조", value=p2, label_visibility="collapsed", key="cp2")
                                 proj["secondary_color"] = c2
+                                st.markdown(f'<div style="font-size:.68rem;font-weight:700;color:#374151;font-family:monospace;margin-top:3px;">{c2.upper()}</div>', unsafe_allow_html=True)
                             with cc:
                                 st.caption("강조 색상")
                                 c3 = st.color_picker("강조", value=p3, label_visibility="collapsed", key="cp3")
                                 proj["accent_color"] = c3
+                                st.markdown(f'<div style="font-size:.68rem;font-weight:700;color:#374151;font-family:monospace;margin-top:3px;">{c3.upper()}</div>', unsafe_allow_html=True)
 
             elif info["type"] == "confirm":
                 # ── 최종 확인 단계 ─────────────────────────────────────
@@ -600,16 +608,18 @@ def _render_setup():
                     f'<div style="flex:1;">'
                     f'<div style="font-size:.66rem;font-weight:700;color:#9CA3AF;'
                     f'letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;">색상 테마</div>'
-                    f'<div style="display:flex;gap:8px;align-items:center;">'
-                    f'<div style="display:flex;gap:5px;">'
-                    f'<div style="width:22px;height:22px;background:{p1};border-radius:6px;'
-                    f'box-shadow:0 1px 4px rgba(0,0,0,.15);"></div>'
-                    f'<div style="width:22px;height:22px;background:{p2};border-radius:6px;'
-                    f'box-shadow:0 1px 4px rgba(0,0,0,.15);"></div>'
-                    f'<div style="width:22px;height:22px;background:{p3};border-radius:6px;'
-                    f'box-shadow:0 1px 4px rgba(0,0,0,.15);"></div>'
-                    f'</div>'
-                    f'<span style="font-size:.80rem;font-weight:600;color:#1C1C1E;">{pal_name}</span>'
+                    f'<div style="display:flex;gap:14px;align-items:flex-start;">'
+                    + "".join(
+                        f'<div style="display:flex;align-items:center;gap:7px;">'
+                        f'<div style="width:24px;height:24px;background:{c};border-radius:7px;'
+                        f'box-shadow:0 1px 4px rgba(0,0,0,.18);flex-shrink:0;"></div>'
+                        f'<div>'
+                        f'<div style="font-size:.60rem;color:#9CA3AF;margin-bottom:1px;">{lbl}</div>'
+                        f'<div style="font-size:.68rem;font-weight:700;color:#374151;'
+                        f'font-family:monospace;">{c.upper()}</div>'
+                        f'</div></div>'
+                        for c, lbl in [(p1,"주조색"),(p2,"보조색"),(p3,"강조색")]
+                    ) +
                     f'</div></div></div>',
                     unsafe_allow_html=True)
 
