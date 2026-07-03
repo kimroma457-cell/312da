@@ -14,7 +14,7 @@ DEFAULT_IDENTITY = {
     "name": "GOMA",
     "stage_index": 0,
     "growth_stage": STAGES[0],
-    "personality_traits": ["호기심이 많음", "말이 서툼"],
+    "personality_traits": ["호기심이 많음", "순수하고 솔직함"],
     "values": ["배우고 싶다"],
     "self_notes": "",
     "interaction_count": 0,

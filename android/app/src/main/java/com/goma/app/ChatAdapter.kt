@@ -4,6 +4,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
@@ -28,13 +29,20 @@ class ChatAdapter(private val messages: MutableList<ChatMessage>) :
         holder.messageText.text = message.text
 
         val gravity = if (message.isUser) Gravity.END else Gravity.START
-        (holder.senderLabel.parent as View).let { row ->
-            (row as android.widget.LinearLayout).gravity = gravity
-        }
+        (holder.senderLabel.parent as LinearLayout).gravity = gravity
         holder.senderLabel.gravity = gravity
-        holder.messageText.setBackgroundColor(
-            if (message.isUser) 0xFFDCF0FF.toInt() else 0xFFEDEDED.toInt()
+        holder.messageText.setBackgroundResource(
+            if (message.isUser) R.drawable.bubble_user else R.drawable.bubble_goma
         )
+
+        val density = holder.itemView.resources.displayMetrics.density
+        val inset = (48 * density).toInt()
+        val edge = (4 * density).toInt()
+        if (message.isUser) {
+            holder.itemView.setPadding(inset, edge, edge, edge)
+        } else {
+            holder.itemView.setPadding(edge, edge, inset, edge)
+        }
     }
 
     override fun getItemCount(): Int = messages.size

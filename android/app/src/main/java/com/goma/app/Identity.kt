@@ -9,7 +9,7 @@ import java.time.Instant
 class Identity(
     var stageIndex: Int = 0,
     var growthStage: String = STAGES[0],
-    var personalityTraits: MutableList<String> = mutableListOf("호기심이 많음", "말이 서툼"),
+    var personalityTraits: MutableList<String> = mutableListOf("호기심이 많음", "순수하고 솔직함"),
     var values: MutableList<String> = mutableListOf("배우고 싶다"),
     var selfNotes: String = "",
     var interactionCount: Int = 0,

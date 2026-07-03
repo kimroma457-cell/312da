@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#5B6EE1</color>
+    <color name="colorPrimaryDark">#3F4EBB</color>
+    <color name="colorAccent">#5B6EE1</color>
+
+    <color name="backgroundLight">#F7F7FB</color>
+    <color name="bubbleUser">#DCE7FF</color>
+    <color name="bubbleGoma">#FFFFFF</color>
+    <color name="textDark">#2B2B33</color>
+    <color name="senderLabel">#9494A6</color>
+    <color name="inputBackground">#FFFFFF</color>
+    <color name="inputStroke">#E1E1EC</color>
+</resources>
