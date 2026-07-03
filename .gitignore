@@ -1,3 +1,9 @@
 __pycache__/
 *.pyc
 data/
+
+# Android build outputs / local Gradle state
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
