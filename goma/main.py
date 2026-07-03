@@ -30,29 +30,15 @@ def do_reflect(identity, announce=True):
         identity_module.save(identity)
         return
 
-    reflection_text = (result.get("reflection") or "").strip()
-    if reflection_text:
-        print(f"GOMA (생각): {reflection_text}")
+    summary = reflect_module.apply_reflection(identity, result, eligible)
 
-    for trait in result.get("new_traits") or []:
-        if trait and trait not in identity["personality_traits"]:
-            identity["personality_traits"].append(trait)
-    for value in result.get("new_values") or []:
-        if value and value not in identity["values"]:
-            identity["values"].append(value)
-
-    updated_notes = result.get("updated_self_notes")
-    if updated_notes:
-        identity["self_notes"] = updated_notes
-
-    if eligible and result.get("ready_to_grow"):
-        identity_module.apply_growth(identity)
-        print(f"*** GOMA가 성장했습니다! 새로운 단계: {identity['growth_stage']} ***")
-
-    creation = result.get("creation") or {}
-    if creation.get("content"):
-        memory.append_creation(creation.get("type", "생각"), creation["content"])
-        print(f"GOMA가 스스로 글을 남겼습니다 [{creation.get('type', '생각')}]: {creation['content']}")
+    if summary["reflection"]:
+        print(f"GOMA (생각): {summary['reflection']}")
+    if summary["grew"]:
+        print(f"*** GOMA가 성장했습니다! 새로운 단계: {summary['new_growth_stage']} ***")
+    if summary["creation"]:
+        c = summary["creation"]
+        print(f"GOMA가 스스로 글을 남겼습니다 [{c['type']}]: {c['content']}")
 
     identity_module.save(identity)
 

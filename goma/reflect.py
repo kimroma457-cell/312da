@@ -1,6 +1,8 @@
 import json
 import re
 
+from . import identity as identity_module
+from . import memory
 from .engine import client, MODEL
 
 
@@ -40,6 +42,41 @@ def run_reflection(identity, memory_context, eligible_to_grow):
     )
     text = resp.content[0].text
     return _parse_reflection(text)
+
+
+def apply_reflection(identity, result, eligible):
+    """Mutates identity in place based on a reflection result; returns a summary dict."""
+    summary = {"reflection": None, "grew": False, "new_growth_stage": None, "creation": None}
+    if result is None:
+        return summary
+
+    reflection_text = (result.get("reflection") or "").strip()
+    if reflection_text:
+        summary["reflection"] = reflection_text
+
+    for trait in result.get("new_traits") or []:
+        if trait and trait not in identity["personality_traits"]:
+            identity["personality_traits"].append(trait)
+    for value in result.get("new_values") or []:
+        if value and value not in identity["values"]:
+            identity["values"].append(value)
+
+    updated_notes = result.get("updated_self_notes")
+    if updated_notes:
+        identity["self_notes"] = updated_notes
+
+    if eligible and result.get("ready_to_grow"):
+        identity_module.apply_growth(identity)
+        summary["grew"] = True
+        summary["new_growth_stage"] = identity["growth_stage"]
+
+    creation = result.get("creation") or {}
+    if creation.get("content"):
+        creation_type = creation.get("type", "생각")
+        memory.append_creation(creation_type, creation["content"])
+        summary["creation"] = {"type": creation_type, "content": creation["content"]}
+
+    return summary
 
 
 def _parse_reflection(text):
