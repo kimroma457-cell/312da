@@ -1,15 +1,19 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.kapt")
 }
 
 android {
     namespace = "com.docviewer.mobile"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.docviewer.mobile"
-        minSdk = 24
+        // Raised from 24: the androidx.pdf library's manifest requires a higher
+        // minSdk. Devices below the SdkExtensions check in ViewerActivity still
+        // fall back to the legacy PDFView (without search).
+        minSdk = 28
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -36,11 +40,27 @@ dependencies {
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("androidx.activity:activity-ktx:1.9.0")
+    implementation("androidx.fragment:fragment-ktx:1.8.2")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.4")
     implementation("com.google.android.material:material:1.12.0")
 
-    // PDF rendering
+    // PDF rendering: legacy fallback, works on every minSdk 28+ device but has
+    // no text search API at all (confirmed against its source on GitHub).
     implementation("com.github.mhiew:android-pdf-viewer:3.2.0-beta.3")
+
+    // PDF rendering: official Jetpack viewer with built-in text search/highlight.
+    // Only usable at runtime where SdkExtensions.getExtensionVersion(S) >= 13
+    // (see ViewerActivity.isPdfViewerFragmentSupported). This is an alpha
+    // artifact only hosted on Google's Maven repo, which this dev sandbox could
+    // not reach to confirm the exact coordinate/version — double check against
+    // https://developer.android.com/jetpack/androidx/releases/pdf in Android Studio.
+    implementation("androidx.pdf:pdf-viewer-fragment:1.0.0-alpha19")
 
     // HWP parsing (converted to HTML for display)
     implementation("kr.dogfoot:hwplib:1.1.10")
+
+    // Bookmarks + memo storage
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
 }
