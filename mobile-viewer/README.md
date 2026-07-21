@@ -66,15 +66,29 @@
 - **androidx.pdf 가용성**: 구글 플레이 시스템 업데이트(Mainline) 확장 모듈이 낮은 기기(구형 단말, 일부 커스텀 기기)에서는 이 조건을 만족하지 못해 자동으로 폴백 뷰어를 씁니다.
 
 ## 빌드 방법
-이 코드는 Android Studio(또는 Android SDK가 설치된 환경)에서 여는 것을 전제로 작성되었습니다. Gradle 래퍼(`gradlew`, `gradlew.bat`, `gradle/wrapper/*`)가 프로젝트에 포함되어 있어 Android Studio가 별도 생성 없이 바로 인식합니다(래퍼가 지정하는 Gradle 8.9는 이 세션에서 직접 실행해 스크립트 자체는 정상 동작함을 확인했고, 실제 배포판 다운로드만 이 환경의 네트워크 차단으로 막혀 있습니다 — Android Studio에서는 정상적으로 받아집니다).
+이 코드는 Android Studio(또는 Android SDK가 설치된 환경)에서 여는 것을 전제로 작성되었습니다. Gradle 래퍼(`gradlew`, `gradlew.bat`, `gradle/wrapper/*`)가 프로젝트에 포함되어 있어 Android Studio가 별도 생성 없이 바로 인식합니다.
 
 1. Android Studio로 `mobile-viewer` 폴더를 엽니다("Open" → 이 폴더 선택).
-2. "Trust Project" 확인 후 Gradle Sync가 자동으로 시작됩니다. AGP 8.6.0 / Gradle 8.9 / Kotlin 1.9.24 / compileSdk 35 / minSdk 28 조합입니다.
-3. Sync가 끝나면 기기(안드로이드 9 Pie 이상, USB 디버깅 활성화) 또는 에뮬레이터를 선택해 ▶ Run으로 실행합니다.
+2. "Trust Project" 확인 후 Gradle Sync가 자동으로 시작됩니다. **AGP 8.9.1 / Gradle 8.11.1 / Kotlin 1.9.24 / compileSdk 36 (extension 19) / minSdk 28 / targetSdk 34** 조합입니다.
+3. Sync가 끝나면 기기(안드로이드 9 Pie 이상, USB 디버깅 활성화) 또는 에뮬레이터를 선택해 ▶ Run(또는 `./gradlew assembleDebug`)으로 실행합니다.
 
-> **참고:** 이 코드를 작성한 샌드박스 환경은 Android SDK와 Google의 Maven 저장소(`dl.google.com`, `android.googlesource.com`, `services.gradle.org`를 경유하는 배포판 다운로드 포함)에 대한 네트워크 접근이 전부 막혀 있어, 실제 컴파일/실행 검증을 하지 못했습니다. Gradle 래퍼 스크립트 자체는 로컬에 설치된 Gradle로 실행해 정상 동작(파싱·클래스패스 구성·다운로드 시도까지)을 확인했고, 막힌 것은 순수 네트워크 접근 뿐입니다.
+### 빌드 환경 업그레이드 이력 (AGP/compileSdk/extension)
+실제로 Android Studio에서 빌드를 시도한 결과, `androidx.pdf:pdf-viewer-fragment:1.0.0-alpha19`가 **AGP 8.9.1+, compileSdk 36+, SDK Extension 19+**를 요구한다는 것이 확인되어 빌드 환경만 다음과 같이 올렸습니다(기존 PDF/HWP 기능 코드는 변경하지 않았습니다):
+
+| 항목 | 이전 | 변경 후 |
+|---|---|---|
+| AGP | 8.6.0 | 8.9.1 |
+| Gradle | 8.9 | 8.11.1 (AGP 8.9.x의 공식 최소 요구 버전) |
+| compileSdk | 35 | 36 |
+| compileSdkExtension | (미지정) | 19 |
+| minSdk / targetSdk | 28 / 34 | 변경 없음 |
+| Kotlin / AndroidX 의존성 | 1.9.24 / 기존 그대로 | **변경 없음** — 이번 업그레이드로 인한 호환성 문제가 보고되지 않아 요청대로 최소 범위만 건드렸습니다. |
+
+> **참고:** 이 코드를 작성한 샌드박스 환경은 Android SDK와 Google의 Maven 저장소(`dl.google.com`, `android.googlesource.com`, `services.gradle.org`를 경유하는 배포판 다운로드 포함)에 대한 네트워크 접근이 전부 막혀 있어, 이번 업그레이드도 실제 Gradle Sync·`assembleDebug`로 재검증하지 못했습니다. Gradle 래퍼 스크립트 자체(속성 파싱, 클래스패스 구성, `GradleWrapperMain` 실행, 배포판 다운로드 *시도*까지)는 이번에도 로컬 Gradle로 다시 실행해 정상 동작을 확인했고, 막힌 것은 순수 네트워크 접근(배포판 파일 자체를 못 받아옴)뿐입니다.
 >
-> - `androidx.pdf:pdf-viewer-fragment:1.0.0-alpha19` 좌표는 Android Developers 문서에서 인용된 조각들로 구성한 것이라 **정확한 artifactId/버전을 이 자리에서 확인하지 못했습니다.** Android Studio에서 Gradle sync 시 [공식 릴리스 노트](https://developer.android.com/jetpack/androidx/releases/pdf)와 대조해 주세요. 이 한 줄에서만 sync 오류가 나면, 오류 메시지가 알려주는 실제 버전으로 바꾸면 됩니다 — 나머지 의존성(hwplib, AndroidPdfViewer, Room, AndroidX 기본 라이브러리)에는 영향 없습니다.
-> - 같은 이유로 `minSdk`를 24→28로 올렸지만, 실제 라이브러리 매니페스트가 더 높은 minSdk(31)를 요구하면 빌드 시 명확한 병합 오류가 뜹니다 — 그 경우 오류 메시지가 알려주는 값으로 올리면 됩니다.
+> - AGP 8.9.1의 공식 최소 Gradle 요구 버전을 8.11.1로 지정했습니다 — Android Studio에서 sync 시 버전 불일치 경고/오류가 뜨면 [AGP-Gradle 호환표](https://developer.android.com/build/releases/gradle-plugin#updating-gradle)와 대조해 조정해 주세요.
+> - `compileSdkExtension = 19` DSL 문법은 AGP의 `CommonExtension.compileSdkExtension` 프로퍼티 기준으로 작성했습니다 — 정확한 지원 여부는 실제 sync에서 확인이 필요합니다.
+> - `androidx.pdf:pdf-viewer-fragment:1.0.0-alpha19` 좌표 자체(버전 문자열)는 이번에도 바꾸지 않았습니다 — 요청 범위가 "빌드 환경만"이었고, 이 라이브러리가 요구하는 환경 쪽을 맞추는 것이 이번 변경의 목적이기 때문입니다.
+> - 같은 이유로 `minSdk`를 24→28로 올렸던 부분은 이전과 동일하게 유지됩니다.
 > - hwplib·AndroidPdfViewer 관련 API(문단/표 구조, `getCurrentPage`/`jumpTo` 등)는 각 라이브러리의 GitHub 소스코드를 직접 읽어 확인했습니다.
 > - `local.properties`(SDK 경로)는 Android Studio가 최초 오픈 시 자동 생성합니다 — `.gitignore`에 이미 제외 처리되어 있어 직접 만들 필요 없습니다.

@@ -6,7 +6,11 @@ plugins {
 
 android {
     namespace = "com.docviewer.mobile"
-    compileSdk = 35
+    // compileSdk 36 + extension 19 (and AGP 8.9.1+ below) are required by
+    // androidx.pdf:pdf-viewer-fragment:1.0.0-alpha19 — confirmed by an actual
+    // Android Studio build failure, not just docs.
+    compileSdk = 36
+    compileSdkExtension = 19
 
     defaultConfig {
         applicationId = "com.docviewer.mobile"
@@ -50,10 +54,9 @@ dependencies {
 
     // PDF rendering: official Jetpack viewer with built-in text search/highlight.
     // Only usable at runtime where SdkExtensions.getExtensionVersion(S) >= 13
-    // (see ViewerActivity.isPdfViewerFragmentSupported). This is an alpha
-    // artifact only hosted on Google's Maven repo, which this dev sandbox could
-    // not reach to confirm the exact coordinate/version — double check against
-    // https://developer.android.com/jetpack/androidx/releases/pdf in Android Studio.
+    // (see ViewerActivity.isPdfViewerFragmentSupported). Alpha artifact hosted
+    // only on Google's Maven repo (unreachable from this dev sandbox), and it
+    // requires the AGP/compileSdk/extension bump above at build time.
     implementation("androidx.pdf:pdf-viewer-fragment:1.0.0-alpha19")
 
     // HWP parsing (converted to HTML for display)
