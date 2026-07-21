@@ -1,12 +1,12 @@
 package com.docviewer.mobile.hwp
 
-import kr.dogfoot.hwplib.object.HWPFile
-import kr.dogfoot.hwplib.object.bodytext.Section
-import kr.dogfoot.hwplib.object.bodytext.control.ControlTable
-import kr.dogfoot.hwplib.object.bodytext.control.table.Cell
-import kr.dogfoot.hwplib.object.bodytext.control.table.Row
-import kr.dogfoot.hwplib.object.bodytext.paragraph.Paragraph
-import kr.dogfoot.hwplib.object.bodytext.paragraph.ParagraphList
+import kr.dogfoot.hwplib.`object`.HWPFile
+import kr.dogfoot.hwplib.`object`.bodytext.Section
+import kr.dogfoot.hwplib.`object`.bodytext.control.ControlTable
+import kr.dogfoot.hwplib.`object`.bodytext.control.table.Cell
+import kr.dogfoot.hwplib.`object`.bodytext.control.table.Row
+import kr.dogfoot.hwplib.`object`.bodytext.paragraph.Paragraph
+import kr.dogfoot.hwplib.`object`.bodytext.paragraph.ParagraphList
 
 /**
  * Renders an HWPFile's paragraph and table structure as HTML for display in a WebView.
