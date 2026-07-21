@@ -62,8 +62,11 @@ dependencies {
     // HWP parsing (converted to HTML for display)
     implementation("kr.dogfoot:hwplib:1.1.10")
 
-    // Bookmarks + memo storage
-    implementation("androidx.room:room-runtime:2.6.1")
-    implementation("androidx.room:room-ktx:2.6.1")
-    kapt("androidx.room:room-compiler:2.6.1")
+    // Bookmarks + memo storage.
+    // 2.6.1's bundled kapt annotation processor only reads Kotlin metadata up
+    // to version 2.0.0; Kotlin 2.1.20 (bumped above for androidx.pdf) stamps
+    // class metadata as 2.1.0, so room-compiler needs a version that reads it.
+    implementation("androidx.room:room-runtime:2.7.1")
+    implementation("androidx.room:room-ktx:2.7.1")
+    kapt("androidx.room:room-compiler:2.7.1")
 }
