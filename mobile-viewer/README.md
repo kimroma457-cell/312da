@@ -66,13 +66,15 @@
 - **androidx.pdf 가용성**: 구글 플레이 시스템 업데이트(Mainline) 확장 모듈이 낮은 기기(구형 단말, 일부 커스텀 기기)에서는 이 조건을 만족하지 못해 자동으로 폴백 뷰어를 씁니다.
 
 ## 빌드 방법
-이 코드는 Android Studio(또는 Android SDK가 설치된 환경)에서 여는 것을 전제로 작성되었습니다.
+이 코드는 Android Studio(또는 Android SDK가 설치된 환경)에서 여는 것을 전제로 작성되었습니다. Gradle 래퍼(`gradlew`, `gradlew.bat`, `gradle/wrapper/*`)가 프로젝트에 포함되어 있어 Android Studio가 별도 생성 없이 바로 인식합니다(래퍼가 지정하는 Gradle 8.9는 이 세션에서 직접 실행해 스크립트 자체는 정상 동작함을 확인했고, 실제 배포판 다운로드만 이 환경의 네트워크 차단으로 막혀 있습니다 — Android Studio에서는 정상적으로 받아집니다).
 
-1. Android Studio로 `mobile-viewer` 폴더를 엽니다.
-2. Gradle sync가 끝나면 (Android Studio가 wrapper를 자동 생성합니다) 기기/에뮬레이터에서 실행합니다.
+1. Android Studio로 `mobile-viewer` 폴더를 엽니다("Open" → 이 폴더 선택).
+2. "Trust Project" 확인 후 Gradle Sync가 자동으로 시작됩니다. AGP 8.6.0 / Gradle 8.9 / Kotlin 1.9.24 / compileSdk 35 / minSdk 28 조합입니다.
+3. Sync가 끝나면 기기(안드로이드 9 Pie 이상, USB 디버깅 활성화) 또는 에뮬레이터를 선택해 ▶ Run으로 실행합니다.
 
-> **참고:** 이 코드를 작성한 샌드박스 환경은 Android SDK와 Google의 Maven 저장소(`dl.google.com`, `android.googlesource.com` 포함)에 대한 네트워크 접근이 전부 막혀 있어, 실제 컴파일/실행 검증을 하지 못했습니다.
+> **참고:** 이 코드를 작성한 샌드박스 환경은 Android SDK와 Google의 Maven 저장소(`dl.google.com`, `android.googlesource.com`, `services.gradle.org`를 경유하는 배포판 다운로드 포함)에 대한 네트워크 접근이 전부 막혀 있어, 실제 컴파일/실행 검증을 하지 못했습니다. Gradle 래퍼 스크립트 자체는 로컬에 설치된 Gradle로 실행해 정상 동작(파싱·클래스패스 구성·다운로드 시도까지)을 확인했고, 막힌 것은 순수 네트워크 접근 뿐입니다.
 >
-> - `androidx.pdf:pdf-viewer-fragment:1.0.0-alpha19` 좌표는 Android Developers 문서에서 인용된 조각들로 구성한 것이라 **정확한 artifactId/버전을 이 자리에서 확인하지 못했습니다.** Android Studio에서 Gradle sync 시 [공식 릴리스 노트](https://developer.android.com/jetpack/androidx/releases/pdf)와 대조해 주세요.
+> - `androidx.pdf:pdf-viewer-fragment:1.0.0-alpha19` 좌표는 Android Developers 문서에서 인용된 조각들로 구성한 것이라 **정확한 artifactId/버전을 이 자리에서 확인하지 못했습니다.** Android Studio에서 Gradle sync 시 [공식 릴리스 노트](https://developer.android.com/jetpack/androidx/releases/pdf)와 대조해 주세요. 이 한 줄에서만 sync 오류가 나면, 오류 메시지가 알려주는 실제 버전으로 바꾸면 됩니다 — 나머지 의존성(hwplib, AndroidPdfViewer, Room, AndroidX 기본 라이브러리)에는 영향 없습니다.
 > - 같은 이유로 `minSdk`를 24→28로 올렸지만, 실제 라이브러리 매니페스트가 더 높은 minSdk(31)를 요구하면 빌드 시 명확한 병합 오류가 뜹니다 — 그 경우 오류 메시지가 알려주는 값으로 올리면 됩니다.
 > - hwplib·AndroidPdfViewer 관련 API(문단/표 구조, `getCurrentPage`/`jumpTo` 등)는 각 라이브러리의 GitHub 소스코드를 직접 읽어 확인했습니다.
+> - `local.properties`(SDK 경로)는 Android Studio가 최초 오픈 시 자동 생성합니다 — `.gitignore`에 이미 제외 처리되어 있어 직접 만들 필요 없습니다.
