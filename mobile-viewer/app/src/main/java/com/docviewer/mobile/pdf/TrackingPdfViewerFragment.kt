@@ -2,6 +2,7 @@ package com.docviewer.mobile.pdf
 
 import android.os.Build
 import androidx.annotation.RequiresExtension
+import androidx.pdf.PdfDocument
 import androidx.pdf.viewer.fragment.PdfViewerFragment
 
 /**
@@ -14,7 +15,7 @@ class TrackingPdfViewerFragment : PdfViewerFragment() {
 
     var onResult: ((error: Throwable?) -> Unit)? = null
 
-    override fun onLoadDocumentSuccess() {
+    override fun onLoadDocumentSuccess(document: PdfDocument) {
         onResult?.invoke(null)
     }
 
