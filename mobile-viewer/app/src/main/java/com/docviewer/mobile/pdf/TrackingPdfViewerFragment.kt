@@ -21,4 +21,13 @@ class TrackingPdfViewerFragment : PdfViewerFragment() {
     override fun onLoadDocumentError(error: Throwable) {
         onResult?.invoke(false)
     }
+
+    // TODO(bookmarks-for-official-viewer): PdfViewerFragment reportedly exposes
+    // `onPdfViewCreated(pdfView: PdfView)`. Once Gradle can actually sync this
+    // artifact, check PdfView's public API for a way to read the current /
+    // visible page (e.g. something like getCurrentPage() or a visible-page-range
+    // getter). If — and only if — a genuine public API gives us that, wire up
+    // ViewerActivity.getCurrentPosition()/jumpToPosition() for Mode.PDF_FRAGMENT
+    // and un-hide bookmarkAddButton/bookmarkListButton there. Do not use
+    // reflection or any internal/non-public API to fake this.
 }

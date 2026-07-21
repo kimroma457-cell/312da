@@ -161,8 +161,10 @@ class ViewerActivity : AppCompatActivity() {
             val active = pdfViewerFragment?.isTextSearchActive == true
             pdfViewerFragment?.isTextSearchActive = !active
         }
-        // The official viewer doesn't expose a current-page accessor we could verify,
-        // so bookmarking isn't wired up for this path.
+        // The official viewer doesn't expose a current-page accessor we could verify
+        // from this environment, so bookmarking isn't wired up for this path yet.
+        // See the TODO in TrackingPdfViewerFragment (onPdfViewCreated/PdfView public
+        // API) before adding it — no reflection or internal APIs.
         bookmarkAddButton.visibility = View.GONE
         bookmarkListButton.visibility = View.GONE
     }

@@ -24,6 +24,14 @@
    - HWP는 스크롤 Y 좌표를 저장합니다(문단 단위가 아님).
    - JSON 내보내기/가져오기는 이번 범위에서 제외했습니다(요청 시 추가 가능).
 
+## 다음에 확인할 것: 공식 androidx.pdf 뷰어 북마크 지원
+공식 `PdfViewerFragment`는 `onPdfViewCreated(pdfView: PdfView)` 콜백을 노출하는 것으로 보입니다. Android Studio에서 Gradle sync가 끝난 뒤, `PdfView`의 **공개 API**에 현재 표시 페이지 또는 가시 페이지 범위를 읽을 방법이 있는지 확인해 주세요.
+
+- 공식 공개 API로 확인되면: `TrackingPdfViewerFragment`에 `onPdfViewCreated` 오버라이드를 추가해 위치를 읽고, `ViewerActivity.getCurrentPosition()` / `jumpToPosition()`을 `Mode.PDF_FRAGMENT`에도 연결한 뒤 `bookmarkAddButton`/`bookmarkListButton` 숨김을 해제하면 됩니다.
+- 공개 API로 확인되지 않으면: 리플렉션이나 내부(non-public) API로 우회하지 말고, 현재처럼 이 경로에서는 북마크 버튼을 숨긴 채로 둡니다.
+
+해당 지점은 `ViewerActivity.showPdfWithFragment()`와 `TrackingPdfViewerFragment.kt`의 TODO 주석에 표시해 두었습니다.
+
 ## 알려진 제약
 - **북마크 지속성**: 다른 앱의 "공유"로 받은 파일은 보통 임시 URI 권한이라 앱을 재시작하면 그 파일의 URI가 무효화될 수 있습니다 — 이 경우 저장된 북마크가 있어도 파일을 다시 열 수 없습니다. 앱 내 "파일 열기" 버튼(SAF)으로 연 파일은 영구 권한을 요청하므로 재시작 후에도 안정적으로 열립니다.
 - **HWP 표시 한계**: 글자 단위 서식(굵기/기울임/색상)과 이미지는 재현되지 않고, 문단·표 구조와 텍스트만 표시됩니다.
