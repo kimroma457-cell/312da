@@ -14,6 +14,7 @@ class BookmarkListAdapter(
     private var items: List<Bookmark>,
     private val positionLabel: (Bookmark) -> String,
     private val onClick: (Bookmark) -> Unit,
+    private val onEdit: (Bookmark) -> Unit,
     private val onDelete: (Bookmark) -> Unit
 ) : BaseAdapter() {
 
@@ -41,6 +42,7 @@ class BookmarkListAdapter(
         }
 
         view.setOnClickListener { onClick(bookmark) }
+        view.findViewById<Button>(R.id.bookmarkEditButton).setOnClickListener { onEdit(bookmark) }
         view.findViewById<Button>(R.id.bookmarkDeleteButton).setOnClickListener { onDelete(bookmark) }
         return view
     }

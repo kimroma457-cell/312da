@@ -5,7 +5,10 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [Bookmark::class], version = 1, exportSchema = false)
+// version 2 adds Bookmark.updatedAt. The app has no released users yet, so a
+// destructive migration (drop + recreate) is used instead of a hand-written
+// Migration — existing dev-build bookmarks are lost on this one upgrade only.
+@Database(entities = [Bookmark::class], version = 2, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun bookmarkDao(): BookmarkDao
 
@@ -19,7 +22,9 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "docviewer.db"
-                ).build().also { instance = it }
+                )
+                    .fallbackToDestructiveMigration()
+                    .build().also { instance = it }
             }
         }
     }

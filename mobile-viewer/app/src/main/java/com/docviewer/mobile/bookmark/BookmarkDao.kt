@@ -15,4 +15,9 @@ interface BookmarkDao {
 
     @Delete
     suspend fun delete(bookmark: Bookmark)
+
+    // Updates the memo in place (keeps id/docUri/position/createdAt) instead of
+    // deleting and re-inserting, so the row's identity and creation time survive.
+    @Query("UPDATE bookmarks SET memo = :memo, updatedAt = :updatedAt WHERE id = :id")
+    suspend fun updateMemo(id: Long, memo: String, updatedAt: Long)
 }

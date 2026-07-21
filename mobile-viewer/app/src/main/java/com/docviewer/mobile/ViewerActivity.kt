@@ -371,7 +371,7 @@ class ViewerActivity : AppCompatActivity() {
                     docUri = uri.toString(),
                     docDisplayName = currentDisplayName,
                     position = position,
-                    memo = input.text?.toString().orEmpty(),
+                    memo = normalizeMemo(input.text?.toString().orEmpty()),
                     createdAt = System.currentTimeMillis()
                 )
                 lifecycleScope.launch {
@@ -412,6 +412,7 @@ class ViewerActivity : AppCompatActivity() {
                 jumpToPosition(bookmark.position)
                 dialog.dismiss()
             },
+            onEdit = { bookmark -> showEditMemoDialog(bookmark, ::refresh) },
             onDelete = { bookmark ->
                 lifecycleScope.launch {
                     db.bookmarkDao().delete(bookmark)
@@ -423,6 +424,30 @@ class ViewerActivity : AppCompatActivity() {
         refresh()
         dialog.show()
     }
+
+    // Pre-fills the existing memo; Cancel leaves the stored bookmark untouched.
+    // Save only updates the memo/updatedAt columns (BookmarkDao.updateMemo) —
+    // id, docUri, position and createdAt are never touched.
+    private fun showEditMemoDialog(bookmark: Bookmark, onSaved: () -> Unit) {
+        val input = layoutInflater.inflate(R.layout.dialog_bookmark_memo, null) as EditText
+        input.setText(bookmark.memo)
+        AlertDialog.Builder(this)
+            .setTitle(R.string.bookmark_edit_dialog_title)
+            .setView(input)
+            .setPositiveButton(R.string.save) { _, _ ->
+                val memo = normalizeMemo(input.text?.toString().orEmpty())
+                lifecycleScope.launch {
+                    db.bookmarkDao().updateMemo(bookmark.id, memo, System.currentTimeMillis())
+                    Toast.makeText(this@ViewerActivity, R.string.bookmark_updated, Toast.LENGTH_SHORT).show()
+                    onSaved()
+                }
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
+    }
+
+    // Empty memos are allowed as-is; a whitespace-only memo is normalized to "".
+    private fun normalizeMemo(raw: String): String = if (raw.isBlank()) "" else raw
 
     private fun plainTextHtml(text: String): String {
         val escaped = text

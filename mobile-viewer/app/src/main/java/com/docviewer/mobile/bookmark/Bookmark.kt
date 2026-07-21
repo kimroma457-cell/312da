@@ -11,5 +11,6 @@ data class Bookmark(
     val docDisplayName: String,
     val position: Int,
     val memo: String,
-    val createdAt: Long
+    val createdAt: Long,
+    val updatedAt: Long = createdAt
 )
