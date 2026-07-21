@@ -2,6 +2,26 @@
 
 기기에 저장된 PDF/HWP 파일을 열거나, 다른 앱의 "공유" 메뉴에서 파일을 받아 바로 볼 수 있는 안드로이드 앱입니다.
 
+## ✅ 빌드 성공 확인됨 (GitHub Actions CI)
+아래 환경 조합으로 **`assembleDebug`가 실제로 통과**했고, 결과물 APK까지 생성됐습니다 — 이 저장소의 샌드박스는 네트워크 제약으로 직접 빌드할 수 없어, GitHub Actions(실제 인터넷 접근 가능한 러너)에서 검증했습니다.
+
+- **AGP**: 8.9.1
+- **Gradle**: 8.11.1
+- **compileSdk**: 36 (**compileSdkExtension**: 19)
+- **Kotlin**: 2.1.20
+- **Room**: 2.7.1
+- **SDK Platform**: `platforms;android-36` 설치 확인됨
+- **androidx.pdf**: `pdf-viewer-fragment:1.0.0-alpha19` 및 전이 의존성(`pdf-core`, `pdf-viewer`, `pdf-document-service`) 전부 정상 해결
+- minSdk 28 / targetSdk 34 (변경 없음)
+
+**검증 근거**: [워크플로 실행 #4 (run 29810295767)](https://github.com/kimroma457-cell/312da/actions/runs/29810295767) — 커밋 `a900324`, conclusion `success`. `app-debug` APK 아티팩트(약 19MB)가 실제로 생성·업로드되었습니다. 이 초록불이 나오기까지 실제 컴파일러가 잡아준 문제들을 순서대로 고쳤습니다:
+1. Kotlin 메타데이터 비호환(androidx.pdf가 Kotlin 2.1.0으로 컴파일됨) → Kotlin 1.9.24 → 2.1.20
+2. hwplib의 실제 패키지 세그먼트 `object`가 Kotlin 예약어라 이스케이프 필요(`` `object` ``) — 문법 버그, 로직 변경 없음
+3. Room 2.6.1의 kapt 프로세서가 Kotlin 2.1 메타데이터(버전 2.1.0)를 못 읽음 → Room 2.7.1
+4. `TrackingPdfViewerFragment.onLoadDocumentSuccess()`가 실제로는 `onLoadDocumentSuccess(document: PdfDocument)` 시그니처였음(문서 요약만으로 추측했던 부분을 실제 컴파일러가 정정) — 시그니처만 수정, 로직 변경 없음
+
+CI 워크플로 자체는 `.github/workflows/android-build.yml`에 있으며, 이 브랜치에 푸시할 때마다 자동으로 재실행됩니다.
+
 ## 구성
 - `MainActivity` — 파일 선택 버튼(SAF `ACTION_OPEN_DOCUMENT`)
 - `ViewerActivity` — 다른 앱의 공유(`ACTION_SEND`)/열기(`ACTION_VIEW`) 요청을 받는 진입점이자 뷰어 화면
@@ -35,12 +55,12 @@
 
 ## 1차 PDF 기능 검증 결과
 
-**이 검증은 코드 리뷰로만 수행되었고, 실제 기기/에뮬레이터 테스트는 수행되지 않았습니다.** 이 세션의 샌드박스에는 Android SDK, 에뮬레이터, 실기기가 없고 Google Maven(`dl.google.com`)을 포함한 구글 소유 도메인 전체가 네트워크 차단되어 있어 Gradle Sync, Debug/Release 빌드, 앱 실행 자체가 불가능합니다. 아래는 항목별로 실제로 무엇을 했고 무엇이 남았는지입니다.
+**이 세션의 샌드박스 자체는 Android SDK/에뮬레이터가 없고 Google Maven(`dl.google.com`) 등 네트워크가 차단되어 있어 직접 빌드할 수 없지만, 위 "빌드 성공 확인됨" 섹션에 있는 GitHub Actions CI로 #1·#2는 실제로 통과했습니다.** 나머지 항목은 여전히 실기기가 필요합니다.
 
 | # | 항목 | 상태 |
 |---|------|------|
-| 1 | Gradle Sync로 `androidx.pdf`/Room/기존 PDF 뷰어 의존성 해결 확인 | **미수행.** 이 환경에서 Google Maven에 접근할 수 없어 실행 자체가 불가능. Android Studio에서 최초 sync 시 확인 필요 — 특히 `androidx.pdf:pdf-viewer-fragment:1.0.0-alpha19` 좌표. |
-| 2 | Debug/Release 빌드, 컴파일 오류·경고·중복 의존성·난독화 오류 확인 | **미수행(빌드 불가).** 대신 전체 소스를 다시 읽으며 정적 검토했고, 실제 컴파일 오류 1건을 발견해 수정함: `ViewerActivity.openFile()`에서 `HWP_MIME_TYPES.contains(mimeType)`에 nullable `String?`을 넘겨 타입 불일치가 나던 부분(`mimeType != null && mimeType in HWP_MIME_TYPES`로 수정). Release 난독화(R8) 동작은 실제 빌드 없이는 확인 불가. |
+| 1 | Gradle Sync로 `androidx.pdf`/Room/기존 PDF 뷰어 의존성 해결 확인 | **✅ 실제 CI로 확인됨.** [run 29810295767](https://github.com/kimroma457-cell/312da/actions/runs/29810295767)에서 `androidx.pdf:pdf-core/pdf-viewer/pdf-document-service/pdf-viewer-fragment:1.0.0-alpha19`, `androidx.room:*:2.7.1`, `com.github.mhiew:android-pdf-viewer:3.2.0-beta.3`, `kr.dogfoot:hwplib:1.1.10` 전부 정상 해결됨(`:app:dependencies` 출력으로 확인). |
+| 2 | Debug/Release 빌드, 컴파일 오류·경고·중복 의존성·난독화 오류 확인 | **✅ Debug는 CI로 확인됨(`assembleDebug` 성공, APK 아티팩트 생성).** 이 과정에서 실제 컴파일 오류 4건을 발견해 고쳤습니다: ① `HWP_MIME_TYPES.contains(mimeType)` nullable 타입 불일치, ② hwplib의 `object` 패키지 세그먼트 Kotlin 예약어 충돌, ③ Room 2.6.1이 Kotlin 2.1 메타데이터를 못 읽음, ④ `TrackingPdfViewerFragment.onLoadDocumentSuccess()`의 실제 시그니처가 `(document: PdfDocument)`였음. **Release 빌드(`assembleRelease`)와 R8 난독화 동작은 CI 워크플로에 아직 포함되지 않아 미확인**입니다 — 필요하시면 워크플로에 단계를 추가하겠습니다. |
 | 3 | 실기기 PDF 유형별 테스트(일반 텍스트/스캔 이미지/100p+/한영 혼합/암호·손상/공유받은 파일) | **미수행.** 기기가 없어 어떤 PDF도 열어보지 못했습니다. |
 | 4 | 검색 결과 이동·하이라이트 위치 정확성 | **미수행.** HWP 쪽 `WebView.findAllAsync`/`findNext`는 표준 플랫폼 API라 동작 자체는 신뢰하지만 실제 하이라이트 좌표는 기기에서 봐야 확인됩니다. PDF 쪽은 `androidx.pdf`의 내장 검색 UI라 저희 코드가 하이라이트를 직접 그리지 않습니다. |
 | 5 | 앱 완전 종료 후 재실행 시 북마크·메모 유지 | **코드로는 보장됨, 기기 검증은 안 됨.** Room DB는 `docviewer.db` 파일로 디스크에 저장되고 앱 재시작과 무관하게 유지되는 것이 Room의 표준 동작입니다. 메모 수정(`updateMemo`)도 같은 DB 파일에 대한 UPDATE라 동일하게 재시작 후에도 유지됩니다. 단, 공유로 받은 파일은 URI 권한이 만료되어 그 문서를 다시 열지 못할 수 있음(아래 "알려진 제약" 참고) — 이 경우도 앱이 크래시하지 않고 "다시 선택하기" 안내가 뜨도록 이번에 수정했습니다(#8 참고). |
@@ -50,15 +70,10 @@
 | 9 | 회전/백그라운드 복귀/다크모드/저사양 기기에서 페이지·상태 비정상 초기화 없음 | **부분적으로 수정함.** ① 회전: 매니페스트에 `configChanges="orientation\|screenSize\|keyboardHidden"`이 이미 있어 Activity가 재생성되지 않음(기존 그대로). ② 다크모드 전환은 `uiMode` configChange가 빠져 있어 테마 변경 시 Activity가 재생성되고 상태가 날아갈 수 있었던 버그를 발견 — `uiMode`를 추가해 수정함. ③ 백그라운드 복귀는 프로세스가 죽지 않는 한 Android가 Activity를 재생성하지 않으므로 원래도 문제없음(OS 표준 동작, 별도 수정 불필요). ④ 저사양 기기의 백그라운드 프로세스 강제 종료(process death) 후 복원은 기존에 전혀 대비가 없었던 부분이라 `onSaveInstanceState`/`onCreate(savedInstanceState)`로 현재 Uri와 페이지/스크롤 위치를 저장·복원하도록 추가했습니다. `androidx.pdf` 경로는 현재 페이지를 읽는 공개 API가 확인되지 않아 이 복원 대상에서 제외됩니다(위 TODO와 동일한 제약). 이 동작 자체가 실기기에서 의도대로 작동하는지는 검증되지 않았습니다. |
 | 10 | 결과를 README에 정리 | 이 섹션이 그 결과입니다. |
 
-**요약:** 기기/빌드 검증(#1–6, #10 일부)은 이 환경의 근본적 제약으로 수행할 수 없었습니다. 대신 코드 정적 검토를 통해 컴파일 오류 1건(#2)과 다크모드 상태 손실 버그(#9)를 실제로 찾아 고쳤고, URI 권한 만료 크래시 방지(#8)와 프로세스 종료 후 상태 복원(#9)을 새로 구현했습니다. #6의 "메모 수정"도 이제 구현했습니다(아래 참고). 실제 기기 테스트는 Android Studio에서 앱을 빌드해 진행해 주셔야 합니다.
+**요약:** #1(Gradle Sync/의존성 해결)과 #2(assembleDebug 컴파일)는 GitHub Actions CI로 실제로 그린을 확인했습니다 — 그 과정에서 컴파일 오류 4건(위 표 참고)을 실제로 찾아 고쳤습니다. #8(URI 권한 만료 크래시 방지)과 #9(다크모드/프로세스 종료 상태 복원)의 코드도 이 그린 빌드에 포함되어 컴파일은 통과했지만, 그 동작이 "의도한 대로 실행되는지"(실기기에서 크래시 안 뜨는지, 회전 시 페이지가 유지되는지 등)는 여전히 실기기 테스트가 필요합니다. #3·#4·#10 나머지 실기기 테스트도 이 세션에서는 할 수 없습니다.
 
-### 메모 수정 기능 — 정적 검토 결과
-이 기능도 실제 빌드/실행 없이 코드만 재검토했습니다. 확인한 것:
-- `Bookmark.updatedAt: Long = createdAt` 추가, `BookmarkDao.updateMemo(id, memo, updatedAt)`가 `UPDATE ... WHERE id = :id`로 memo/updatedAt만 갱신(다른 컬럼 안 건드림) — SQL·Room 어노테이션 문법상 문제없음.
-- `AppDatabase`를 `version = 2` + `.fallbackToDestructiveMigration()`으로 변경 — Room 표준 API(신규 컬럼 추가 시 흔한 패턴), 배포 전이라 파괴적 마이그레이션을 의도적으로 선택.
-- `BookmarkListAdapter`에 `onEdit` 콜백과 `item_bookmark.xml`의 `수정` 버튼 추가 — 기존 `onDelete`/`onClick` 배선과 동일한 패턴이라 위험도 낮음.
-- `ViewerActivity.showEditMemoDialog()`가 로컬 함수 `refresh()`(북마크 목록 다이얼로그 안에서 정의됨)를 `::refresh` 콜러블 참조로 받아 저장 완료 후 호출 — Kotlin에서 로컬 함수 참조는 유효한 문법이지만, 실제 컴파일러로 확인한 것은 아닙니다.
-- 이번에도 실제 실행은 못 했으므로, Android Studio에서 빌드 시 위 네 가지 변경점(특히 `::refresh` 로컬 함수 참조, Room 스키마 버전 업)을 우선 확인해 주세요.
+### 메모 수정 기능 — 빌드 확인됨
+`::refresh` 로컬 함수 참조, `Bookmark.updatedAt` 추가, Room `version = 2` + `fallbackToDestructiveMigration()`, `BookmarkListAdapter`의 `onEdit` 콜백까지 전부 위 그린 CI 빌드(`assembleDebug`)에 포함되어 **컴파일 통과가 실제로 확인됐습니다.** 다만 "저장 후 목록에 즉시 반영되는지", "앱 재시작 후 수정 내용이 남아있는지" 같은 **런타임 동작**은 여전히 실기기/에뮬레이터에서 확인이 필요합니다(컴파일 성공 ≠ 기능이 화면에서 의도대로 동작함).
 
 ## 알려진 제약
 - **북마크 지속성**: 다른 앱의 "공유"로 받은 파일은 보통 임시 URI 권한이라 앱을 재시작하면 그 파일의 URI가 무효화될 수 있습니다 — 이 경우 저장된 북마크가 있어도 파일을 다시 열 수 없습니다. 앱 내 "파일 열기" 버튼(SAF)으로 연 파일은 영구 권한을 요청하므로 재시작 후에도 안정적으로 열립니다.
@@ -69,26 +84,25 @@
 이 코드는 Android Studio(또는 Android SDK가 설치된 환경)에서 여는 것을 전제로 작성되었습니다. Gradle 래퍼(`gradlew`, `gradlew.bat`, `gradle/wrapper/*`)가 프로젝트에 포함되어 있어 Android Studio가 별도 생성 없이 바로 인식합니다.
 
 1. Android Studio로 `mobile-viewer` 폴더를 엽니다("Open" → 이 폴더 선택).
-2. "Trust Project" 확인 후 Gradle Sync가 자동으로 시작됩니다. **AGP 8.9.1 / Gradle 8.11.1 / Kotlin 1.9.24 / compileSdk 36 (extension 19) / minSdk 28 / targetSdk 34** 조합입니다.
+2. "Trust Project" 확인 후 Gradle Sync가 자동으로 시작됩니다. **AGP 8.9.1 / Gradle 8.11.1 / Kotlin 2.1.20 / Room 2.7.1 / compileSdk 36 (extension 19) / minSdk 28 / targetSdk 34** 조합이며, 이 조합으로 CI에서 `assembleDebug`가 실제로 통과했습니다(맨 위 "빌드 성공 확인됨" 참고).
 3. Sync가 끝나면 기기(안드로이드 9 Pie 이상, USB 디버깅 활성화) 또는 에뮬레이터를 선택해 ▶ Run(또는 `./gradlew assembleDebug`)으로 실행합니다.
 
-### 빌드 환경 업그레이드 이력 (AGP/compileSdk/extension)
-실제로 Android Studio에서 빌드를 시도한 결과, `androidx.pdf:pdf-viewer-fragment:1.0.0-alpha19`가 **AGP 8.9.1+, compileSdk 36+, SDK Extension 19+**를 요구한다는 것이 확인되어 빌드 환경만 다음과 같이 올렸습니다(기존 PDF/HWP 기능 코드는 변경하지 않았습니다):
+### 빌드 환경 업그레이드 이력 (AGP/compileSdk/extension/Kotlin/Room)
+`androidx.pdf:pdf-viewer-fragment:1.0.0-alpha19`가 **AGP 8.9.1+, compileSdk 36+, SDK Extension 19+**를 요구한다는 게 확인되어 빌드 환경을 올렸고, 그 여파로 Kotlin·Room도 함께 올려야 했습니다(전부 GitHub Actions CI로 실제 컴파일까지 확인됨):
 
-| 항목 | 이전 | 변경 후 |
-|---|---|---|
-| AGP | 8.6.0 | 8.9.1 |
-| Gradle | 8.9 | 8.11.1 (AGP 8.9.x의 공식 최소 요구 버전) |
-| compileSdk | 35 | 36 |
-| compileSdkExtension | (미지정) | 19 |
-| minSdk / targetSdk | 28 / 34 | 변경 없음 |
-| Kotlin / AndroidX 의존성 | 1.9.24 / 기존 그대로 | **변경 없음** — 이번 업그레이드로 인한 호환성 문제가 보고되지 않아 요청대로 최소 범위만 건드렸습니다. |
+| 항목 | 이전 | 변경 후 | 변경 이유 |
+|---|---|---|---|
+| AGP | 8.6.0 | 8.9.1 | androidx.pdf alpha19 요구사항 |
+| Gradle | 8.9 | 8.11.1 | AGP 8.9.x의 공식 최소 요구 버전 |
+| compileSdk | 35 | 36 | androidx.pdf alpha19 요구사항 |
+| compileSdkExtension | (미지정) | 19 | androidx.pdf alpha19 요구사항 |
+| Kotlin | 1.9.24 | 2.1.20 | androidx.pdf alpha19가 Kotlin 2.1.0 메타데이터로 컴파일되어 있어, 이를 읽을 수 있는 컴파일러가 필요 |
+| Room | 2.6.1 | 2.7.1 | Room 2.6.1의 kapt 프로세서가 Kotlin 2.1 메타데이터(버전 2.1.0)를 못 읽음(Kotlin 2.1.20으로 올린 데 따른 연쇄) |
+| minSdk / targetSdk | 28 / 34 | 변경 없음 | — |
 
-> **참고:** 이 코드를 작성한 샌드박스 환경은 Android SDK와 Google의 Maven 저장소(`dl.google.com`, `android.googlesource.com`, `services.gradle.org`를 경유하는 배포판 다운로드 포함)에 대한 네트워크 접근이 전부 막혀 있어, 이번 업그레이드도 실제 Gradle Sync·`assembleDebug`로 재검증하지 못했습니다. Gradle 래퍼 스크립트 자체(속성 파싱, 클래스패스 구성, `GradleWrapperMain` 실행, 배포판 다운로드 *시도*까지)는 이번에도 로컬 Gradle로 다시 실행해 정상 동작을 확인했고, 막힌 것은 순수 네트워크 접근(배포판 파일 자체를 못 받아옴)뿐입니다.
+> **참고:** 이 버전 조합은 GitHub Actions CI(`.github/workflows/android-build.yml`)에서 `assembleDebug` 성공으로 실제 검증되었습니다 — [run 29810295767](https://github.com/kimroma457-cell/312da/actions/runs/29810295767). 이 세션의 샌드박스 자체는 여전히 Google Maven(`dl.google.com`) 등에 네트워크 접근이 막혀 있어 로컬 재현은 못 했지만, CI가 실제 인터넷 접근이 되는 GitHub 러너에서 돌기 때문에 이 결과는 추정이 아닌 실측입니다.
 >
-> - AGP 8.9.1의 공식 최소 Gradle 요구 버전을 8.11.1로 지정했습니다 — Android Studio에서 sync 시 버전 불일치 경고/오류가 뜨면 [AGP-Gradle 호환표](https://developer.android.com/build/releases/gradle-plugin#updating-gradle)와 대조해 조정해 주세요.
-> - `compileSdkExtension = 19` DSL 문법은 AGP의 `CommonExtension.compileSdkExtension` 프로퍼티 기준으로 작성했습니다 — 정확한 지원 여부는 실제 sync에서 확인이 필요합니다.
-> - `androidx.pdf:pdf-viewer-fragment:1.0.0-alpha19` 좌표 자체(버전 문자열)는 이번에도 바꾸지 않았습니다 — 요청 범위가 "빌드 환경만"이었고, 이 라이브러리가 요구하는 환경 쪽을 맞추는 것이 이번 변경의 목적이기 때문입니다.
-> - 같은 이유로 `minSdk`를 24→28로 올렸던 부분은 이전과 동일하게 유지됩니다.
+> - `androidx.pdf:pdf-viewer-fragment:1.0.0-alpha19` 좌표 자체(버전 문자열)는 그대로 유지했습니다 — 이 라이브러리가 요구하는 환경 쪽을 맞추는 것이 목적이었기 때문입니다.
+> - Release 빌드(`assembleRelease`)와 R8 난독화는 아직 CI에 포함되지 않아 미확인입니다.
 > - hwplib·AndroidPdfViewer 관련 API(문단/표 구조, `getCurrentPage`/`jumpTo` 등)는 각 라이브러리의 GitHub 소스코드를 직접 읽어 확인했습니다.
 > - `local.properties`(SDK 경로)는 Android Studio가 최초 오픈 시 자동 생성합니다 — `.gitignore`에 이미 제외 처리되어 있어 직접 만들 필요 없습니다.
