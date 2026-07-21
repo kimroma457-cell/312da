@@ -43,7 +43,9 @@ class ViewerActivity : AppCompatActivity() {
     private lateinit var pdfFragmentContainer: FrameLayout
     private lateinit var webView: WebView
     private lateinit var progressBar: ProgressBar
+    private lateinit var errorContainer: View
     private lateinit var errorText: TextView
+    private lateinit var reselectButton: Button
 
     private lateinit var searchToggleButton: Button
     private lateinit var bookmarkAddButton: Button
@@ -61,6 +63,10 @@ class ViewerActivity : AppCompatActivity() {
     private var currentDisplayName: String = ""
     private var pdfViewerFragment: TrackingPdfViewerFragment? = null
 
+    // Position to jump back to once content finishes loading; populated either from
+    // savedInstanceState (process death) or left null on a normal cold start.
+    private var pendingRestorePosition: Int? = null
+
     private val backgroundExecutor = Executors.newSingleThreadExecutor()
     private val mainHandler = Handler(Looper.getMainLooper())
     private val db by lazy { AppDatabase.get(applicationContext) }
@@ -73,7 +79,9 @@ class ViewerActivity : AppCompatActivity() {
         pdfFragmentContainer = findViewById(R.id.pdfFragmentContainer)
         webView = findViewById(R.id.webView)
         progressBar = findViewById(R.id.progressBar)
+        errorContainer = findViewById(R.id.errorContainer)
         errorText = findViewById(R.id.errorText)
+        reselectButton = findViewById(R.id.reselectButton)
 
         searchToggleButton = findViewById(R.id.searchToggleButton)
         bookmarkAddButton = findViewById(R.id.bookmarkAddButton)
@@ -90,13 +98,28 @@ class ViewerActivity : AppCompatActivity() {
 
         bookmarkAddButton.setOnClickListener { onBookmarkAddClicked() }
         bookmarkListButton.setOnClickListener { onBookmarkListClicked() }
+        reselectButton.setOnClickListener {
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+        }
 
-        val uri = resolveUri(intent)
+        // Prefer the URI we saved ourselves (survives process death); fall back to
+        // resolving it fresh from the launching Intent on a normal cold start.
+        val uri = savedInstanceState?.let { restoredUri(it) } ?: resolveUri(intent)
         if (uri == null) {
-            showError(getString(R.string.error_no_file))
+            showError(getString(R.string.error_no_file), allowReselect = true)
             return
         }
+        pendingRestorePosition = savedInstanceState?.takeIf { it.containsKey(STATE_POSITION) }
+            ?.getInt(STATE_POSITION)
+
         openFile(uri)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        currentUri?.let { outState.putParcelable(STATE_URI, it) }
+        getCurrentPosition()?.let { outState.putInt(STATE_POSITION, it) }
     }
 
     private fun resolveUri(intent: Intent?): Uri? {
@@ -107,13 +130,31 @@ class ViewerActivity : AppCompatActivity() {
         }
     }
 
+    private fun restoredUri(bundle: Bundle): Uri? {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            bundle.getParcelable(STATE_URI, Uri::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            bundle.getParcelable(STATE_URI)
+        }
+    }
+
     private fun openFile(uri: Uri) {
         currentUri = uri
-        currentDisplayName = queryDisplayName(uri) ?: uri.lastPathSegment.orEmpty()
 
-        val mimeType = contentResolver.getType(uri)
-        val isPdf = mimeType == "application/pdf" || currentDisplayName.endsWith(".pdf", ignoreCase = true)
-        val isHwp = HWP_MIME_TYPES.contains(mimeType) || currentDisplayName.endsWith(".hwp", ignoreCase = true)
+        val (displayName, mimeType) = try {
+            (queryDisplayName(uri) ?: uri.lastPathSegment.orEmpty()) to contentResolver.getType(uri)
+        } catch (e: SecurityException) {
+            showError(getString(R.string.error_permission_expired), allowReselect = true)
+            return
+        } catch (e: Exception) {
+            showError(getString(R.string.error_open_failed), allowReselect = true)
+            return
+        }
+        currentDisplayName = displayName
+
+        val isPdf = mimeType == "application/pdf" || displayName.endsWith(".pdf", ignoreCase = true)
+        val isHwp = (mimeType != null && mimeType in HWP_MIME_TYPES) || displayName.endsWith(".hwp", ignoreCase = true)
 
         when {
             isPdf -> {
@@ -133,6 +174,10 @@ class ViewerActivity : AppCompatActivity() {
         }
     }
 
+    private fun isPermissionError(error: Throwable?): Boolean {
+        return error is SecurityException || error?.cause is SecurityException
+    }
+
     // --- PDF: official Jetpack viewer (search built in), only on qualifying devices ---
     private fun showPdfWithFragment(uri: Uri) {
         mode = Mode.PDF_FRAGMENT
@@ -141,10 +186,16 @@ class ViewerActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         val fragment = TrackingPdfViewerFragment()
-        fragment.onResult = { success ->
+        fragment.onResult = { error ->
             mainHandler.post {
                 progressBar.visibility = View.GONE
-                if (!success) showError(getString(R.string.error_open_failed))
+                if (error != null) {
+                    if (isPermissionError(error)) {
+                        showError(getString(R.string.error_permission_expired), allowReselect = true)
+                    } else {
+                        showError(getString(R.string.error_open_failed))
+                    }
+                }
             }
         }
         pdfViewerFragment = fragment
@@ -154,7 +205,13 @@ class ViewerActivity : AppCompatActivity() {
         transaction.commitAllowingStateLoss()
         supportFragmentManager.executePendingTransactions()
 
-        fragment.documentUri = uri
+        try {
+            fragment.documentUri = uri
+        } catch (e: SecurityException) {
+            progressBar.visibility = View.GONE
+            showError(getString(R.string.error_permission_expired), allowReselect = true)
+            return
+        }
 
         searchToggleButton.visibility = View.VISIBLE
         searchToggleButton.setOnClickListener {
@@ -178,10 +235,16 @@ class ViewerActivity : AppCompatActivity() {
             .onLoad {
                 progressBar.visibility = View.GONE
                 pdfView.visibility = View.VISIBLE
+                pendingRestorePosition?.let { pdfView.jumpTo(it) }
+                pendingRestorePosition = null
             }
-            .onError {
+            .onError { throwable ->
                 progressBar.visibility = View.GONE
-                showError(getString(R.string.error_open_failed))
+                if (isPermissionError(throwable)) {
+                    showError(getString(R.string.error_permission_expired), allowReselect = true)
+                } else {
+                    showError(getString(R.string.error_open_failed))
+                }
             }
             .load()
 
@@ -192,6 +255,7 @@ class ViewerActivity : AppCompatActivity() {
         mode = Mode.HWP
         progressBar.visibility = View.VISIBLE
         backgroundExecutor.execute {
+            var permissionError = false
             val html = try {
                 contentResolver.openInputStream(uri)?.use { input ->
                     val hwpFile = HWPReader.fromInputStream(input)
@@ -203,17 +267,26 @@ class ViewerActivity : AppCompatActivity() {
                         )
                     }
                 }
+            } catch (e: SecurityException) {
+                permissionError = true
+                null
             } catch (e: Exception) {
                 null
             }
             mainHandler.post {
                 progressBar.visibility = View.GONE
                 if (html == null) {
-                    showError(getString(R.string.error_open_failed))
+                    if (permissionError) {
+                        showError(getString(R.string.error_permission_expired), allowReselect = true)
+                    } else {
+                        showError(getString(R.string.error_open_failed))
+                    }
                 } else {
                     webView.visibility = View.VISIBLE
                     webView.loadDataWithBaseURL(null, html, "text/html", "utf-8", null)
                     setupHwpSearch()
+                    pendingRestorePosition?.let { y -> webView.post { webView.scrollTo(0, y) } }
+                    pendingRestorePosition = null
                 }
             }
         }
@@ -257,6 +330,10 @@ class ViewerActivity : AppCompatActivity() {
     }
 
     // --- Bookmarks ---
+    // Keyed by the full content Uri string (not filename), so two different files
+    // that happen to share a display name never share bookmarks, and the same file
+    // opened via two different apps/paths (different Uris) is tracked separately
+    // rather than risking an incorrect merge.
 
     private fun getCurrentPosition(): Int? = when (mode) {
         Mode.PDF_LEGACY -> pdfView.currentPage
@@ -368,9 +445,10 @@ class ViewerActivity : AppCompatActivity() {
         }
     }
 
-    private fun showError(message: String) {
+    private fun showError(message: String, allowReselect: Boolean = false) {
         errorText.text = message
-        errorText.visibility = View.VISIBLE
+        errorContainer.visibility = View.VISIBLE
+        reselectButton.visibility = if (allowReselect) View.VISIBLE else View.GONE
     }
 
     override fun onDestroy() {
@@ -380,6 +458,8 @@ class ViewerActivity : AppCompatActivity() {
 
     companion object {
         private const val PDF_VIEWER_FRAGMENT_TAG = "pdf_viewer_fragment"
+        private const val STATE_URI = "state_uri"
+        private const val STATE_POSITION = "state_position"
         private val HWP_MIME_TYPES = setOf(
             "application/x-hwp",
             "application/haansofthwp",

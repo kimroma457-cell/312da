@@ -12,14 +12,14 @@ import androidx.pdf.viewer.fragment.PdfViewerFragment
 @RequiresExtension(extension = Build.VERSION_CODES.S, version = 13)
 class TrackingPdfViewerFragment : PdfViewerFragment() {
 
-    var onResult: ((success: Boolean) -> Unit)? = null
+    var onResult: ((error: Throwable?) -> Unit)? = null
 
     override fun onLoadDocumentSuccess() {
-        onResult?.invoke(true)
+        onResult?.invoke(null)
     }
 
     override fun onLoadDocumentError(error: Throwable) {
-        onResult?.invoke(false)
+        onResult?.invoke(error)
     }
 
     // TODO(bookmarks-for-official-viewer): PdfViewerFragment reportedly exposes

@@ -23,7 +23,7 @@
             android:name=".ViewerActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:configChanges="orientation|screenSize|keyboardHidden">
+            android:configChanges="orientation|screenSize|keyboardHidden|uiMode">
 
             <!-- Opened directly by the file picker inside this app -->
             <intent-filter>
